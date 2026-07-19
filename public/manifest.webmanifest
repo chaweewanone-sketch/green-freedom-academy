@@ -1,0 +1,10 @@
+{
+  "name": "Green Freedom Academy",
+  "short_name": "GFA",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5fbf7",
+  "theme_color": "#176b4d",
+  "lang": "th",
+  "icons": []
+}
