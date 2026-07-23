@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { MillionaireGame } from "@/components/millionaire";
 import { getLearningActivities } from "@/lib/activities";
 import { getLessonBySlug } from "@/lib/lessons";
 import type { ActivityStatus } from "@/types/activity";
@@ -25,6 +26,14 @@ export default async function ActivityPage({ params }: ActivityPageProps) {
 
   if (!activity) {
     notFound();
+  }
+
+  if (activityId === "millionaire") {
+    return (
+      <main className="page">
+        <MillionaireGame lesson={lesson} />
+      </main>
+    );
   }
 
   return (
