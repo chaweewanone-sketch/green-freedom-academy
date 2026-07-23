@@ -39,7 +39,7 @@ export default function Teacher() {
         <h2>บทเรียนสำหรับสอน</h2>
         {teachableLessons.map((lesson) => (
           <Link
-            href={getLessonPath(lesson.slug)}
+            href={`${getLessonPath(lesson.slug)}?from=teacher`}
             className="stage"
             key={lesson.slug}
           >

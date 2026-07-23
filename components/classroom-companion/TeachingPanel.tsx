@@ -25,6 +25,12 @@ export function TeachingPanel({
           {example}
         </div>
       ))}
+      {step.teacherTip && (
+        <>
+          <h2>คำแนะนำสำหรับครู</h2>
+          <div className="planningTip">{step.teacherTip}</div>
+        </>
+      )}
     </article>
   );
 }
