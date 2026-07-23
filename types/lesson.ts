@@ -14,3 +14,5 @@ export type LessonData = {
   title: string;
   steps: LessonStep[];
 };
+
+export type LessonSummary = Pick<LessonData, "slug" | "title">;

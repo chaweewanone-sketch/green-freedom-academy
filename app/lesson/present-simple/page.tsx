@@ -1,5 +1,8 @@
+import { notFound } from "next/navigation";
 import { ClassroomCompanion } from "@/components/classroom-companion";
-import { presentSimpleLesson } from "@/lib/lessons/present-simple";
+import { getLessonBySlug } from "@/lib/lessons";
+
+const LESSON_SLUG = "present-simple";
 
 type PageProps = {
   searchParams: Promise<{ from?: string }>;
@@ -8,12 +11,18 @@ type PageProps = {
 export default async function PresentSimpleLessonPage({
   searchParams,
 }: PageProps) {
+  const lesson = getLessonBySlug(LESSON_SLUG);
+
+  if (!lesson) {
+    notFound();
+  }
+
   const { from } = await searchParams;
   const isTeacherContext = from === "teacher";
 
   return (
     <ClassroomCompanion
-      lesson={presentSimpleLesson}
+      lesson={lesson}
       backHref={isTeacherContext ? "/teacher" : "/student"}
       backLabel={isTeacherContext ? "แดชบอร์ดครู" : "Dashboard"}
       defaultMode={isTeacherContext ? "planning" : "teaching"}
