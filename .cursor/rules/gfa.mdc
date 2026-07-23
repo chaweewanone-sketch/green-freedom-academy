@@ -1,0 +1,59 @@
+---
+description: Green Freedom Academy — core mission, principles, and coding constraints
+alwaysApply: true
+---
+
+# Green Freedom Academy
+
+## Mission
+
+Green Freedom Academy helps teachers create high-quality P.6 English lessons, worksheets, games, and assessments quickly. **The goal is to save teachers time** — not to add complexity.
+
+## Product Principles
+
+1. Teacher-first design
+2. Technology makes teachers' work easier
+3. Thai is the default UI language
+4. Primary focus: P.6 English
+5. Student loop: **Learn → Short Practice → Game**
+6. Preserve existing working functionality
+7. Reusable components and maintainable TypeScript
+8. Support desktop, tablet, and mobile
+9. Explain major refactoring before implementing
+10. Every code change must pass `npm run build` before completion
+
+## North-Star Flow (PLANNED / FUTURE)
+
+AI Teaching Brain → Lesson Generator → Classroom Companion → Worksheet Generator → Game Generator → Assessment Generator → Teacher Studio / Student Experience
+
+Most stages are **not implemented** — see `docs/02-ROADMAP.md`.
+
+## Tech Stack
+
+Next.js 15 · React 19 · TypeScript · Supabase (schema defined; **not connected in app**)
+
+## Current State (Do Not Assume)
+
+- Demo UI works: `/`, `/login`, `/student`, `/teacher`, `/lesson/present-simple`
+- Auth is demo-only (`localStorage`); Supabase client in `lib/supabase-browser.ts` is **unused**
+- Practice, Game, AI generators, worksheets, and assessments are **not built**
+
+## Coding Rules
+
+- Never delete working features unless requested
+- Functional React components; avoid `any`
+- Use `@/` imports; extend `app/globals.css` tokens — no new CSS framework without approval
+- Thai for UI copy; English for code identifiers and grammar examples
+- Minimal diffs; extract components when patterns repeat
+- Update `docs/10-CHANGELOG.md` and roadmap when shipping features
+
+## Detailed Standards
+
+Read before substantial work:
+
+- `docs/01-VISION.md` — Mission
+- `docs/02-ROADMAP.md` — CURRENT vs PLANNED vs FUTURE
+- `docs/03-ARCHITECTURE.md` — Routes and data flow
+- `docs/04-DESIGN-SYSTEM.md` — UI tokens and classes
+- `docs/05-CODING-STANDARDS.md` — TypeScript and React conventions
+- `docs/07-PROMPT-LIBRARY.md` — Task prompts

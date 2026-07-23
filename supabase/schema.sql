@@ -1,0 +1,10 @@
+create type public.user_role as enum ('student','teacher','admin');
+create table public.profiles(id uuid primary key references auth.users(id) on delete cascade,full_name text not null,role public.user_role not null default 'student',created_at timestamptz default now());
+create table public.courses(id uuid primary key default gen_random_uuid(),slug text unique not null,title text not null,published boolean default false);
+create table public.lessons(id uuid primary key default gen_random_uuid(),course_id uuid references public.courses(id) on delete cascade,slug text not null,title text not null,content jsonb not null default '{}'::jsonb,position int default 0,unique(course_id,slug));
+create table public.student_progress(id uuid primary key default gen_random_uuid(),student_id uuid references public.profiles(id) on delete cascade,lesson_id uuid references public.lessons(id) on delete cascade,lesson_completed boolean default false,practice_best int default 0,game_best_level int default 0,xp int default 0,updated_at timestamptz default now(),unique(student_id,lesson_id));
+create table public.classrooms(id uuid primary key default gen_random_uuid(),teacher_id uuid references public.profiles(id),name text not null,join_code text unique not null);
+alter table public.profiles enable row level security;
+alter table public.student_progress enable row level security;
+create policy "own profile" on public.profiles for select using(auth.uid()=id);
+create policy "own progress" on public.student_progress for all using(auth.uid()=student_id) with check(auth.uid()=student_id);
