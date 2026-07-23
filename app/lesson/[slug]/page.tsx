@@ -2,16 +2,17 @@ import { notFound } from "next/navigation";
 import { ClassroomCompanion } from "@/components/classroom-companion";
 import { getLessonBySlug } from "@/lib/lessons";
 
-const LESSON_SLUG = "present-simple";
-
-type PageProps = {
+type LessonPageProps = {
+  params: Promise<{ slug: string }>;
   searchParams: Promise<{ from?: string }>;
 };
 
-export default async function PresentSimpleLessonPage({
+export default async function LessonPage({
+  params,
   searchParams,
-}: PageProps) {
-  const lesson = getLessonBySlug(LESSON_SLUG);
+}: LessonPageProps) {
+  const { slug } = await params;
+  const lesson = getLessonBySlug(slug);
 
   if (!lesson) {
     notFound();
