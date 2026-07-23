@@ -90,6 +90,7 @@ export function ClassroomCompanion({
               stepIndex={currentStep}
               totalSteps={steps.length}
               step={activeStep}
+              lessonSlug={lesson.slug}
             />
           ) : (
             <PlanningPanel

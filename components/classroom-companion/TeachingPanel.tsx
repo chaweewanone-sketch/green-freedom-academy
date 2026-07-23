@@ -6,12 +6,14 @@ type TeachingPanelProps = {
   stepIndex: number;
   totalSteps: number;
   step: LessonStep;
+  lessonSlug: string;
 };
 
 export function TeachingPanel({
   stepIndex,
   totalSteps,
   step,
+  lessonSlug,
 }: TeachingPanelProps) {
   return (
     <article className="lessonContent companionTeaching">
@@ -34,7 +36,10 @@ export function TeachingPanel({
         </>
       )}
 
-      <ActivityGrid activities={getLearningActivities()} />
+      <ActivityGrid
+        activities={getLearningActivities()}
+        lessonSlug={lessonSlug}
+      />
     </article>
   );
 }

@@ -48,3 +48,7 @@ export const activities: Activity[] = [
 export function getLearningActivities(): Activity[] {
   return activities;
 }
+
+export function getActivityPath(lessonSlug: string, activityId: string): string {
+  return `/lesson/${lessonSlug}/activity/${activityId}`;
+}
