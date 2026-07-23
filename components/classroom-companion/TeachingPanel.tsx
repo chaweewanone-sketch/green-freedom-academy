@@ -1,4 +1,6 @@
 import type { LessonStep } from "@/types/lesson";
+import { ActivityGrid } from "@/components/activities";
+import { getLearningActivities } from "@/lib/activities";
 
 type TeachingPanelProps = {
   stepIndex: number;
@@ -31,6 +33,8 @@ export function TeachingPanel({
           <div className="planningTip">{step.teacherTip}</div>
         </>
       )}
+
+      <ActivityGrid activities={getLearningActivities()} />
     </article>
   );
 }

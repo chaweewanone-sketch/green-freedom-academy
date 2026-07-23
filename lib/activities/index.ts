@@ -1,0 +1,50 @@
+import type { Activity } from "@/types/activity";
+
+export const activities: Activity[] = [
+  {
+    id: "millionaire",
+    title: "Millionaire Challenge",
+    description: "ตอบคำถามแบบเกมเศรษฐีเพื่อทบทวนบทเรียน",
+    icon: "💰",
+    status: "available",
+  },
+  {
+    id: "monopoly",
+    title: "Monopoly Challenge",
+    description: "เรียนรู้ผ่านเกม Monopoly แบบโต้ตอบ",
+    icon: "🎲",
+    status: "coming-soon",
+  },
+  {
+    id: "flash-cards",
+    title: "Flash Cards",
+    description: "ทบทวนคำศัพท์และโครงสร้างประโยคด้วยการ์ด",
+    icon: "🃏",
+    status: "coming-soon",
+  },
+  {
+    id: "matching",
+    title: "Matching Game",
+    description: "จับคู่คำศัพท์กับความหมายหรือตัวอย่างประโยค",
+    icon: "🧩",
+    status: "coming-soon",
+  },
+  {
+    id: "spin-wheel",
+    title: "Spin Wheel",
+    description: "หมุนวงล้อเพื่อสุ่มกิจกรรมฝึกฝน",
+    icon: "🎡",
+    status: "coming-soon",
+  },
+  {
+    id: "sentence-builder",
+    title: "Sentence Builder",
+    description: "เรียงคำหรือเลือกคำเพื่อสร้างประโยคที่ถูกต้อง",
+    icon: "✍️",
+    status: "coming-soon",
+  },
+];
+
+export function getLearningActivities(): Activity[] {
+  return activities;
+}

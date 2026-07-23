@@ -1,8 +1,10 @@
+import { pastSimpleLesson } from "./past-simple";
 import { presentSimpleLesson } from "./present-simple";
 import type { LessonData, LessonSummary } from "@/types/lesson";
 
 const LESSON_REGISTRY: Record<string, LessonData> = {
   [presentSimpleLesson.slug]: presentSimpleLesson,
+  [pastSimpleLesson.slug]: pastSimpleLesson,
 };
 
 for (const [key, lesson] of Object.entries(LESSON_REGISTRY)) {
