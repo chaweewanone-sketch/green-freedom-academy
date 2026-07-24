@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { MillionaireGame } from "@/components/millionaire";
 import { getLearningActivities } from "@/lib/activities";
 import { getLessonBySlug } from "@/lib/lessons";
-import { buildQuestionsFromLesson } from "@/lib/questions";
+import { resolveQuestionsForLesson } from "@/lib/questions";
 import type { ActivityStatus } from "@/types/activity";
 
 type ActivityPageProps = {
@@ -30,12 +30,15 @@ export default async function ActivityPage({ params }: ActivityPageProps) {
   }
 
   if (activityId === "millionaire") {
+    const questionBank = resolveQuestionsForLesson(lesson);
+
     return (
       <main className="page">
         <MillionaireGame
-          questions={buildQuestionsFromLesson(lesson)}
+          questionBank={questionBank}
           lessonTitle={lesson.title}
           lessonPath={`/lesson/${slug}`}
+          gameQuestionCount={10}
         />
       </main>
     );

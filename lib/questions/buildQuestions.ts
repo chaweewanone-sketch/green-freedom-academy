@@ -60,6 +60,8 @@ export function buildQuestionsFromLesson(lesson: LessonData): Question[] {
       correctChoiceId,
       explanation: step.description,
       difficulty: getDifficulty(stepIndex, totalSteps),
+      grammarPoint: step.title,
+      tags: ["fallback", "lesson-step"],
     };
   });
 }

@@ -1,15 +1,16 @@
 # Green Freedom Academy — Architecture
 
-Concise reference for how lessons, questions, and learning activities are structured in GFA_Main.
+Concise reference for how lessons, assessments, and learning activities are structured in GFA_Main.
 
 ---
 
 ## Overview
 
 ```
-Lesson Registry  →  /lesson/[slug]                    →  ClassroomCompanion
-Question Engine  →  Question[]                         →  Millionaire Engine
-Activity List    →  /lesson/[slug]/activity/[activity] →  Activity page
+Lesson Registry     →  /lesson/[slug]                    →  ClassroomCompanion
+Question Bank       →  Assessment Engine                  →  Question[]
+Millionaire Engine  →  selectRandomQuestions()            →  10-question game
+Activity List       →  /lesson/[slug]/activity/[activity] →  Activity page
 ```
 
 Both lesson and activity layers use **data-driven registries**. UI components stay generic; new content is added by registering data, not by copying page files.
@@ -23,34 +24,23 @@ types/
   lesson.ts              # LessonData, LessonStep, LessonSummary
   activity.ts            # Activity, ActivityStatus
   question.ts            # Question, QuestionChoice, Difficulty
+  question-bank.ts       # QuestionBank
 
 lib/
-  lessons/
-    registry.ts          # Lesson catalog (single source of truth)
-    present-simple.ts    # Lesson content
-    past-simple.ts       # Lesson content
-    index.ts             # Public barrel
-  questions/
-    buildQuestions.ts    # Question Engine (deterministic, no AI)
-    index.ts             # Public barrel
+  lessons/               # Lesson Registry
+  question-bank/         # Question Bank (per-lesson seed data)
+    present-simple.ts    # 50 questions
+    past-simple.ts       # 10 sample questions
+    index.ts             # getQuestionBank()
+  questions/             # Assessment Engine
+    resolveQuestions.ts  # Bank-first resolver + fallback
+    buildQuestions.ts    # Fallback generator from LessonData
+    selectQuestions.ts   # Random selection for games
+    index.ts
   activities/
-    index.ts             # Activity list + getActivityPath()
 
 components/
-  classroom-companion/   # Lesson delivery UI
-  activities/
-    ActivityGrid.tsx     # Maps activities → cards
-    ActivityCard.tsx     # Single activity card + routing link
-  millionaire/
-    MillionaireGame.tsx  # Game engine — consumes Question[] only
-
-app/
-  lesson/
-    [slug]/
-      page.tsx           # Lesson page
-      activity/
-        [activity]/
-          page.tsx       # Activity page
+  millionaire/           # Millionaire Engine — consumes Question[] only
 ```
 
 ---
@@ -60,104 +50,92 @@ app/
 | Piece | Role |
 |-------|------|
 | `LessonData` | Model: `slug`, `title`, `steps[]` |
-| `lib/lessons/*.ts` | One file per lesson — exports a `LessonData` constant |
-| `lib/lessons/registry.ts` | Registers all lessons; exposes lookup helpers |
-| `@/lib/lessons` | Public API — pages import from here only |
-| `ClassroomCompanion` | Renders any `LessonData`; no slug or routing logic |
-
-### Data flow (lesson)
-
-1. Request `/lesson/{slug}`
-2. `getLessonBySlug(slug)` → `LessonData | null`
-3. If null → `notFound()`
-4. Pass `LessonData` to `ClassroomCompanion`
+| `lib/lessons/registry.ts` | Registers all lessons |
+| `@/lib/lessons` | Public API |
 
 ### How to add a lesson
 
-1. Create `lib/lessons/my-lesson.ts` exporting `LessonData` with a unique `slug`.
-2. Register it in `lib/lessons/registry.ts`:
-   ```ts
-   [myLesson.slug]: myLesson,
-   ```
-3. Done — `/lesson/my-lesson` works via dynamic routing. Teacher dashboard lists it automatically.
-
-Do **not** create a new folder under `app/lesson/`.
+1. Create `lib/lessons/my-lesson.ts` and register in `registry.ts`.
+2. Optionally create `lib/question-bank/my-lesson.ts` when ready for assessment content.
+3. `/lesson/my-lesson` works automatically via dynamic routing.
 
 ---
 
-## Question Engine
+## Assessment Engine
 
 | Piece | Role |
 |-------|------|
-| `Question` | Model: `id`, `prompt`, `choices[]`, `correctChoiceId`, `explanation`, `difficulty` |
-| `buildQuestionsFromLesson()` | Generates `Question[]` from `LessonData.steps` |
-| `@/lib/questions` | Public API for question generation |
+| `Question` | `id`, `prompt`, `choices[]`, `correctChoiceId`, `explanation`, `difficulty`, `grammarPoint`, `tags[]` |
+| `QuestionBank` | `{ lessonSlug, questions[] }` — scales to 100+ questions per lesson |
+| `getQuestionBank(slug)` | Returns bank or `null` |
+| `resolveQuestionsForLesson()` | Bank if exists, else fallback |
+| `selectRandomQuestions()` | Picks N unique questions for games |
 
 ### Pipeline
+
+```
+QuestionBank (preferred)
+  → resolveQuestionsForLesson()
+  → Question[]
+  → MillionaireGame (selectRandomQuestions → 10 per round)
+```
+
+### Fallback strategy
+
+If no bank exists for a lesson slug:
 
 ```
 LessonData
   → buildQuestionsFromLesson()
   → Question[]
-  → MillionaireGame
 ```
 
-### v1 rules (deterministic — no AI)
+This keeps older or new lessons working before a bank is seeded.
 
-- One `Question` per `LessonStep`
-- Prompt uses the step title; correct choice uses the step formula
-- Four choices with stable unique ids; placeholder distractors allowed
-- `explanation` = step description
-- Difficulty: first = `easy`, last = `hard`, middle = `medium`
+### Question metadata
 
-### Reuse by future activities
+| Field | Purpose |
+|-------|---------|
+| `grammarPoint` | Grammar focus label (e.g. "Third person singular -s") |
+| `tags[]` | Categories: affirmative, negative, wh-question, frequency, etc. |
+| `difficulty` | `easy` \| `medium` \| `hard` |
 
-Any activity that needs quiz-style content can import `@/lib/questions` and consume `Question[]`. Game components should **not** import `LessonData` or generate questions themselves — the activity page builds questions and passes them as props.
+The engine is **deterministic** — no AI generation in v1.
+
+### How to add questions
+
+1. Create or extend `lib/question-bank/{lesson-slug}.ts`.
+2. Register the bank in `lib/question-bank/index.ts`.
+3. All assessment activities consume `Question[]` via `resolveQuestionsForLesson()` — no activity-specific hardcoding.
+
+Future activities (Quiz, Flash Cards, Matching, Final Test) reuse the same bank without modification.
 
 ---
 
 ## Activity Architecture
 
-| Piece | Role |
-|-------|------|
-| `Activity` | Model: `id`, `title`, `description`, `icon`, `status` |
-| `lib/activities/index.ts` | Activity list + `getLearningActivities()` + `getActivityPath()` |
-| `ActivityGrid` | Receives `lessonSlug` + `activities[]` |
-| `ActivityCard` | Links to activity route when `status === "available"` |
-| `MillionaireGame` | Receives `Question[]`, `lessonTitle`, `lessonPath` |
+### Millionaire flow
 
-### Status values
+1. Activity page loads lesson via registry.
+2. `resolveQuestionsForLesson(lesson)` → full `Question[]` bank.
+3. `MillionaireGame` receives `questionBank` + `gameQuestionCount={10}`.
+4. On start/restart, `selectRandomQuestions()` picks 10 unique questions — no repeats within one game.
 
-| Status | UI | Navigation |
-|--------|-----|------------|
-| `available` | Green badge | `/lesson/{slug}/activity/{id}` |
-| `coming-soon` | Gray badge | Disabled — no link |
+### Data flow (millionaire)
 
-### Data flow (millionaire activity)
-
-1. Request `/lesson/{slug}/activity/millionaire`
-2. `getLessonBySlug(slug)` → if null, `notFound()`
-3. `getLearningActivities().find(id)` → if null, `notFound()`
-4. `buildQuestionsFromLesson(lesson)` → `Question[]`
-5. Pass `Question[]` into `MillionaireGame`
-
-Activities are **lesson-agnostic** — the same activity works with any registered lesson via the URL.
-
-### How to add an activity
-
-1. Add one object to the `activities[]` array in `lib/activities/index.ts`.
-2. Wire the activity page for `activityId === "my-game"`.
-3. Reuse `Question[]` from the Question Engine when the activity is quiz-based.
+1. `getLessonBySlug(slug)` → if null, `notFound()`
+2. `getLearningActivities().find(id)` → if null, `notFound()`
+3. `resolveQuestionsForLesson(lesson)` → `Question[]`
+4. Pass bank into `MillionaireGame`
 
 ---
 
 ## Key Conventions
 
-- **Public APIs:** `@/lib/lessons`, `@/lib/questions`, and `@/lib/activities` — consumers never import content files directly.
-- **Separation:** Question generation lives in `lib/questions`; game UI lives in `components/millionaire`.
-- **Next.js 15:** Page `params` and `searchParams` are `Promise` — always `await` them.
-- **404 guards:** Unknown lesson slug or activity id → `notFound()`.
-- **Thai UI:** Labels and teacher copy in Thai; English for grammar examples and activity titles.
+- **Public APIs:** `@/lib/lessons`, `@/lib/question-bank`, `@/lib/questions`, `@/lib/activities`
+- **Separation:** Banks store content; Assessment Engine resolves/selects; game UI only renders `Question[]`
+- **No lesson logic in Millionaire:** game never imports `LessonData` or `getQuestionBank`
+- **404 guards:** Unknown lesson slug or activity id → `notFound()`
 
 ---
 

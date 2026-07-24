@@ -12,4 +12,6 @@ export interface Question {
   correctChoiceId: string;
   explanation: string;
   difficulty: Difficulty;
+  grammarPoint: string;
+  tags: string[];
 }
