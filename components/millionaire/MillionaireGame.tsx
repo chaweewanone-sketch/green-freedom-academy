@@ -1,25 +1,25 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { ProgressBar } from "./ProgressBar";
 import { QuestionCard } from "./QuestionCard";
 import { ResultPanel } from "./ResultPanel";
-import { buildChallengesFromLesson } from "@/lib/millionaire/buildChallenges";
-import type { LessonData } from "@/types/lesson";
+import type { Question } from "@/types/question";
 
 type MillionaireGameProps = {
-  lesson: LessonData;
+  questions: Question[];
+  lessonTitle: string;
+  lessonPath: string;
 };
 
 type GamePhase = "start" | "playing" | "result";
 
-export function MillionaireGame({ lesson }: MillionaireGameProps) {
-  const challenges = useMemo(
-    () => buildChallengesFromLesson(lesson),
-    [lesson],
-  );
-  const totalQuestions = challenges.length;
-  const lessonPath = `/lesson/${lesson.slug}`;
+export function MillionaireGame({
+  questions,
+  lessonTitle,
+  lessonPath,
+}: MillionaireGameProps) {
+  const totalQuestions = questions.length;
 
   const [phase, setPhase] = useState<GamePhase>("start");
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -27,7 +27,7 @@ export function MillionaireGame({ lesson }: MillionaireGameProps) {
   const [selectedChoiceId, setSelectedChoiceId] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(false);
 
-  const currentChallenge = challenges[currentIndex];
+  const currentQuestion = questions[currentIndex];
 
   function startGame() {
     setPhase("playing");
@@ -42,15 +42,18 @@ export function MillionaireGame({ lesson }: MillionaireGameProps) {
   }
 
   function handleChoice(choiceId: string) {
-    if (revealed || !currentChallenge) return;
+    if (revealed || !currentQuestion) return;
 
-    const choice = currentChallenge.choices.find((item) => item.id === choiceId);
-    if (!choice) return;
+    const isValidChoice = currentQuestion.choices.some(
+      (choice) => choice.id === choiceId,
+    );
+    if (!isValidChoice) return;
 
     setSelectedChoiceId(choiceId);
     setRevealed(true);
 
-    const nextScore = choice.isCorrect ? score + 1 : score;
+    const nextScore =
+      choiceId === currentQuestion.correctChoiceId ? score + 1 : score;
 
     window.setTimeout(() => {
       if (currentIndex >= totalQuestions - 1) {
@@ -72,7 +75,7 @@ export function MillionaireGame({ lesson }: MillionaireGameProps) {
         <span className="eyebrow">MILLIONAIRE CHALLENGE</span>
         <h1>Millionaire Challenge</h1>
         <p className="millionaireIntro">
-          บทเรียน: <strong>{lesson.title}</strong>
+          บทเรียน: <strong>{lessonTitle}</strong>
         </p>
         <p className="millionaireIntro">
           ทบทวน {totalQuestions} ขั้นตอนด้วยคำถามแบบเลือกตอบ
@@ -95,7 +98,7 @@ export function MillionaireGame({ lesson }: MillionaireGameProps) {
     );
   }
 
-  if (!currentChallenge) {
+  if (!currentQuestion) {
     return null;
   }
 
@@ -107,9 +110,7 @@ export function MillionaireGame({ lesson }: MillionaireGameProps) {
         score={score}
       />
       <QuestionCard
-        title={currentChallenge.title}
-        description={currentChallenge.description}
-        choices={currentChallenge.choices}
+        question={currentQuestion}
         selectedChoiceId={selectedChoiceId}
         revealed={revealed}
         onChoice={handleChoice}
