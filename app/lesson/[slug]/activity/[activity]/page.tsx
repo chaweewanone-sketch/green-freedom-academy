@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MillionaireGame } from "@/components/millionaire";
+import { createAssessmentSession } from "@/lib/assessment";
 import { getLearningActivities } from "@/lib/activities";
 import { getLessonBySlug } from "@/lib/lessons";
-import { resolveQuestionsForLesson } from "@/lib/questions";
 import type { ActivityStatus } from "@/types/activity";
 
 type ActivityPageProps = {
@@ -30,15 +30,14 @@ export default async function ActivityPage({ params }: ActivityPageProps) {
   }
 
   if (activityId === "millionaire") {
-    const questionBank = resolveQuestionsForLesson(lesson);
+    const session = createAssessmentSession(lesson, "millionaire");
 
     return (
       <main className="page">
         <MillionaireGame
-          questionBank={questionBank}
+          session={session}
           lessonTitle={lesson.title}
           lessonPath={`/lesson/${slug}`}
-          gameQuestionCount={10}
         />
       </main>
     );

@@ -4,41 +4,33 @@ import { useState } from "react";
 import { ProgressBar } from "./ProgressBar";
 import { QuestionCard } from "./QuestionCard";
 import { ResultPanel } from "./ResultPanel";
-import { selectRandomQuestions } from "@/lib/questions";
-import type { Question } from "@/types/question";
-
-const DEFAULT_GAME_QUESTION_COUNT = 10;
+import type { AssessmentSession } from "@/lib/assessment";
 
 type MillionaireGameProps = {
-  questionBank: Question[];
+  session: AssessmentSession;
   lessonTitle: string;
   lessonPath: string;
-  gameQuestionCount?: number;
 };
 
 type GamePhase = "start" | "playing" | "result";
 
 export function MillionaireGame({
-  questionBank,
+  session,
   lessonTitle,
   lessonPath,
-  gameQuestionCount = DEFAULT_GAME_QUESTION_COUNT,
 }: MillionaireGameProps) {
+  const gameQuestions = session.questions;
+  const totalQuestions = gameQuestions.length;
+
   const [phase, setPhase] = useState<GamePhase>("start");
-  const [gameQuestions, setGameQuestions] = useState<Question[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [selectedChoiceId, setSelectedChoiceId] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(false);
 
-  const totalQuestions = gameQuestions.length;
   const currentQuestion = gameQuestions[currentIndex];
-  const roundCount = Math.min(gameQuestionCount, questionBank.length);
 
   function startGame() {
-    setGameQuestions(
-      selectRandomQuestions(questionBank, Math.min(gameQuestionCount, questionBank.length)),
-    );
     setPhase("playing");
     setCurrentIndex(0);
     setScore(0);
@@ -86,10 +78,22 @@ export function MillionaireGame({
         <p className="millionaireIntro">
           บทเรียน: <strong>{lessonTitle}</strong>
         </p>
-        <p className="millionaireIntro">
-          เล่น {roundCount} คำถามจากคลัง {questionBank.length} ข้อ
-        </p>
-        <button type="button" className="button primary" onClick={startGame}>
+        {totalQuestions > 0 ? (
+          <p className="millionaireIntro">
+            เล่น {session.selectedCount} คำถามจากคลัง {session.totalAvailable}{" "}
+            ข้อ
+          </p>
+        ) : (
+          <p className="millionaireIntro">
+            ไม่มีคำถามที่ตรงกับเงื่อนไขสำหรับบทเรียนนี้
+          </p>
+        )}
+        <button
+          type="button"
+          className="button primary"
+          onClick={startGame}
+          disabled={totalQuestions === 0}
+        >
           เริ่มเกม
         </button>
       </section>
