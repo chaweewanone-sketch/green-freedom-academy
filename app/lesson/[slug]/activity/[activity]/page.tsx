@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MillionaireGame } from "@/components/millionaire";
+import { QuizGame } from "@/components/quiz";
 import { createAssessmentSession } from "@/lib/assessment";
 import { getLearningActivities } from "@/lib/activities";
 import { getLessonBySlug } from "@/lib/lessons";
@@ -39,6 +40,16 @@ export default async function ActivityPage({ params }: ActivityPageProps) {
           lessonTitle={lesson.title}
           lessonPath={`/lesson/${slug}`}
         />
+      </main>
+    );
+  }
+
+  if (activityId === "quiz") {
+    const session = createAssessmentSession(lesson, "quiz");
+
+    return (
+      <main className="page">
+        <QuizGame session={session} />
       </main>
     );
   }

@@ -9,6 +9,13 @@ export const activities: Activity[] = [
     status: "available",
   },
   {
+    id: "quiz",
+    title: "Quiz",
+    description: "ทำแบบทดสอบหลายข้อเพื่อทบทวนบทเรียน",
+    icon: "📝",
+    status: "available",
+  },
+  {
     id: "monopoly",
     title: "Monopoly Challenge",
     description: "เรียนรู้ผ่านเกม Monopoly แบบโต้ตอบ",
