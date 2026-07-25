@@ -25,9 +25,9 @@ export const activities: Activity[] = [
   {
     id: "flash-cards",
     title: "Flash Cards",
-    description: "ทบทวนคำศัพท์และโครงสร้างประโยคด้วยการ์ด",
+    description: "ทบทวนด้วยการจำคำตอบเอง แล้วประเมินความคล่อง",
     icon: "🃏",
-    status: "coming-soon",
+    status: "available",
   },
   {
     id: "matching",

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { FlashCardsGame } from "@/components/flash-cards";
 import { MillionaireGame } from "@/components/millionaire";
 import { QuizGame } from "@/components/quiz";
 import { createAssessmentSession } from "@/lib/assessment";
@@ -50,6 +51,16 @@ export default async function ActivityPage({ params }: ActivityPageProps) {
     return (
       <main className="page">
         <QuizGame session={session} />
+      </main>
+    );
+  }
+
+  if (activityId === "flash-cards") {
+    const session = createAssessmentSession(lesson, "flash-cards");
+
+    return (
+      <main className="page">
+        <FlashCardsGame session={session} />
       </main>
     );
   }

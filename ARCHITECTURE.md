@@ -30,6 +30,8 @@ types/
   question.ts
   question-bank.ts
   assessment.ts          # AssessmentSession, AssessmentOptions
+  assessment-result.ts   # Correctness-based result (Quiz)
+  recall.ts              # Self-rated recall result (Flash Cards)
 
 lib/
   lessons/               # Lesson Registry
@@ -43,6 +45,8 @@ lib/
 
 components/
   millionaire/           # Consumes AssessmentSession only
+  quiz/
+  flash-cards/           # Active recall — consumes AssessmentSession only
 ```
 
 ---
@@ -122,6 +126,42 @@ Future activities import **only** `@/lib/assessment`.
 1. Activity route: `createAssessmentSession(lesson, "millionaire")`
 2. Pass frozen `AssessmentSession` to `MillionaireGame`
 3. Game plays `session.questions` — no selection logic in UI
+
+---
+
+## Quiz flow
+
+1. Activity route: `createAssessmentSession(lesson, "quiz")`
+2. Pass frozen `AssessmentSession` to `QuizGame`
+3. Multiple-choice with correctness scoring → `AssessmentResult` (not persisted)
+
+---
+
+## Flash Cards flow (active recall)
+
+```
+Lesson → Assessment Service → AssessmentSession → FlashCardsGame → FlashCardResult
+```
+
+| Aspect | Behavior |
+|--------|----------|
+| Recall model | Answer hidden until **Reveal Answer** |
+| Self-rating | Easy / Medium / Hard after reveal |
+| Scoring | No automatic correctness score |
+| Policy | Assessment Service owns count, randomization, filtering |
+| Interaction | FlashCardsGame owns reveal, rating, navigation, summary |
+| Restart | Replays same frozen session and order; clears ratings |
+| Refresh | Route creates new session (may differ if randomized) |
+| Persistence | `FlashCardResult` built at completion — not persisted yet |
+
+### Result types
+
+| Type | Activity | Measures |
+|------|----------|----------|
+| `AssessmentResult` | Quiz, Millionaire | Correct vs incorrect answers |
+| `FlashCardResult` | Flash Cards | Self-rated recall (Easy / Medium / Hard) |
+
+Future analytics may normalize both types; that is outside current scope.
 
 ---
 
