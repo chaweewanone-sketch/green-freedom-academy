@@ -19,6 +19,7 @@ Activity List        →  /lesson/[slug]/activity/[activity] →  Activity UI
 | Question Bank | Content — `Question[]` per lesson |
 | Assessment Service | Policy — filtering, selection, defaults, session metadata |
 | Activity UI | Interaction — render `AssessmentSession`, track score/state |
+| Analytics Engine | Aggregation — normalize activity results into `LearningSummary` |
 
 ---
 
@@ -32,6 +33,7 @@ types/
   assessment.ts          # AssessmentSession, AssessmentOptions
   assessment-result.ts   # Correctness-based result (Quiz)
   recall.ts              # Self-rated recall result (Flash Cards)
+  analytics.ts           # LearningEvent, LearningSummary
 
 lib/
   lessons/               # Lesson Registry
@@ -41,12 +43,17 @@ lib/
     createAssessmentSession.ts
     activityDefaults.ts
     index.ts
+  analytics/             # Pure aggregation — normalize results → LearningSummary
+    aggregate.ts
+    summary.ts
+    index.ts
   activities/
 
 components/
   millionaire/           # Consumes AssessmentSession only
   quiz/
   flash-cards/           # Active recall — consumes AssessmentSession only
+  dashboard/             # StudentDashboard — consumes LearningSummary only
 ```
 
 ---
@@ -114,6 +121,7 @@ LessonData → buildQuestionsFromLesson() → Question[]
 |--------|-----|
 | `@/lib/lessons` | Lesson lookup |
 | `@/lib/assessment` | **Only** public entry for activities |
+| `@/lib/analytics` | Normalize results and build `LearningSummary` |
 | `@/lib/question-bank` | Internal to assessment engine (do not import from activities) |
 | `@/lib/questions` | Internal helpers (do not import from activities) |
 
@@ -162,6 +170,59 @@ Lesson → Assessment Service → AssessmentSession → FlashCardsGame → Flash
 | `FlashCardResult` | Flash Cards | Self-rated recall (Easy / Medium / Hard) |
 
 Future analytics may normalize both types; that is outside current scope.
+
+---
+
+## Analytics flow
+
+```
+Activity UI → Activity Result → Learning Event → Analytics Engine → Learning Summary
+```
+
+| Step | Responsibility |
+|------|----------------|
+| Activity Result | `AssessmentResult` or `FlashCardResult` from completed session |
+| Normalization | `normalizeAssessmentResult()` / `normalizeFlashCardResult()` |
+| Aggregation | `buildLearningSummary(events)` — pure function, no side effects |
+| Output | `LearningSummary` — counts, averages, flash rating totals, latest activity |
+
+**Design rules:**
+
+- Analytics does not depend on any specific activity UI
+- Pure functions only — no React, no state, no persistence
+- Sample data lives in `lib/analytics/sample-data.ts` (not exported from public API)
+- No charts or backend in v1
+
+### Public API
+
+```typescript
+import {
+  buildLearningSummary,
+  normalizeAssessmentResult,
+  normalizeFlashCardResult,
+} from "@/lib/analytics";
+```
+
+---
+
+## Student Dashboard flow
+
+```
+Activity → Learning Event → Analytics Engine → LearningSummary → StudentDashboard
+```
+
+| Layer | Responsibility |
+|-------|----------------|
+| Analytics Engine | Normalize and aggregate — `buildLearningSummary()` |
+| Student Dashboard | Presentation only — renders `LearningSummary` cards |
+| `/dashboard` | Demo page — builds summary from `sample-data.ts` (no persistence) |
+
+**Rules:**
+
+- Dashboard must not calculate analytics inside React
+- Dashboard imports `LearningSummary` only — not activity results or sessions
+- Empty summary shows a friendly empty state
+- No charts, auth, or persistence in v1
 
 ---
 
