@@ -1,9 +1,13 @@
 import { BrandHeader } from "@/components/BrandHeader";
 import { StudentDashboard } from "@/components/dashboard";
-import { buildSampleLearningSummary } from "@/lib/analytics/sample-data";
+import { buildLearningSummaryFromRepository } from "@/lib/analytics";
+import { populateSampleHistory } from "@/lib/analytics/sample-data";
+import { MemoryLearningHistoryRepository } from "@/lib/history";
 
 export default function DashboardPage() {
-  const summary = buildSampleLearningSummary();
+  const repository = new MemoryLearningHistoryRepository();
+  populateSampleHistory(repository);
+  const summary = buildLearningSummaryFromRepository(repository);
 
   return (
     <main className="page">

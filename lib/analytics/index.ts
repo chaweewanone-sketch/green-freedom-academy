@@ -8,4 +8,4 @@ export {
   normalizeAssessmentResult,
   normalizeFlashCardResult,
 } from "./aggregate";
-export { buildLearningSummary } from "./summary";
+export { buildLearningSummary, buildLearningSummaryFromRepository } from "./summary";

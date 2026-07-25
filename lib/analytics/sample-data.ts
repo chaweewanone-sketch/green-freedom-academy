@@ -1,4 +1,5 @@
 import type { LearningSummary } from "@/types/analytics";
+import type { LearningHistoryRepository } from "@/types/history";
 import type { AssessmentResult } from "@/types/assessment-result";
 import type { FlashCardResult } from "@/types/recall";
 import {
@@ -97,4 +98,12 @@ export function buildSampleLearningEvents() {
 
 export function buildSampleLearningSummary(): LearningSummary {
   return buildLearningSummary(buildSampleLearningEvents());
+}
+
+export function populateSampleHistory(
+  repository: LearningHistoryRepository,
+): void {
+  for (const event of buildSampleLearningEvents()) {
+    repository.save(event);
+  }
 }

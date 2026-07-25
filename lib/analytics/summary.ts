@@ -2,6 +2,7 @@ import type {
   AggregatableLearningEvent,
   LearningSummary,
 } from "@/types/analytics";
+import type { LearningHistoryRepository } from "@/types/history";
 
 function averageScore(values: number[]): number {
   if (values.length === 0) {
@@ -61,4 +62,12 @@ export function buildLearningSummary(
     latestActivity: latestEvent?.activity,
     latestLesson: latestEvent?.lessonSlug,
   };
+}
+
+export function buildLearningSummaryFromRepository(
+  repository: LearningHistoryRepository,
+): LearningSummary {
+  return buildLearningSummary(
+    repository.getAll() as AggregatableLearningEvent[],
+  );
 }

@@ -34,6 +34,7 @@ types/
   assessment-result.ts   # Correctness-based result (Quiz)
   recall.ts              # Self-rated recall result (Flash Cards)
   analytics.ts           # LearningEvent, LearningSummary
+  history.ts             # LearningHistoryRepository interface
 
 lib/
   lessons/               # Lesson Registry
@@ -46,6 +47,10 @@ lib/
   analytics/             # Pure aggregation — normalize results → LearningSummary
     aggregate.ts
     summary.ts
+    index.ts
+  history/               # Learning history repository (in-memory v1)
+    memoryRepository.ts
+    verification.ts
     index.ts
   activities/
 
@@ -176,21 +181,30 @@ Future analytics may normalize both types; that is outside current scope.
 ## Analytics flow
 
 ```
-Activity UI → Activity Result → Learning Event → Analytics Engine → Learning Summary
+Activity UI → Activity Result → Learning Event → LearningHistoryRepository → Analytics Engine → Learning Summary
 ```
 
 | Step | Responsibility |
 |------|----------------|
 | Activity Result | `AssessmentResult` or `FlashCardResult` from completed session |
 | Normalization | `normalizeAssessmentResult()` / `normalizeFlashCardResult()` |
-| Aggregation | `buildLearningSummary(events)` — pure function, no side effects |
+| Repository | `LearningHistoryRepository` — single source for historical events |
+| Aggregation | `buildLearningSummary(events)` or `buildLearningSummaryFromRepository(repository)` |
 | Output | `LearningSummary` — counts, averages, flash rating totals, latest activity |
+
+**Why the repository abstraction:**
+
+- Analytics reads history through an interface — not ad-hoc arrays in UI code
+- Swap in-memory storage for a real database later without changing `buildLearningSummary()`
+- Page-level composition creates and populates repositories; React components stay presentation-only
 
 **Design rules:**
 
 - Analytics does not depend on any specific activity UI
-- Pure functions only — no React, no state, no persistence
+- Analytics does not instantiate `MemoryLearningHistoryRepository` directly
+- Pure aggregation functions only — no React, no side effects in `buildLearningSummary()`
 - Sample data lives in `lib/analytics/sample-data.ts` (not exported from public API)
+- In-memory repository only — no database, localStorage, or IndexedDB in v1
 - No charts or backend in v1
 
 ### Public API
@@ -198,9 +212,15 @@ Activity UI → Activity Result → Learning Event → Analytics Engine → Lear
 ```typescript
 import {
   buildLearningSummary,
+  buildLearningSummaryFromRepository,
   normalizeAssessmentResult,
   normalizeFlashCardResult,
 } from "@/lib/analytics";
+
+import {
+  MemoryLearningHistoryRepository,
+  type LearningHistoryRepository,
+} from "@/lib/history";
 ```
 
 ---
@@ -208,21 +228,23 @@ import {
 ## Student Dashboard flow
 
 ```
-Activity → Learning Event → Analytics Engine → LearningSummary → StudentDashboard
+Activity → Learning Event → LearningHistoryRepository → Analytics Engine → LearningSummary → StudentDashboard
 ```
 
 | Layer | Responsibility |
 |-------|----------------|
-| Analytics Engine | Normalize and aggregate — `buildLearningSummary()` |
+| LearningHistoryRepository | Stores historical `LearningEvent` records |
+| Analytics Engine | `buildLearningSummaryFromRepository()` |
 | Student Dashboard | Presentation only — renders `LearningSummary` cards |
-| `/dashboard` | Demo page — builds summary from `sample-data.ts` (no persistence) |
+| `/dashboard` | Demo page — creates repository, loads sample events, builds summary |
 
 **Rules:**
 
 - Dashboard must not calculate analytics inside React
 - Dashboard imports `LearningSummary` only — not activity results or sessions
+- Repository creation and population happen at page level only
 - Empty summary shows a friendly empty state
-- No charts, auth, or persistence in v1
+- No charts, auth, or real persistence in v1
 
 ---
 
