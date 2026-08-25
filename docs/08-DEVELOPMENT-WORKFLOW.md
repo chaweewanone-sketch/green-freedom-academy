@@ -49,6 +49,7 @@ npm run dev
 | `/` | Landing page |
 | `/login` | Demo login |
 | `/student` | Student dashboard |
+| `/dashboard` | Learning summary (persisted history) |
 | `/teacher` | Teacher dashboard |
 | `/lesson/present-simple` | Interactive lesson |
 

@@ -12,9 +12,12 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 ### Added
 - Green Freedom Playbook v1.0 in `docs/` (10 documents)
 - Cursor project rule `.cursor/rules/gfa.mdc` (corrected frontmatter, docs references)
+- Persistent learning history repository (`LocalStorageLearningHistoryRepository`) behind the existing `LearningHistoryRepository` contract
+- `createLearningHistoryRepository()` factory: browser → localStorage, SSR/tests → memory
+- Dashboard loads persisted history after mount; sample data seeds only when storage is uninitialized
 
 ### Changed
-- (none to application code)
+- `/dashboard` history flow is client-loaded so events survive browser refresh
 
 ---
 

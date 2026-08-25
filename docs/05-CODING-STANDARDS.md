@@ -102,7 +102,9 @@ Example tone (student dashboard, current):
 ### Current (demo)
 
 - Hardcoded arrays in page files are acceptable for demo data.
-- `localStorage` key: `gfa-demo-role` — if extended, document keys here.
+- `localStorage` keys:
+  - `gfa-demo-role` — demo login role
+  - `gfa.learningHistory.v1` — persisted learning events (`LocalStorageLearningHistoryRepository` only; do not scatter this key)
 
 ### Planned (Supabase)
 

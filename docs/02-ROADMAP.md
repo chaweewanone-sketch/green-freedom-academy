@@ -36,6 +36,7 @@ FUTURE           AI generators, Teacher Studio, Classroom Companion
 | Supabase browser client stub | CURRENT (unused) | `lib/supabase-browser.ts` — not imported anywhere |
 | Database schema SQL | CURRENT (file only) | `supabase/schema.sql` — not applied by app |
 | README local dev + Vercel deploy | CURRENT | Thai instructions |
+| Learning history repository | CURRENT | Memory + browser `localStorage` (`gfa.learningHistory.v1`); no Supabase writes |
 
 **Known gaps in Phase 0:**
 
@@ -58,7 +59,7 @@ FUTURE           AI generators, Teacher Studio, Classroom Companion
 | Server-side Supabase client | PLANNED | Not in repo yet |
 | Auth middleware / route protection | PLANNED | `/student`, `/teacher` currently open |
 | Row Level Security completion | PLANNED | Only `profiles` and `student_progress` have policies today |
-| Student progress persistence | PLANNED | `student_progress` table defined |
+| Student progress persistence | PLANNED | Browser history persists locally today; `student_progress` table still unused |
 | Classroom create / join | PLANNED | `classrooms` table defined; UI button only |
 
 **Exit criteria:** Teacher and student log in with real accounts; lesson completion saves to Supabase; dashboards read live data.

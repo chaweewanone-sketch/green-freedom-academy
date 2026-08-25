@@ -97,6 +97,7 @@ green-freedom-academy-v1/
 | `/login` | Client | None | Demo → `localStorage` |
 | `/student` | Server | None (open) | Hardcoded |
 | `/teacher` | Server | None (open) | Hardcoded |
+| `/dashboard` | Server page + client history view | None | Learning history repository |
 | `/lesson/present-simple` | Client | None | In-memory `useState` |
 
 ---
@@ -121,6 +122,33 @@ green-freedom-academy-v1/
 
 1. Static arrays render stats and student table rows.
 2. "สร้างห้องเรียน" button renders but performs no action.
+
+### Learning history persistence
+
+Learning events flow through a repository abstraction. Analytics reads that interface only — it does not talk to `localStorage` or a backend.
+
+```
+Activity result
+  → LearningEvent
+  → LearningHistoryRepository
+       ├── MemoryLearningHistoryRepository   (SSR / tests)
+       └── LocalStorageLearningHistoryRepository (browser)
+  → buildLearningSummaryFromRepository()
+  → StudentDashboard
+```
+
+| Piece | Role |
+|-------|------|
+| `LearningHistoryRepository` | Contract in `types/history.ts` — `save`, `getAll`, `getByLesson`, `getByActivity`, `getLatest`, `clear` |
+| `MemoryLearningHistoryRepository` | In-memory implementation; used on the server and in tests |
+| `LocalStorageLearningHistoryRepository` | Browser persistence under one versioned key: `gfa.learningHistory.v1` |
+| `createLearningHistoryRepository()` | Browser → localStorage repository; non-browser → memory repository |
+
+**Browser boundary:** `/dashboard` stays a Server Component. `DashboardHistoryView` is a Client Component that creates the repository after mount, so SSR/build never touches `localStorage`. Missing, unreadable, or malformed storage fails safe (empty history) and does not rewrite stored data on read.
+
+**Demo seed:** sample events are written only when the storage key is absent. Clearing history writes an empty snapshot, so refresh does not repopulate sample data.
+
+**Future backend path:** add a Supabase (or API) repository that implements the same `LearningHistoryRepository` contract, then extend the factory. Do not leak storage details into analytics.
 
 ---
 
@@ -192,6 +220,7 @@ See [04-DESIGN-SYSTEM.md](./04-DESIGN-SYSTEM.md) for UI class reference.
 |------|----------------|--------|
 | `app/login/page.tsx` | Yes | Form state, router, localStorage |
 | `app/lesson/present-simple/page.tsx` | Yes | Slide navigation state |
+| `components/dashboard/DashboardHistoryView.tsx` | Yes | Load/save learning history in the browser |
 | All other pages | No | Static/demo rendering |
 
 ---
