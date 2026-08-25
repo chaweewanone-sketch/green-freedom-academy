@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { AssessmentSession } from "@/lib/assessment";
 import type {
   FlashCardResult,
@@ -12,6 +12,7 @@ import type { Question } from "@/types/question";
 
 type FlashCardsGameProps = {
   session: AssessmentSession;
+  onComplete?: (result: FlashCardResult) => void;
 };
 
 type FlashCardsPhase = "intro" | "card" | "summary";
@@ -58,10 +59,11 @@ function ratingPercent(count: number, total: number): number {
   return total > 0 ? Math.round((count / total) * 100) : 0;
 }
 
-export function FlashCardsGame({ session }: FlashCardsGameProps) {
+export function FlashCardsGame({ session, onComplete }: FlashCardsGameProps) {
   const cards = session.questions;
   const totalCards = cards.length;
   const lessonPath = `/lesson/${session.lessonSlug}`;
+  const hasRecordedCompletionRef = useRef(false);
 
   const [phase, setPhase] = useState<FlashCardsPhase>("intro");
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -83,6 +85,7 @@ export function FlashCardsGame({ session }: FlashCardsGameProps) {
     setRevealed(false);
     setReviews([]);
     setResult(null);
+    hasRecordedCompletionRef.current = false;
   }
 
   function restartReview() {
@@ -118,9 +121,16 @@ export function FlashCardsGame({ session }: FlashCardsGameProps) {
     const nextReviews = [...reviews, nextReview];
 
     if (currentIndex >= totalCards - 1) {
+      if (hasRecordedCompletionRef.current) {
+        return;
+      }
+
+      hasRecordedCompletionRef.current = true;
+      const nextResult = buildFlashCardResult(session, nextReviews);
       setReviews(nextReviews);
-      setResult(buildFlashCardResult(session, nextReviews));
+      setResult(nextResult);
       setPhase("summary");
+      onComplete?.(nextResult);
       return;
     }
 

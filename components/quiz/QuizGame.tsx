@@ -1,13 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ChoiceButton } from "@/components/millionaire/ChoiceButton";
+import { buildAssessmentResult } from "@/lib/assessment";
 import type { AssessmentSession } from "@/lib/assessment";
 import type { AssessmentResult } from "@/types/assessment-result";
 
 type QuizGameProps = {
   session: AssessmentSession;
+  onComplete?: (result: AssessmentResult) => void;
 };
 
 type QuizPhase = "intro" | "question" | "result";
@@ -25,29 +27,12 @@ function formatLessonSlug(slug: string): string {
     .join(" ");
 }
 
-function buildAssessmentResult(
-  session: AssessmentSession,
-  correct: number,
-  incorrect: number,
-): AssessmentResult {
-  const total = correct + incorrect;
-
-  return {
-    sessionId: session.sessionId,
-    activity: session.activity,
-    score: correct,
-    correct,
-    incorrect,
-    percentage: total > 0 ? Math.round((correct / total) * 100) : 0,
-    completedAt: Date.now(),
-  };
-}
-
-export function QuizGame({ session }: QuizGameProps) {
+export function QuizGame({ session, onComplete }: QuizGameProps) {
   const questions = session.questions;
   const totalQuestions = questions.length;
   const lessonTitle = formatLessonSlug(session.lessonSlug);
   const lessonPath = `/lesson/${session.lessonSlug}`;
+  const hasRecordedCompletionRef = useRef(false);
 
   const [phase, setPhase] = useState<QuizPhase>("intro");
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -75,6 +60,7 @@ export function QuizGame({ session }: QuizGameProps) {
     setSelectedChoiceId(null);
     setRevealed(false);
     setResult(null);
+    hasRecordedCompletionRef.current = false;
   }
 
   function restartQuiz() {
@@ -105,8 +91,19 @@ export function QuizGame({ session }: QuizGameProps) {
     if (!revealed || !currentQuestion) return;
 
     if (currentIndex >= totalQuestions - 1) {
-      setResult(buildAssessmentResult(session, correctCount, incorrectCount));
+      if (hasRecordedCompletionRef.current) {
+        return;
+      }
+
+      hasRecordedCompletionRef.current = true;
+      const nextResult = buildAssessmentResult(
+        session,
+        correctCount,
+        incorrectCount,
+      );
+      setResult(nextResult);
       setPhase("result");
+      onComplete?.(nextResult);
       return;
     }
 

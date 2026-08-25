@@ -37,12 +37,14 @@ FUTURE           AI generators, Teacher Studio, Classroom Companion
 | Database schema SQL | CURRENT (file only) | `supabase/schema.sql` — not applied by app |
 | README local dev + Vercel deploy | CURRENT | Thai instructions |
 | Learning history repository | CURRENT | Memory + browser `localStorage` (`gfa.learningHistory.v1`); no Supabase writes |
+| Activity completion recording | CURRENT | Completed quiz, millionaire, and flash-cards save `LearningEvent`s through the history repository |
 
 **Known gaps in Phase 0:**
 
 - Demo role in `localStorage` is written but never read for route guards.
 - Practice and Game links show "ยังล็อก" (locked) — no routes or logic exist.
 - Teacher "สร้างห้องเรียน" button has no handler.
+- Coming-soon activities (matching, monopoly, spin-wheel, sentence-builder) have no completion recording yet.
 
 ---
 
@@ -59,7 +61,7 @@ FUTURE           AI generators, Teacher Studio, Classroom Companion
 | Server-side Supabase client | PLANNED | Not in repo yet |
 | Auth middleware / route protection | PLANNED | `/student`, `/teacher` currently open |
 | Row Level Security completion | PLANNED | Only `profiles` and `student_progress` have policies today |
-| Student progress persistence | PLANNED | Browser history persists locally today; `student_progress` table still unused |
+| Student progress persistence | PLANNED | Completed quiz / millionaire / flash-cards persist in the browser today; `student_progress` table still unused |
 | Classroom create / join | PLANNED | `classrooms` table defined; UI button only |
 
 **Exit criteria:** Teacher and student log in with real accounts; lesson completion saves to Supabase; dashboards read live data.

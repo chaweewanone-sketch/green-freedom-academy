@@ -52,6 +52,15 @@ npm run dev
 | `/dashboard` | Learning summary (persisted history) |
 | `/teacher` | Teacher dashboard |
 | `/lesson/present-simple` | Interactive lesson |
+| `/lesson/present-simple/activity/quiz` | Quiz — completion writes learning history |
+| `/lesson/present-simple/activity/millionaire` | Millionaire Challenge — completion writes learning history |
+| `/lesson/present-simple/activity/flash-cards` | Flash Cards — completion writes learning history |
+
+History / completion verification (no test runner yet):
+
+```bash
+npx tsx lib/history/runVerification.ts
+```
 
 ---
 
@@ -158,7 +167,7 @@ Documented in `README.md`:
 |-------|-------|
 | Build fails | TypeScript errors in terminal output; fix strict mode issues |
 | Blank Supabase behavior | Expected — client unused until Phase 1 |
-| Progress not saved | Expected — client state only in demo |
+| Progress not saved | Lesson slides are still in-memory. Quiz, millionaire, and flash-cards persist locally after completion. |
 | Styles missing | `app/layout.tsx` imports `./globals.css` |
 | Port in use | Run `npm run dev -- -p 3001` |
 

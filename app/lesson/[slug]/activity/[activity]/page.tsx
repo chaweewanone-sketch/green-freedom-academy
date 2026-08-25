@@ -1,8 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { FlashCardsGame } from "@/components/flash-cards";
-import { MillionaireGame } from "@/components/millionaire";
-import { QuizGame } from "@/components/quiz";
+import { StudentActivityPlayer } from "@/components/activities";
 import { createAssessmentSession } from "@/lib/assessment";
 import { getLearningActivities } from "@/lib/activities";
 import { getLessonBySlug } from "@/lib/lessons";
@@ -11,6 +9,14 @@ import type { ActivityStatus } from "@/types/activity";
 type ActivityPageProps = {
   params: Promise<{ slug: string; activity: string }>;
 };
+
+const recordedActivities = ["millionaire", "quiz", "flash-cards"] as const;
+
+function isRecordedActivity(
+  activityId: string,
+): activityId is (typeof recordedActivities)[number] {
+  return recordedActivities.some((item) => item === activityId);
+}
 
 const statusLabels: Record<ActivityStatus, string> = {
   available: "Available",
@@ -31,36 +37,16 @@ export default async function ActivityPage({ params }: ActivityPageProps) {
     notFound();
   }
 
-  if (activityId === "millionaire") {
-    const session = createAssessmentSession(lesson, "millionaire");
+  if (isRecordedActivity(activityId)) {
+    const session = createAssessmentSession(lesson, activityId);
 
     return (
       <main className="page">
-        <MillionaireGame
+        <StudentActivityPlayer
           session={session}
           lessonTitle={lesson.title}
           lessonPath={`/lesson/${slug}`}
         />
-      </main>
-    );
-  }
-
-  if (activityId === "quiz") {
-    const session = createAssessmentSession(lesson, "quiz");
-
-    return (
-      <main className="page">
-        <QuizGame session={session} />
-      </main>
-    );
-  }
-
-  if (activityId === "flash-cards") {
-    const session = createAssessmentSession(lesson, "flash-cards");
-
-    return (
-      <main className="page">
-        <FlashCardsGame session={session} />
       </main>
     );
   }

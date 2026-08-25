@@ -1,15 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ProgressBar } from "./ProgressBar";
 import { QuestionCard } from "./QuestionCard";
 import { ResultPanel } from "./ResultPanel";
+import { buildAssessmentResult } from "@/lib/assessment";
 import type { AssessmentSession } from "@/lib/assessment";
+import type { AssessmentResult } from "@/types/assessment-result";
 
 type MillionaireGameProps = {
   session: AssessmentSession;
   lessonTitle: string;
   lessonPath: string;
+  onComplete?: (result: AssessmentResult) => void;
 };
 
 type GamePhase = "start" | "playing" | "result";
@@ -18,9 +21,11 @@ export function MillionaireGame({
   session,
   lessonTitle,
   lessonPath,
+  onComplete,
 }: MillionaireGameProps) {
   const gameQuestions = session.questions;
   const totalQuestions = gameQuestions.length;
+  const hasRecordedCompletionRef = useRef(false);
 
   const [phase, setPhase] = useState<GamePhase>("start");
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -36,6 +41,7 @@ export function MillionaireGame({
     setScore(0);
     setSelectedChoiceId(null);
     setRevealed(false);
+    hasRecordedCompletionRef.current = false;
   }
 
   function restartGame() {
@@ -59,6 +65,11 @@ export function MillionaireGame({
     window.setTimeout(() => {
       if (currentIndex >= totalQuestions - 1) {
         setScore(nextScore);
+        if (!hasRecordedCompletionRef.current) {
+          hasRecordedCompletionRef.current = true;
+          const incorrect = totalQuestions - nextScore;
+          onComplete?.(buildAssessmentResult(session, nextScore, incorrect));
+        }
         setPhase("result");
         return;
       }

@@ -98,7 +98,8 @@ green-freedom-academy-v1/
 | `/student` | Server | None (open) | Hardcoded |
 | `/teacher` | Server | None (open) | Hardcoded |
 | `/dashboard` | Server page + client history view | None | Learning history repository |
-| `/lesson/present-simple` | Client | None | In-memory `useState` |
+| `/lesson/[slug]` | Client lesson viewer | None | In-memory lesson state |
+| `/lesson/[slug]/activity/[activity]` | Server page + client player | None | Assessment session; completed quiz / millionaire / flash-cards persist via history repository |
 
 ---
 
@@ -125,20 +126,25 @@ green-freedom-academy-v1/
 
 ### Learning history persistence
 
-Learning events flow through a repository abstraction. Analytics reads that interface only — it does not talk to `localStorage` or a backend.
+Completed student activities are adapted into `LearningEvent`s and saved through the repository. Analytics and the dashboard never talk to `localStorage` or a backend.
 
 ```
-Activity result
+Activity UI
+  → Activity Engine (quiz / millionaire / flash-cards)
+  → ActivityResult (AssessmentResult | FlashCardResult)
+  → recordActivityCompletion()
   → LearningEvent
   → LearningHistoryRepository
        ├── MemoryLearningHistoryRepository   (SSR / tests)
        └── LocalStorageLearningHistoryRepository (browser)
-  → buildLearningSummaryFromRepository()
-  → StudentDashboard
+  → Analytics
+  → Student Dashboard
 ```
 
 | Piece | Role |
 |-------|------|
+| `recordActivityCompletion()` | Shared completion recorder in `lib/history/recordActivityCompletion.ts`. Persists only completed results. Dedupes identical `sessionId` + `completedAt` callbacks/rerenders. New attempts with a new timestamp save a new event. |
+| `StudentActivityPlayer` | Client boundary that wires `onComplete` for implemented activities. Engines stay reusable and do not import the repository. |
 | `LearningHistoryRepository` | Contract in `types/history.ts` — `save`, `getAll`, `getByLesson`, `getByActivity`, `getLatest`, `clear` |
 | `MemoryLearningHistoryRepository` | In-memory implementation; used on the server and in tests |
 | `LocalStorageLearningHistoryRepository` | Browser persistence under one versioned key: `gfa.learningHistory.v1` |
@@ -146,9 +152,13 @@ Activity result
 
 **Browser boundary:** `/dashboard` stays a Server Component. `DashboardHistoryView` is a Client Component that creates the repository after mount, so SSR/build never touches `localStorage`. Missing, unreadable, or malformed storage fails safe (empty history) and does not rewrite stored data on read.
 
-**Demo seed:** sample events are written only when the storage key is absent. Clearing history writes an empty snapshot, so refresh does not repopulate sample data.
+**Demo seed:** sample events are written only when the storage key is absent. Completing a real activity writes the key, so a later dashboard visit does not overwrite real history with sample data. Clearing history writes an empty snapshot, so refresh does not repopulate sample data.
 
-**Future backend path:** add a Supabase (or API) repository that implements the same `LearningHistoryRepository` contract, then extend the factory. Do not leak storage details into analytics.
+**Current persistence:** browser `localStorage` via `LocalStorageLearningHistoryRepository`. Backend/Supabase persistence is deferred.
+
+**Not yet wired:** matching, monopoly, spin-wheel, sentence-builder, and lesson-slide completion.
+
+**Future backend path:** add a Supabase (or API) repository that implements the same `LearningHistoryRepository` contract, then extend the factory. Do not leak storage details into analytics or activity engines.
 
 ---
 
@@ -219,7 +229,7 @@ See [04-DESIGN-SYSTEM.md](./04-DESIGN-SYSTEM.md) for UI class reference.
 | File | `"use client"` | Reason |
 |------|----------------|--------|
 | `app/login/page.tsx` | Yes | Form state, router, localStorage |
-| `app/lesson/present-simple/page.tsx` | Yes | Slide navigation state |
+| `components/activities/StudentActivityPlayer.tsx` | Yes | Record completed activities in the browser |
 | `components/dashboard/DashboardHistoryView.tsx` | Yes | Load/save learning history in the browser |
 | All other pages | No | Static/demo rendering |
 
