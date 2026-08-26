@@ -49,7 +49,7 @@ npm run dev
 | `/` | Landing page |
 | `/login` | Demo login |
 | `/student` | Student dashboard |
-| `/dashboard` | Real history, curriculum progress, journey stage, and next-step CTAs |
+| `/dashboard` | Real history, resume CTA, curriculum progress, journey stage, and next-step guidance |
 | `/teacher` | Teacher dashboard |
 | `/lesson/present-simple` | Interactive lesson (first curriculum lesson) |
 | `/lesson/past-simple` | Interactive lesson (next / currently final curriculum lesson) |
@@ -57,7 +57,7 @@ npm run dev
 | `/lesson/present-simple/activity/millionaire` | Millionaire Challenge — completion writes learning history |
 | `/lesson/present-simple/activity/flash-cards` | Flash Cards — completion writes learning history |
 
-History / completion / journey / active-lesson / recommendation / curriculum-progress verification (no test runner yet):
+History / completion / journey / active-lesson / recommendation / curriculum-progress / resume-learning verification (no test runner yet):
 
 ```bash
 npx tsx lib/history/runVerification.ts

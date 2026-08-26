@@ -145,11 +145,12 @@ Activity UI
     → Active Lesson Resolver (`resolveActiveLesson`)
          ├── Journey Engine (`buildLearningJourney`)           // current stage
          ├── Recommendation Engine (`buildLearningRecommendation`) // next action
-         └── Curriculum Progress (`buildCurriculumProgress`)   // overview
-              → CurriculumProgressCard / JourneyCard / RecommendationCard
+         ├── Curriculum Progress (`buildCurriculumProgress`)   // overview
+         └── Resume Learning (`buildResumeLearning`)           // return-and-continue CTA
+              → ResumeLearningCard / CurriculumProgressCard / JourneyCard / RecommendationCard
 ```
 
-Curriculum Progress = ภาพรวมหลักสูตร. Journey = ตอนนี้อยู่ขั้นไหน. Recommendation = ควรทำอะไรต่อ. Progress is deterministic v1, not predictive AI, not access control, and not backend state. LOCKED is display-only; later-lesson history is kept.
+Resume Learning is a deterministic action-oriented projection of existing Recommendation + active lesson. It is not another scoring engine, not persistence, not auth, and not AI.
 
 | Piece | Role |
 |-------|------|
@@ -167,6 +168,7 @@ Curriculum Progress = ภาพรวมหลักสูตร. Journey = ต�
 | `resolveActiveLesson()` | First curriculum lesson that is not COMPLETE. If all are complete, returns the final lesson with `isCurriculumComplete`. Does not read `localStorage` or the repository. |
 | `buildLearningJourney()` | Uses the active curriculum lesson when events are provided. Stage mapping stays LEARN→lesson, PRACTICE→Quiz, PLAY→Millionaire, REVIEW→Flash Cards or Quiz by `reasonCode`. All lessons complete → `/dashboard`. Separate from recommendation. |
 | `buildCurriculumProgress()` | Dashboard overview: each curriculum lesson is COMPLETE, ACTIVE, or LOCKED. Overall % is the unweighted average of per-lesson `progressPercent`. LOCKED lessons contribute 0 even if out-of-order history exists. Display only — does not block routes. |
+| `buildResumeLearning()` | One primary “return and continue” action. Reuses `buildLearningRecommendation` href/lesson and `resolveActiveLesson`. Does not score activities. |
 
 **Browser boundary:** `/dashboard` stays a Server Component. `DashboardHistoryView` is a Client Component that creates the repository after mount, so SSR/build never touches `localStorage`. Missing, unreadable, or malformed storage fails safe (empty history) and does not rewrite stored data on read.
 

@@ -13,6 +13,9 @@ export type {
   LearningSummary,
   RecommendationKind,
   RecommendationReasonCode,
+  ResumeLearning,
+  ResumeLearningAction,
+  ResumeLearningActionType,
 } from "@/types/analytics";
 export {
   normalizeActivityResult,
@@ -42,6 +45,10 @@ export {
   RECOMMENDATION_THRESHOLDS,
   buildLearningRecommendation,
 } from "./recommendation";
+export {
+  buildResumeLearning,
+  isKnownResumeHref,
+} from "./resumeLearning";
 export {
   buildLearningSummary,
   buildLearningSummaryForLesson,

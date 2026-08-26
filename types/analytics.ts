@@ -118,3 +118,25 @@ export type CurriculumProgress = {
   activeLessonSlug?: string;
   isCurriculumComplete: boolean;
 };
+
+export type ResumeLearningActionType =
+  | "LEARN"
+  | "PRACTICE"
+  | "PLAY"
+  | "REVIEW"
+  | "NEXT_LESSON"
+  | "SUMMARY";
+
+export type ResumeLearningAction = {
+  lessonSlug: string;
+  lessonTitle: string;
+  label: string;
+  href: string;
+  actionType: ResumeLearningActionType;
+};
+
+export type ResumeLearning = {
+  title: string;
+  description: string;
+  action: ResumeLearningAction;
+};

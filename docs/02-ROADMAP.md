@@ -42,6 +42,7 @@ FUTURE           AI generators, Teacher Studio, Classroom Companion
 | Learning path recommendation | CURRENT | Deterministic next-best-action for the active curriculum lesson (not latest activity) |
 | Learning journey / progression | CURRENT | Curriculum-order active lesson (not latest activity) with per-lesson Learn → Practice → Play → Review → Complete |
 | Curriculum progress dashboard | CURRENT | Deterministic per-lesson status + overall average progress on `/dashboard` (display only, not access control) |
+| Resume learning | CURRENT | One primary dashboard CTA projected from curriculum-aware Recommendation |
 
 **Known gaps in Phase 0:**
 

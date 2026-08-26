@@ -22,6 +22,7 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Deterministic active-lesson resolver (`resolveActiveLesson`) so Journey follows curriculum completion order, not latest activity timestamp
 - Curriculum-aware recommendation (`buildLearningRecommendation(summary, events?)`) so next-best-action uses the active curriculum lesson, not latest activity
 - Curriculum progress overview (`buildCurriculumProgress`) on the student dashboard: complete / active / locked lessons and an unweighted overall percent
+- Resume Learning (`buildResumeLearning`) — one primary return-and-continue CTA projected from curriculum-aware Recommendation
 
 ### Changed
 - `/dashboard` history flow is client-loaded so events survive browser refresh
@@ -30,6 +31,7 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Student dashboard shows one next-step CTA from v1 recommendation policy thresholds scoped to the active curriculum lesson
 - Student dashboard shows a current-stage journey card with a primary Next.js Link CTA to the next real lesson, Quiz, Millionaire, Flash Cards, next curriculum lesson, or dashboard route
 - Student dashboard shows a curriculum progress section (ความก้าวหน้าหลักสูตร) with per-lesson status and overall percent
+- Student dashboard shows a compact Resume Learning card as the fastest continue CTA, separate from Journey and Recommendation
 
 ---
 
