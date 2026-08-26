@@ -1,5 +1,8 @@
 export type {
   AggregatableLearningEvent,
+  CurriculumLessonProgress,
+  CurriculumLessonStatus,
+  CurriculumProgress,
   JourneyAction,
   JourneyActionType,
   JourneyReasonCode,
@@ -30,6 +33,10 @@ export {
   resolveActiveLesson,
   type ActiveLessonResolution,
 } from "./activeLesson";
+export {
+  CURRICULUM_LESSON_STATUS_LABELS,
+  buildCurriculumProgress,
+} from "./curriculumProgress";
 export {
   DEFAULT_RECOMMENDATION_LESSON_SLUG,
   RECOMMENDATION_THRESHOLDS,

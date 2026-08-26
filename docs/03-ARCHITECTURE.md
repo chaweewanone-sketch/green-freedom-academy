@@ -142,15 +142,14 @@ Activity UI
 
   Learning History
     → Per-Lesson Evaluation (`evaluateLessonJourney` / `isLessonComplete`)
-    → Curriculum Completion State
     → Active Lesson Resolver (`resolveActiveLesson`)
-         ├── Journey Engine (`buildLearningJourney`)     // current curriculum stage
-         └── Recommendation Engine (`buildLearningRecommendation`) // next best action
-              → JourneyCard / RecommendationCard
-              → shared route helpers (`lib/routes.ts`)
+         ├── Journey Engine (`buildLearningJourney`)           // current stage
+         ├── Recommendation Engine (`buildLearningRecommendation`) // next action
+         └── Curriculum Progress (`buildCurriculumProgress`)   // overview
+              → CurriculumProgressCard / JourneyCard / RecommendationCard
 ```
 
-Journey = current curriculum stage. Recommendation = next best action within the active curriculum lesson. They stay separate engines and both reuse `resolveActiveLesson`. `latestActivity` remains dashboard analytics only.
+Curriculum Progress = ภาพรวมหลักสูตร. Journey = ตอนนี้อยู่ขั้นไหน. Recommendation = ควรทำอะไรต่อ. Progress is deterministic v1, not predictive AI, not access control, and not backend state. LOCKED is display-only; later-lesson history is kept.
 
 | Piece | Role |
 |-------|------|
@@ -167,6 +166,7 @@ Journey = current curriculum stage. Recommendation = next best action within the
 | `isLessonComplete()` | Same COMPLETE policy as the Journey Engine (strong Millionaire, no weak flash override). |
 | `resolveActiveLesson()` | First curriculum lesson that is not COMPLETE. If all are complete, returns the final lesson with `isCurriculumComplete`. Does not read `localStorage` or the repository. |
 | `buildLearningJourney()` | Uses the active curriculum lesson when events are provided. Stage mapping stays LEARN→lesson, PRACTICE→Quiz, PLAY→Millionaire, REVIEW→Flash Cards or Quiz by `reasonCode`. All lessons complete → `/dashboard`. Separate from recommendation. |
+| `buildCurriculumProgress()` | Dashboard overview: each curriculum lesson is COMPLETE, ACTIVE, or LOCKED. Overall % is the unweighted average of per-lesson `progressPercent`. LOCKED lessons contribute 0 even if out-of-order history exists. Display only — does not block routes. |
 
 **Browser boundary:** `/dashboard` stays a Server Component. `DashboardHistoryView` is a Client Component that creates the repository after mount, so SSR/build never touches `localStorage`. Missing, unreadable, or malformed storage fails safe (empty history) and does not rewrite stored data on read.
 

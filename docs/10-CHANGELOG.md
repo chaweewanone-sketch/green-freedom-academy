@@ -21,6 +21,7 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Deterministic multi-lesson curriculum order from the existing lesson registry (Present Simple → Past Simple), with per-lesson journey stages and a next-lesson CTA after COMPLETE
 - Deterministic active-lesson resolver (`resolveActiveLesson`) so Journey follows curriculum completion order, not latest activity timestamp
 - Curriculum-aware recommendation (`buildLearningRecommendation(summary, events?)`) so next-best-action uses the active curriculum lesson, not latest activity
+- Curriculum progress overview (`buildCurriculumProgress`) on the student dashboard: complete / active / locked lessons and an unweighted overall percent
 
 ### Changed
 - `/dashboard` history flow is client-loaded so events survive browser refresh
@@ -28,7 +29,7 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Completed student activities write learning history through `StudentActivityPlayer` without changing scoring rules
 - Student dashboard shows one next-step CTA from v1 recommendation policy thresholds scoped to the active curriculum lesson
 - Student dashboard shows a current-stage journey card with a primary Next.js Link CTA to the next real lesson, Quiz, Millionaire, Flash Cards, next curriculum lesson, or dashboard route
-- JourneyCard labels the curriculum active lesson as บทเรียนปัจจุบัน, separate from กิจกรรมล่าสุด
+- Student dashboard shows a curriculum progress section (ความก้าวหน้าหลักสูตร) with per-lesson status and overall percent
 
 ---
 

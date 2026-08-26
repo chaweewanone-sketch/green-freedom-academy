@@ -1,4 +1,5 @@
 import { runActiveLessonVerification } from "@/lib/analytics/activeLessonVerification";
+import { runCurriculumProgressVerification } from "@/lib/analytics/curriculumProgressVerification";
 import { runJourneyCurriculumVerification } from "@/lib/analytics/journeyCurriculumVerification";
 import { runJourneyActionVerification, runJourneyVerification } from "@/lib/analytics/journeyVerification";
 import { runRecommendationCurriculumVerification } from "@/lib/analytics/recommendationCurriculumVerification";
@@ -33,3 +34,6 @@ console.log("active lesson verification passed");
 
 runRecommendationCurriculumVerification();
 console.log("recommendation curriculum verification passed");
+
+runCurriculumProgressVerification();
+console.log("curriculum progress verification passed");

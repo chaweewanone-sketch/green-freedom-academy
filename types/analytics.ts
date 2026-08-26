@@ -99,3 +99,22 @@ export type AggregatableLearningEvent = LearningEvent & {
   flashMedium?: number;
   flashHard?: number;
 };
+
+export type CurriculumLessonStatus = "ACTIVE" | "COMPLETE" | "LOCKED";
+
+export type CurriculumLessonProgress = {
+  lessonSlug: string;
+  lessonTitle: string;
+  status: CurriculumLessonStatus;
+  stage: LearningJourneyStage;
+  progressPercent: number;
+};
+
+export type CurriculumProgress = {
+  lessons: CurriculumLessonProgress[];
+  completedLessons: number;
+  totalLessons: number;
+  overallProgressPercent: number;
+  activeLessonSlug?: string;
+  isCurriculumComplete: boolean;
+};
