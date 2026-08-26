@@ -49,7 +49,7 @@ npm run dev
 | `/` | Landing page |
 | `/login` | Demo login |
 | `/student` | Student dashboard |
-| `/dashboard` | Learning summary from real persisted history, plus a deterministic next-step recommendation |
+| `/dashboard` | Real history, journey stage, and next-step recommendation |
 | `/teacher` | Teacher dashboard |
 | `/lesson/present-simple` | Interactive lesson |
 | `/lesson/present-simple/activity/quiz` | Quiz — completion writes learning history |

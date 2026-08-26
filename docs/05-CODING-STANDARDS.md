@@ -108,6 +108,7 @@ Example tone (student dashboard, current):
 - Activity engines and analytics must not call `localStorage` — persist through `recordActivityCompletion()` / `LearningHistoryRepository`
 - `/dashboard` must not auto-seed sample history; it reads the repository through `loadDashboardHistory()`
 - Next-best-action copy comes from `buildLearningRecommendation(summary)` — do not read `localStorage` in the recommendation engine
+- Current-stage copy comes from `buildLearningJourney(summary)` — keep journey and recommendation as separate engines
 
 ### Planned (Supabase)
 

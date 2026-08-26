@@ -1,5 +1,7 @@
 import type { LearningSummary } from "@/types/analytics";
+import { buildLearningJourney } from "@/lib/analytics/journey";
 import { buildLearningRecommendation } from "@/lib/analytics/recommendation";
+import { JourneyCard } from "./JourneyCard";
 import { RecommendationCard } from "./RecommendationCard";
 
 type StudentDashboardProps = {
@@ -30,6 +32,7 @@ function formatScore(value: number): string {
 }
 
 export function StudentDashboard({ summary }: StudentDashboardProps) {
+  const journey = buildLearningJourney(summary);
   const recommendation = buildLearningRecommendation(summary);
 
   if (summary.totalActivities === 0) {
@@ -42,6 +45,7 @@ export function StudentDashboard({ summary }: StudentDashboardProps) {
             เริ่มทำ Quiz, Millionaire หรือ Flash Cards เพื่อดูสรุปการเรียนที่นี่
           </p>
         </section>
+        <JourneyCard journey={journey} />
         <RecommendationCard recommendation={recommendation} />
       </>
     );
@@ -80,6 +84,8 @@ export function StudentDashboard({ summary }: StudentDashboardProps) {
           <p>ภาพรวมกิจกรรมและความก้าวหน้าจาก Analytics</p>
         </div>
       </section>
+
+      <JourneyCard journey={journey} />
 
       <RecommendationCard recommendation={recommendation} />
 

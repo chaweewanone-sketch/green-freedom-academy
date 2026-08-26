@@ -50,6 +50,35 @@ export type LearningRecommendation = {
   reasonCode: RecommendationReasonCode;
 };
 
+export type LearningJourneyStage =
+  | "LEARN"
+  | "PRACTICE"
+  | "PLAY"
+  | "REVIEW"
+  | "COMPLETE";
+
+export type JourneyReasonCode =
+  | "EMPTY_HISTORY"
+  | "QUIZ_WEAK"
+  | "QUIZ_DEVELOPING"
+  | "QUIZ_STRONG"
+  | "MILLIONAIRE_WEAK"
+  | "MILLIONAIRE_DEVELOPING"
+  | "MILLIONAIRE_STRONG"
+  | "FLASH_WEAK_OVERRIDE"
+  | "FALLBACK_LEARN";
+
+export type LearningJourney = {
+  lessonSlug: string;
+  stage: LearningJourneyStage;
+  title: string;
+  message: string;
+  progressPercent: number;
+  nextHref?: string;
+  ctaLabel?: string;
+  reasonCode: JourneyReasonCode;
+};
+
 export type AggregatableLearningEvent = LearningEvent & {
   scorePercentage?: number;
   flashEasy?: number;

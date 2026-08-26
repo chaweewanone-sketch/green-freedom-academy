@@ -1,3 +1,4 @@
+import { runJourneyVerification } from "@/lib/analytics/journeyVerification";
 import { runRecommendationVerification } from "@/lib/analytics/recommendationVerification";
 import { runCompletionVerification } from "./completionVerification";
 import { runDashboardVerification } from "./dashboardVerification";
@@ -14,3 +15,6 @@ console.log("dashboard verification passed");
 
 runRecommendationVerification();
 console.log("recommendation verification passed");
+
+runJourneyVerification();
+console.log("journey verification passed");

@@ -1,6 +1,9 @@
 export type {
   AggregatableLearningEvent,
+  JourneyReasonCode,
   LearningEvent,
+  LearningJourney,
+  LearningJourneyStage,
   LearningRecommendation,
   LearningSummary,
   RecommendationKind,
@@ -11,6 +14,14 @@ export {
   normalizeAssessmentResult,
   normalizeFlashCardResult,
 } from "./aggregate";
+export {
+  DEFAULT_JOURNEY_LESSON_SLUG,
+  JOURNEY_PROGRESS,
+  JOURNEY_STAGE_LABELS,
+  JOURNEY_THRESHOLDS,
+  JOURNEY_TRACK,
+  buildLearningJourney,
+} from "./journey";
 export {
   DEFAULT_RECOMMENDATION_LESSON_SLUG,
   RECOMMENDATION_THRESHOLDS,

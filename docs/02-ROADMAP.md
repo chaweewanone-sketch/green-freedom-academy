@@ -40,6 +40,7 @@ FUTURE           AI generators, Teacher Studio, Classroom Companion
 | Activity completion recording | CURRENT | Completed quiz, millionaire, and flash-cards save `LearningEvent`s through the history repository |
 | Student dashboard history | CURRENT | `/dashboard` reads real persisted events only; no automatic sample seeding |
 | Learning path recommendation | CURRENT | Deterministic v1 rules on `LearningSummary` (not AI/LLM); dashboard CTA only |
+| Learning journey / progression | CURRENT | Deterministic Present Simple path Learn → Practice → Play → Review → Complete |
 
 **Known gaps in Phase 0:**
 
