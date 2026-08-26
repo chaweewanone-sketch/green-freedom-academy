@@ -107,6 +107,7 @@ Example tone (student dashboard, current):
   - `gfa.learningHistory.v1` — persisted learning events (`LocalStorageLearningHistoryRepository` only; do not scatter this key)
 - Activity engines and analytics must not call `localStorage` — persist through `recordActivityCompletion()` / `LearningHistoryRepository`
 - `/dashboard` must not auto-seed sample history; it reads the repository through `loadDashboardHistory()`
+- Next-best-action copy comes from `buildLearningRecommendation(summary)` — do not read `localStorage` in the recommendation engine
 
 ### Planned (Supabase)
 

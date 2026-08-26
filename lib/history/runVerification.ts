@@ -1,3 +1,4 @@
+import { runRecommendationVerification } from "@/lib/analytics/recommendationVerification";
 import { runCompletionVerification } from "./completionVerification";
 import { runDashboardVerification } from "./dashboardVerification";
 import { runHistoryVerification } from "./verification";
@@ -10,3 +11,6 @@ console.log("completion verification passed");
 
 runDashboardVerification();
 console.log("dashboard verification passed");
+
+runRecommendationVerification();
+console.log("recommendation verification passed");

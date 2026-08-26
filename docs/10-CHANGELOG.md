@@ -16,11 +16,13 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - `createLearningHistoryRepository()` factory: browser → localStorage, SSR/tests → memory
 - Dashboard loads persisted history after mount with no automatic sample seeding
 - `recordActivityCompletion()` maps completed quiz, millionaire, and flash-cards results into `LearningEvent`s and saves through the history repository
+- Deterministic learning-path recommendation v1 (`buildLearningRecommendation`) from real `LearningSummary` — no AI/LLM and no backend personalization
 
 ### Changed
 - `/dashboard` history flow is client-loaded so events survive browser refresh
 - `/dashboard` no longer auto-seeds sample learning events; it shows only real completions or the empty state
 - Completed student activities write learning history through `StudentActivityPlayer` without changing scoring rules
+- Student dashboard shows one next-step CTA from v1 recommendation policy thresholds (not learned parameters)
 
 ---
 

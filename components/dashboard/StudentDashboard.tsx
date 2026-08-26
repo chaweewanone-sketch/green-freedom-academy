@@ -1,4 +1,6 @@
 import type { LearningSummary } from "@/types/analytics";
+import { buildLearningRecommendation } from "@/lib/analytics/recommendation";
+import { RecommendationCard } from "./RecommendationCard";
 
 type StudentDashboardProps = {
   summary: LearningSummary;
@@ -28,15 +30,20 @@ function formatScore(value: number): string {
 }
 
 export function StudentDashboard({ summary }: StudentDashboardProps) {
+  const recommendation = buildLearningRecommendation(summary);
+
   if (summary.totalActivities === 0) {
     return (
-      <section className="panel studentDashboardEmpty">
-        <span className="eyebrow">LEARNING SUMMARY</span>
-        <h2>ยังไม่มีกิจกรรมการเรียน</h2>
-        <p className="studentDashboardEmptyMessage">
-          เริ่มทำ Quiz, Millionaire หรือ Flash Cards เพื่อดูสรุปการเรียนที่นี่
-        </p>
-      </section>
+      <>
+        <section className="panel studentDashboardEmpty">
+          <span className="eyebrow">LEARNING SUMMARY</span>
+          <h2>ยังไม่มีกิจกรรมการเรียน</h2>
+          <p className="studentDashboardEmptyMessage">
+            เริ่มทำ Quiz, Millionaire หรือ Flash Cards เพื่อดูสรุปการเรียนที่นี่
+          </p>
+        </section>
+        <RecommendationCard recommendation={recommendation} />
+      </>
     );
   }
 
@@ -73,6 +80,8 @@ export function StudentDashboard({ summary }: StudentDashboardProps) {
           <p>ภาพรวมกิจกรรมและความก้าวหน้าจาก Analytics</p>
         </div>
       </section>
+
+      <RecommendationCard recommendation={recommendation} />
 
       <section className="statGrid" aria-label="สถิติกิจกรรม">
         {activityStats.map((stat) => (

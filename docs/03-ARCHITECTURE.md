@@ -137,8 +137,9 @@ Activity UI
   → LearningHistoryRepository
        ├── MemoryLearningHistoryRepository   (SSR / tests)
        └── LocalStorageLearningHistoryRepository (browser)
-  → Analytics
-  → Student Dashboard
+  → Analytics (`LearningSummary`)
+  → Recommendation Engine (`buildLearningRecommendation`)
+  → Student Dashboard CTA
 ```
 
 | Piece | Role |
@@ -150,6 +151,7 @@ Activity UI
 | `LocalStorageLearningHistoryRepository` | Browser persistence under one versioned key: `gfa.learningHistory.v1` |
 | `createLearningHistoryRepository()` | Browser → localStorage repository; non-browser → memory repository |
 | `loadDashboardHistory()` | Shared dashboard read path — repository → analytics summary. Does not seed sample events. |
+| `buildLearningRecommendation()` | Deterministic next-best-action rules over `LearningSummary`. No `localStorage`, no LLM, no backend. Thresholds are v1 policy constants (`70` / `85` / flash review ratio `0.5`). |
 
 **Browser boundary:** `/dashboard` stays a Server Component. `DashboardHistoryView` is a Client Component that creates the repository after mount, so SSR/build never touches `localStorage`. Missing, unreadable, or malformed storage fails safe (empty history) and does not rewrite stored data on read.
 
@@ -158,6 +160,8 @@ Activity UI
 **Current persistence:** browser `localStorage` via `LocalStorageLearningHistoryRepository`. Backend/Supabase persistence is deferred.
 
 **Supported persisted activities:** quiz, millionaire, flash-cards.
+
+**Recommendation v1:** the dashboard shows one "แนะนำขั้นต่อไป" card from `LearningSummary` (latest lesson when known, otherwise Present Simple). Rules are explicit and testable — not personalized by AI.
 
 **Not yet wired:** matching, monopoly, spin-wheel, sentence-builder, and lesson-slide completion.
 

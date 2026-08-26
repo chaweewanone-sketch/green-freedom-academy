@@ -39,6 +39,7 @@ FUTURE           AI generators, Teacher Studio, Classroom Companion
 | Learning history repository | CURRENT | Memory + browser `localStorage` (`gfa.learningHistory.v1`); no Supabase writes |
 | Activity completion recording | CURRENT | Completed quiz, millionaire, and flash-cards save `LearningEvent`s through the history repository |
 | Student dashboard history | CURRENT | `/dashboard` reads real persisted events only; no automatic sample seeding |
+| Learning path recommendation | CURRENT | Deterministic v1 rules on `LearningSummary` (not AI/LLM); dashboard CTA only |
 
 **Known gaps in Phase 0:**
 
