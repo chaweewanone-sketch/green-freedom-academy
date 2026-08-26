@@ -149,12 +149,15 @@ Activity UI
 | `MemoryLearningHistoryRepository` | In-memory implementation; used on the server and in tests |
 | `LocalStorageLearningHistoryRepository` | Browser persistence under one versioned key: `gfa.learningHistory.v1` |
 | `createLearningHistoryRepository()` | Browser → localStorage repository; non-browser → memory repository |
+| `loadDashboardHistory()` | Shared dashboard read path — repository → analytics summary. Does not seed sample events. |
 
 **Browser boundary:** `/dashboard` stays a Server Component. `DashboardHistoryView` is a Client Component that creates the repository after mount, so SSR/build never touches `localStorage`. Missing, unreadable, or malformed storage fails safe (empty history) and does not rewrite stored data on read.
 
-**Demo seed:** sample events are written only when the storage key is absent. Completing a real activity writes the key, so a later dashboard visit does not overwrite real history with sample data. Clearing history writes an empty snapshot, so refresh does not repopulate sample data.
+**No automatic sample seeding:** `/dashboard` reads whatever the repository already has. Fresh storage shows the genuine empty state (`ยังไม่มีกิจกรรมการเรียน`). Sample helpers in `lib/analytics/sample-data.ts` remain for tests and explicit fixtures only.
 
 **Current persistence:** browser `localStorage` via `LocalStorageLearningHistoryRepository`. Backend/Supabase persistence is deferred.
+
+**Supported persisted activities:** quiz, millionaire, flash-cards.
 
 **Not yet wired:** matching, monopoly, spin-wheel, sentence-builder, and lesson-slide completion.
 

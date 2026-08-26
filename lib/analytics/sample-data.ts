@@ -100,6 +100,7 @@ export function buildSampleLearningSummary(): LearningSummary {
   return buildLearningSummary(buildSampleLearningEvents());
 }
 
+/** Explicit test/demo fixture. The live `/dashboard` path does not call this. */
 export function populateSampleHistory(
   repository: LearningHistoryRepository,
 ): void {

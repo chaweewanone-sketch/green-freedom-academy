@@ -1,4 +1,5 @@
 import { runCompletionVerification } from "./completionVerification";
+import { runDashboardVerification } from "./dashboardVerification";
 import { runHistoryVerification } from "./verification";
 
 runHistoryVerification();
@@ -6,3 +7,6 @@ console.log("history verification passed");
 
 runCompletionVerification();
 console.log("completion verification passed");
+
+runDashboardVerification();
+console.log("dashboard verification passed");

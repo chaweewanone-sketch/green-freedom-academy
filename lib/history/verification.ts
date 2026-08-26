@@ -1,6 +1,7 @@
 import type { LearningEvent } from "@/types/analytics";
 import type { LearningHistoryRepository } from "@/types/history";
 import { createLearningHistoryRepository } from "./createRepository";
+import { loadDashboardHistory } from "./loadDashboardHistory";
 import {
   LEARNING_HISTORY_STORAGE_KEY,
   LocalStorageLearningHistoryRepository,
@@ -516,29 +517,30 @@ export function verifyAggregatableFieldsPersist(): void {
 export function verifyDashboardSeedBehavior(): void {
   withMockLocalStorage((store) => {
     function loadDashboard() {
-      const repository = createLearningHistoryRepository();
-      if (repository.getAll().length === 0 && !hasPersistedLearningHistory()) {
-        for (const event of [
-          sampleEvent({ sessionId: "seed_1", completedAt: 100 }),
-          sampleEvent({ sessionId: "seed_2", completedAt: 200 }),
-        ]) {
-          repository.save(event);
-        }
-      }
-      return repository.getAll();
+      return {
+        events: createLearningHistoryRepository().getAll(),
+        summary: loadDashboardHistory(),
+      };
     }
 
     const firstVisit = loadDashboard();
-    assert(firstVisit.length === 2, "verifyDashboardSeedBehavior: first visit seeds");
+    assert(
+      firstVisit.events.length === 0,
+      "verifyDashboardSeedBehavior: first visit must not seed",
+    );
+    assert(
+      firstVisit.summary.totalActivities === 0,
+      "verifyDashboardSeedBehavior: empty summary on first visit",
+    );
+    assert(
+      store[LEARNING_HISTORY_STORAGE_KEY] === undefined,
+      "verifyDashboardSeedBehavior: empty load must not write storage",
+    );
 
     const afterRefresh = loadDashboard();
     assert(
-      afterRefresh.length === 2,
-      "verifyDashboardSeedBehavior: refresh must not reseed",
-    );
-    assert(
-      JSON.parse(store[LEARNING_HISTORY_STORAGE_KEY] ?? "[]").length === 2,
-      "verifyDashboardSeedBehavior: persisted event count after refresh",
+      afterRefresh.events.length === 0,
+      "verifyDashboardSeedBehavior: refresh must stay empty",
     );
 
     const repository = new LocalStorageLearningHistoryRepository();
@@ -546,8 +548,12 @@ export function verifyDashboardSeedBehavior(): void {
 
     const afterClearRefresh = loadDashboard();
     assert(
-      afterClearRefresh.length === 0,
+      afterClearRefresh.events.length === 0,
       "verifyDashboardSeedBehavior: cleared history must stay empty after reload",
+    );
+    assert(
+      afterClearRefresh.summary.totalActivities === 0,
+      "verifyDashboardSeedBehavior: cleared summary stays empty",
     );
   });
 }

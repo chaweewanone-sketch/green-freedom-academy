@@ -106,6 +106,7 @@ Example tone (student dashboard, current):
   - `gfa-demo-role` — demo login role
   - `gfa.learningHistory.v1` — persisted learning events (`LocalStorageLearningHistoryRepository` only; do not scatter this key)
 - Activity engines and analytics must not call `localStorage` — persist through `recordActivityCompletion()` / `LearningHistoryRepository`
+- `/dashboard` must not auto-seed sample history; it reads the repository through `loadDashboardHistory()`
 
 ### Planned (Supabase)
 

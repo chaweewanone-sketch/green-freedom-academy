@@ -6,6 +6,7 @@ export {
   hasPersistedLearningHistory,
 } from "./localStorageRepository";
 export { MemoryLearningHistoryRepository } from "./memoryRepository";
+export { loadDashboardHistory } from "./loadDashboardHistory";
 export {
   recordActivityCompletion,
   type ActivityCompletionResult,

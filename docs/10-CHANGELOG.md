@@ -14,11 +14,12 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Cursor project rule `.cursor/rules/gfa.mdc` (corrected frontmatter, docs references)
 - Persistent learning history repository (`LocalStorageLearningHistoryRepository`) behind the existing `LearningHistoryRepository` contract
 - `createLearningHistoryRepository()` factory: browser → localStorage, SSR/tests → memory
-- Dashboard loads persisted history after mount; sample data seeds only when storage is uninitialized
+- Dashboard loads persisted history after mount with no automatic sample seeding
 - `recordActivityCompletion()` maps completed quiz, millionaire, and flash-cards results into `LearningEvent`s and saves through the history repository
 
 ### Changed
 - `/dashboard` history flow is client-loaded so events survive browser refresh
+- `/dashboard` no longer auto-seeds sample learning events; it shows only real completions or the empty state
 - Completed student activities write learning history through `StudentActivityPlayer` without changing scoring rules
 
 ---
