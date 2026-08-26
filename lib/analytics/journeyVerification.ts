@@ -1,8 +1,10 @@
 import { getActivityPath } from "@/lib/activities";
 import { getLessonPath } from "@/lib/lessons";
+import { getDashboardPath } from "@/lib/routes";
 import type { LearningSummary } from "@/types/analytics";
 import {
   DEFAULT_JOURNEY_LESSON_SLUG,
+  JOURNEY_ACTION_LABELS,
   JOURNEY_PROGRESS,
   buildLearningJourney,
 } from "./journey";
@@ -75,7 +77,7 @@ export function verifyEmptyHistoryIsLearn(): void {
   assert(journey.reasonCode === "EMPTY_HISTORY", "empty: reason");
   assert(journey.progressPercent === JOURNEY_PROGRESS.learn, "empty: 20%");
   assert(
-    journey.nextHref === getLessonPath(DEFAULT_JOURNEY_LESSON_SLUG),
+    journey.nextAction.href === getLessonPath(DEFAULT_JOURNEY_LESSON_SLUG),
     "empty: lesson href",
   );
 }
@@ -86,7 +88,7 @@ export function verifyQuizWeakIsPractice(): void {
   assert(journey.reasonCode === "QUIZ_WEAK", "quiz 50: reason");
   assert(journey.progressPercent === JOURNEY_PROGRESS.quizWeak, "quiz 50: 40%");
   assert(
-    journey.nextHref === getActivityPath("present-simple", "quiz"),
+    journey.nextAction.href === getActivityPath("present-simple", "quiz"),
     "quiz 50: quiz href",
   );
 }
@@ -110,7 +112,7 @@ export function verifyQuizStrongWithoutMillionaireIsPlay(): void {
     "quiz 90: 70%",
   );
   assert(
-    journey.nextHref === getActivityPath("present-simple", "millionaire"),
+    journey.nextAction.href === getActivityPath("present-simple", "millionaire"),
     "quiz 90: millionaire href",
   );
 }
@@ -153,7 +155,7 @@ export function verifyWeakFlashOverridesComplete(): void {
   assert(journey.stage === "REVIEW", "flash override: REVIEW");
   assert(journey.reasonCode === "FLASH_WEAK_OVERRIDE", "flash override: reason");
   assert(
-    journey.nextHref === getActivityPath("present-simple", "flash-cards"),
+    journey.nextAction.href === getActivityPath("present-simple", "flash-cards"),
     "flash override: flash href",
   );
 }
@@ -204,9 +206,101 @@ export function verifyLessonAwareHref(): void {
   });
   assert(journey.lessonSlug === "past-simple", "lesson-aware slug");
   assert(
-    journey.nextHref === getActivityPath("past-simple", "millionaire"),
+    journey.nextAction.href === getActivityPath("past-simple", "millionaire"),
     "lesson-aware href",
   );
+}
+
+function assertAction(
+  journey: ReturnType<typeof buildLearningJourney>,
+  actionType: string,
+  label: string,
+  href: string,
+  message: string,
+): void {
+  assert(journey.nextAction.actionType === actionType, `${message}: actionType`);
+  assert(journey.nextAction.label === label, `${message}: label`);
+  assert(journey.nextAction.href === href, `${message}: href`);
+  assert(journey.nextAction.href.length > 0, `${message}: href exists`);
+}
+
+export function verifyLearnRoutesToLesson(): void {
+  assertAction(
+    buildLearningJourney(emptySummary()),
+    "LEARN",
+    JOURNEY_ACTION_LABELS.learn,
+    getLessonPath(DEFAULT_JOURNEY_LESSON_SLUG),
+    "learn route",
+  );
+}
+
+export function verifyPracticeRoutesToQuiz(): void {
+  assertAction(
+    buildLearningJourney(quizSummary(50)),
+    "PRACTICE",
+    JOURNEY_ACTION_LABELS.practiceQuiz,
+    getActivityPath("present-simple", "quiz"),
+    "practice route",
+  );
+}
+
+export function verifyPlayRoutesToMillionaire(): void {
+  assertAction(
+    buildLearningJourney(quizSummary(90)),
+    "PLAY",
+    JOURNEY_ACTION_LABELS.playMillionaire,
+    getActivityPath("present-simple", "millionaire"),
+    "play route",
+  );
+}
+
+export function verifyReviewFlashRoutesToFlashCards(): void {
+  assertAction(
+    buildLearningJourney(completeWithFlash(1, 2, 3)),
+    "REVIEW",
+    JOURNEY_ACTION_LABELS.reviewFlash,
+    getActivityPath("present-simple", "flash-cards"),
+    "review flash route",
+  );
+}
+
+export function verifyReviewMillionaireRoutesToQuiz(): void {
+  assertAction(
+    buildLearningJourney(millionaireSummary(60)),
+    "REVIEW",
+    JOURNEY_ACTION_LABELS.reviewQuiz,
+    getActivityPath("present-simple", "quiz"),
+    "review millionaire route",
+  );
+}
+
+export function verifyCompleteRoutesToDashboard(): void {
+  assertAction(
+    buildLearningJourney(millionaireSummary(90)),
+    "CONTINUE",
+    JOURNEY_ACTION_LABELS.complete,
+    getDashboardPath(),
+    "complete route",
+  );
+}
+
+export function verifySameInputSameNextAction(): void {
+  const first = buildLearningJourney(quizSummary(75)).nextAction;
+  const second = buildLearningJourney(quizSummary(75)).nextAction;
+  assert(
+    JSON.stringify(first) === JSON.stringify(second),
+    "same input: same next action",
+  );
+}
+
+export function runJourneyActionVerification(): void {
+  verifyLearnRoutesToLesson();
+  verifyPracticeRoutesToQuiz();
+  verifyPlayRoutesToMillionaire();
+  verifyReviewFlashRoutesToFlashCards();
+  verifyReviewMillionaireRoutesToQuiz();
+  verifyCompleteRoutesToDashboard();
+  verifySameInputSameNextAction();
 }
 
 export function runJourneyVerification(): void {

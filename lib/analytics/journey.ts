@@ -1,6 +1,9 @@
 import { getActivityPath } from "@/lib/activities";
 import { getLessonBySlug, getLessonPath, hasLesson } from "@/lib/lessons";
+import { getDashboardPath } from "@/lib/routes";
 import type {
+  JourneyAction,
+  JourneyActionType,
   JourneyReasonCode,
   LearningJourney,
   LearningJourneyStage,
@@ -56,6 +59,23 @@ export const JOURNEY_TRACK: LearningJourneyStage[] = [
   "REVIEW",
   "COMPLETE",
 ];
+
+export const JOURNEY_ACTION_LABELS = {
+  learn: "เริ่มเรียน",
+  practiceQuiz: "ทำ Quiz",
+  playMillionaire: "เล่น Millionaire",
+  reviewQuiz: "กลับไปฝึก Quiz",
+  reviewFlash: "ทบทวน Flash Cards",
+  complete: "ดูสรุปการเรียน",
+} as const;
+
+function journeyAction(
+  actionType: JourneyActionType,
+  label: string,
+  href: string,
+): JourneyAction {
+  return { actionType, label, href };
+}
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -131,8 +151,7 @@ function journey(input: {
   title: string;
   message: string;
   progressPercent: number;
-  nextHref?: string;
-  ctaLabel?: string;
+  nextAction: JourneyAction;
   reasonCode: JourneyReasonCode;
 }): LearningJourney {
   return {
@@ -153,8 +172,11 @@ function learnJourney(
     title: `เริ่มเรียน ${title}`,
     message: "ยังอยู่ขั้นเรียน เริ่มจากบทเรียนนี้ก่อนไปฝึก Quiz",
     progressPercent: JOURNEY_PROGRESS.learn,
-    nextHref: getLessonPath(lessonSlug),
-    ctaLabel: "เริ่มเรียน",
+    nextAction: journeyAction(
+      "LEARN",
+      JOURNEY_ACTION_LABELS.learn,
+      getLessonPath(lessonSlug),
+    ),
     reasonCode,
   });
 }
@@ -169,8 +191,11 @@ function quizJourney(score: number, lessonSlug: string): LearningJourney {
       title: "กำลังฝึก Quiz",
       message: `คะแนน Quiz ยังต่ำกว่า ${JOURNEY_THRESHOLDS.quizReview}% อยู่ในขั้นฝึก`,
       progressPercent: JOURNEY_PROGRESS.quizWeak,
-      nextHref: getActivityPath(lessonSlug, "quiz"),
-      ctaLabel: "ฝึก Quiz",
+      nextAction: journeyAction(
+        "PRACTICE",
+        JOURNEY_ACTION_LABELS.practiceQuiz,
+        getActivityPath(lessonSlug, "quiz"),
+      ),
       reasonCode: "QUIZ_WEAK",
     });
   }
@@ -182,8 +207,11 @@ function quizJourney(score: number, lessonSlug: string): LearningJourney {
       title: "ฝึก Quiz ต่ออีกนิด",
       message: `กำลังพัฒนาในขั้นฝึก ทำ Quiz ให้ถึง ${JOURNEY_THRESHOLDS.quizStrong}% ก่อนไปเล่นเกม`,
       progressPercent: JOURNEY_PROGRESS.quizDeveloping,
-      nextHref: getActivityPath(lessonSlug, "quiz"),
-      ctaLabel: "ฝึก Quiz",
+      nextAction: journeyAction(
+        "PRACTICE",
+        JOURNEY_ACTION_LABELS.practiceQuiz,
+        getActivityPath(lessonSlug, "quiz"),
+      ),
       reasonCode: "QUIZ_DEVELOPING",
     });
   }
@@ -194,8 +222,11 @@ function quizJourney(score: number, lessonSlug: string): LearningJourney {
     title: "พร้อมเล่น Millionaire",
     message: `${title} ฝึก Quiz แข็งแรงแล้ว ไปขั้นเล่น Millionaire ได้`,
     progressPercent: JOURNEY_PROGRESS.quizStrongPlay,
-    nextHref: getActivityPath(lessonSlug, "millionaire"),
-    ctaLabel: "เล่น Millionaire",
+    nextAction: journeyAction(
+      "PLAY",
+      JOURNEY_ACTION_LABELS.playMillionaire,
+      getActivityPath(lessonSlug, "millionaire"),
+    ),
     reasonCode: "QUIZ_STRONG",
   });
 }
@@ -210,8 +241,11 @@ function millionaireJourney(score: number, lessonSlug: string): LearningJourney 
       title: "ทบทวนก่อนเล่นใหม่",
       message: `Millionaire ยังต่ำกว่า ${JOURNEY_THRESHOLDS.millionaireReview}% ทบทวน ${title} หรือฝึก Quiz ก่อน`,
       progressPercent: JOURNEY_PROGRESS.millionaireWeak,
-      nextHref: getActivityPath(lessonSlug, "quiz"),
-      ctaLabel: "ฝึก Quiz",
+      nextAction: journeyAction(
+        "REVIEW",
+        JOURNEY_ACTION_LABELS.reviewQuiz,
+        getActivityPath(lessonSlug, "quiz"),
+      ),
       reasonCode: "MILLIONAIRE_WEAK",
     });
   }
@@ -223,8 +257,11 @@ function millionaireJourney(score: number, lessonSlug: string): LearningJourney 
       title: "เล่น Millionaire ต่อ",
       message: "อยู่ในขั้นเล่น ลอง Millionaire อีกครั้งเพื่อให้ชำนาญขึ้น",
       progressPercent: JOURNEY_PROGRESS.millionaireDeveloping,
-      nextHref: getActivityPath(lessonSlug, "millionaire"),
-      ctaLabel: "เล่นอีกครั้ง",
+      nextAction: journeyAction(
+        "PLAY",
+        JOURNEY_ACTION_LABELS.playMillionaire,
+        getActivityPath(lessonSlug, "millionaire"),
+      ),
       reasonCode: "MILLIONAIRE_DEVELOPING",
     });
   }
@@ -235,8 +272,11 @@ function millionaireJourney(score: number, lessonSlug: string): LearningJourney 
     title: `เรียน ${title} สำเร็จ`,
     message: "ผ่านขั้นเล่นแล้ว สามารถทบทวนบทเรียนหรือไปกิจกรรมถัดไปได้",
     progressPercent: JOURNEY_PROGRESS.complete,
-    nextHref: getLessonPath(lessonSlug),
-    ctaLabel: "เปิดบทเรียน",
+    nextAction: journeyAction(
+      "CONTINUE",
+      JOURNEY_ACTION_LABELS.complete,
+      getDashboardPath(),
+    ),
     reasonCode: "MILLIONAIRE_STRONG",
   });
 }
@@ -258,8 +298,11 @@ function applyFlashOverride(
       pathJourney.stage === "COMPLETE"
         ? JOURNEY_PROGRESS.flashOverrideComplete
         : pathJourney.progressPercent,
-    nextHref: getActivityPath(pathJourney.lessonSlug, "flash-cards"),
-    ctaLabel: "ทบทวน Flash Cards",
+    nextAction: journeyAction(
+      "REVIEW",
+      JOURNEY_ACTION_LABELS.reviewFlash,
+      getActivityPath(pathJourney.lessonSlug, "flash-cards"),
+    ),
     reasonCode: "FLASH_WEAK_OVERRIDE",
   });
 }

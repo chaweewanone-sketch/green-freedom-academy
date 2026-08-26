@@ -138,8 +138,8 @@ Activity UI
        ├── MemoryLearningHistoryRepository   (SSR / tests)
        └── LocalStorageLearningHistoryRepository (browser)
   → Analytics (`LearningSummary`)
-  → Journey Engine (`buildLearningJourney`)        // current stage
-  → Recommendation Engine (`buildLearningRecommendation`) // next action
+  → Journey Engine (`buildLearningJourney`)        // current stage + nextAction route
+  → Recommendation Engine (`buildLearningRecommendation`) // next-best-action guidance
   → Student Dashboard
 ```
 
@@ -153,7 +153,7 @@ Activity UI
 | `createLearningHistoryRepository()` | Browser → localStorage repository; non-browser → memory repository |
 | `loadDashboardHistory()` | Shared dashboard read path — repository → analytics summary. Does not seed sample events. |
 | `buildLearningRecommendation()` | Deterministic next-best-action rules over `LearningSummary`. No `localStorage`, no LLM, no backend. Thresholds are v1 policy constants (`70` / `85` / flash review ratio `0.5`). |
-| `buildLearningJourney()` | Deterministic current-stage rules over `LearningSummary`. Separate from recommendation. Flash weak retention can override COMPLETE to REVIEW. |
+| `buildLearningJourney()` | Deterministic current-stage rules over `LearningSummary`. `nextAction` maps LEARN→lesson, PRACTICE→Quiz, PLAY→Millionaire, REVIEW→Flash Cards or Quiz by `reasonCode`, COMPLETE→`/dashboard`. Separate from recommendation. |
 
 **Browser boundary:** `/dashboard` stays a Server Component. `DashboardHistoryView` is a Client Component that creates the repository after mount, so SSR/build never touches `localStorage`. Missing, unreadable, or malformed storage fails safe (empty history) and does not rewrite stored data on read.
 
@@ -165,7 +165,7 @@ Activity UI
 
 **Recommendation v1:** the dashboard shows one "แนะนำขั้นต่อไป" card from `LearningSummary` (latest lesson when known, otherwise Present Simple). Rules are explicit and testable — not personalized by AI.
 
-**Journey v1:** the dashboard shows one "เส้นทางการเรียน" card. Journey = current stage (เรียน / ฝึก / เล่น / ทบทวน / สำเร็จ). Recommendation = next best action. No backend progression, no AI/LLM, no Supabase.
+**Journey v1:** the dashboard shows one "เส้นทางการเรียน" card. Journey = current stage plus a deterministic next route (`nextAction`). Recommendation = next-best-action guidance. They stay separate. COMPLETE has no next-lesson route yet, so the CTA is `/dashboard`. No backend progression, no AI/LLM, no Supabase.
 
 **Not yet wired:** matching, monopoly, spin-wheel, sentence-builder, and lesson-slide completion.
 

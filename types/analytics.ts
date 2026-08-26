@@ -57,6 +57,19 @@ export type LearningJourneyStage =
   | "REVIEW"
   | "COMPLETE";
 
+export type JourneyActionType =
+  | "LEARN"
+  | "PRACTICE"
+  | "PLAY"
+  | "REVIEW"
+  | "CONTINUE";
+
+export type JourneyAction = {
+  label: string;
+  href: string;
+  actionType: JourneyActionType;
+};
+
 export type JourneyReasonCode =
   | "EMPTY_HISTORY"
   | "QUIZ_WEAK"
@@ -74,8 +87,7 @@ export type LearningJourney = {
   title: string;
   message: string;
   progressPercent: number;
-  nextHref?: string;
-  ctaLabel?: string;
+  nextAction: JourneyAction;
   reasonCode: JourneyReasonCode;
 };
 

@@ -1,5 +1,7 @@
 export type {
   AggregatableLearningEvent,
+  JourneyAction,
+  JourneyActionType,
   JourneyReasonCode,
   LearningEvent,
   LearningJourney,
@@ -16,6 +18,7 @@ export {
 } from "./aggregate";
 export {
   DEFAULT_JOURNEY_LESSON_SLUG,
+  JOURNEY_ACTION_LABELS,
   JOURNEY_PROGRESS,
   JOURNEY_STAGE_LABELS,
   JOURNEY_THRESHOLDS,

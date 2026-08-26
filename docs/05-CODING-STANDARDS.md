@@ -109,6 +109,7 @@ Example tone (student dashboard, current):
 - `/dashboard` must not auto-seed sample history; it reads the repository through `loadDashboardHistory()`
 - Next-best-action copy comes from `buildLearningRecommendation(summary)` — do not read `localStorage` in the recommendation engine
 - Current-stage copy comes from `buildLearningJourney(summary)` — keep journey and recommendation as separate engines
+- Journey CTAs must use `getLessonPath()`, `getActivityPath()`, or `getDashboardPath()` — do not scatter hardcoded lesson/activity URLs
 
 ### Planned (Supabase)
 

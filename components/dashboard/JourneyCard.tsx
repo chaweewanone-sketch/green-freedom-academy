@@ -32,6 +32,7 @@ export function JourneyCard({ journey }: JourneyCardProps) {
   const lessonTitle =
     getLessonBySlug(journey.lessonSlug)?.title ?? journey.lessonSlug;
   const stageLabel = JOURNEY_STAGE_LABELS[journey.stage];
+  const action = journey.nextAction;
 
   return (
     <section className="panel studentDashboardSection" aria-label="เส้นทางการเรียน">
@@ -57,18 +58,24 @@ export function JourneyCard({ journey }: JourneyCardProps) {
       <p>{journey.message}</p>
       <ol className="journeyTrack" aria-label="ลำดับเส้นทางการเรียน">
         {JOURNEY_TRACK.map((stage) => (
-          <li key={stage} className={stageClassName(stage, journey.stage)}>
+          <li
+            key={stage}
+            className={stageClassName(stage, journey.stage)}
+            aria-current={stage === journey.stage ? "step" : undefined}
+          >
             {JOURNEY_STAGE_LABELS[stage]}
           </li>
         ))}
       </ol>
-      {journey.nextHref && journey.ctaLabel ? (
-        <div className="actions">
-          <Link className="button primary" href={journey.nextHref}>
-            {journey.ctaLabel}
-          </Link>
-        </div>
-      ) : null}
+      <div className="actions">
+        <Link
+          className="button primary"
+          href={action.href}
+          aria-label={action.label}
+        >
+          {action.label}
+        </Link>
+      </div>
     </section>
   );
 }
