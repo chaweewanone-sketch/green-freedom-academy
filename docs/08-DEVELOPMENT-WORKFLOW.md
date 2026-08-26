@@ -57,7 +57,7 @@ npm run dev
 | `/lesson/present-simple/activity/millionaire` | Millionaire Challenge — completion writes learning history |
 | `/lesson/present-simple/activity/flash-cards` | Flash Cards — completion writes learning history |
 
-History / completion verification (no test runner yet):
+History / completion / journey / active-lesson verification (no test runner yet):
 
 ```bash
 npx tsx lib/history/runVerification.ts

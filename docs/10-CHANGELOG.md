@@ -19,6 +19,7 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Deterministic learning-path recommendation v1 (`buildLearningRecommendation`) from real `LearningSummary` — no AI/LLM and no backend personalization
 - Deterministic learning journey v1 (`buildLearningJourney`) for Present Simple: Learn → Practice → Play → Review → Complete, with a required `nextAction` route on the dashboard CTA
 - Deterministic multi-lesson curriculum order from the existing lesson registry (Present Simple → Past Simple), with per-lesson journey stages and a next-lesson CTA after COMPLETE
+- Deterministic active-lesson resolver (`resolveActiveLesson`) so Journey follows curriculum completion order, not latest activity timestamp
 
 ### Changed
 - `/dashboard` history flow is client-loaded so events survive browser refresh
@@ -26,6 +27,7 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Completed student activities write learning history through `StudentActivityPlayer` without changing scoring rules
 - Student dashboard shows one next-step CTA from v1 recommendation policy thresholds (not learned parameters)
 - Student dashboard shows a current-stage journey card with a primary Next.js Link CTA to the next real lesson, Quiz, Millionaire, Flash Cards, next curriculum lesson, or dashboard route
+- JourneyCard labels the curriculum active lesson as บทเรียนปัจจุบัน, separate from กิจกรรมล่าสุด
 
 ---
 

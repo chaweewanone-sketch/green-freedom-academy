@@ -8,7 +8,6 @@ import {
 import { getActivityPath, getDashboardPath, getLessonPath } from "@/lib/routes";
 import {
   JOURNEY_ACTION_LABELS,
-  JOURNEY_PROGRESS,
   buildLearningJourney,
 } from "./journey";
 
@@ -155,21 +154,16 @@ export function verifyPresentSimpleCompleteNavigatesToPastSimple(): void {
       completedAt: 2,
     }),
   ]);
-  assert(journey.lessonSlug === "present-simple", "case 5: Present Simple");
-  assert(journey.stage === "COMPLETE", "case 5: COMPLETE");
-  assert(journey.nextLessonSlug === "past-simple", "case 5: next is Past Simple");
+  assert(journey.lessonSlug === "past-simple", "case 5: active is Past Simple");
+  assert(journey.stage === "LEARN", "case 5: Past Simple LEARN");
   assert(!journey.isCurriculumComplete, "case 5: more lessons remain");
   assert(
-    journey.nextAction.label === JOURNEY_ACTION_LABELS.nextLesson,
-    "case 5: เรียนบทถัดไป",
+    journey.nextAction.label === JOURNEY_ACTION_LABELS.learn,
+    "case 5: เริ่มเรียน",
   );
   assert(
     journey.nextAction.href === getLessonPath("past-simple"),
     "case 5: /lesson/past-simple",
-  );
-  assert(
-    journey.progressPercent === JOURNEY_PROGRESS.complete,
-    "case 5: 100%",
   );
 }
 
@@ -181,11 +175,14 @@ export function verifyPastSimpleStartUsesPastSimpleRoutes(): void {
       scorePercentage: 50,
     }),
   ]);
-  assert(journey.lessonSlug === "past-simple", "case 6: Past Simple");
-  assert(journey.stage === "PRACTICE", "case 6: PRACTICE");
   assert(
-    journey.nextAction.href === getActivityPath("past-simple", "quiz"),
-    "case 6: past-simple quiz route",
+    journey.lessonSlug === "present-simple",
+    "case 6: out-of-order Past activity does not become active",
+  );
+  assert(journey.stage === "LEARN", "case 6: Present Simple still LEARN");
+  assert(
+    journey.nextAction.href === getLessonPath("present-simple"),
+    "case 6: present-simple lesson route",
   );
 }
 
@@ -193,15 +190,27 @@ export function verifyFinalLessonCompleteHasSafeCta(): void {
   const journey = buildLearningJourney(emptySummary(), [
     makeEvent({
       activity: "quiz",
-      lessonSlug: "past-simple",
+      lessonSlug: "present-simple",
       scorePercentage: 90,
       completedAt: 1,
     }),
     makeEvent({
       activity: "millionaire",
-      lessonSlug: "past-simple",
+      lessonSlug: "present-simple",
       scorePercentage: 90,
       completedAt: 2,
+    }),
+    makeEvent({
+      activity: "quiz",
+      lessonSlug: "past-simple",
+      scorePercentage: 90,
+      completedAt: 3,
+    }),
+    makeEvent({
+      activity: "millionaire",
+      lessonSlug: "past-simple",
+      scorePercentage: 90,
+      completedAt: 4,
     }),
   ]);
   assert(journey.lessonSlug === "past-simple", "case 7: Past Simple");
@@ -294,15 +303,27 @@ export function verifyFlashOverrideIsPerLesson(): void {
 
   const pastSimpleOverride = buildLearningJourney(emptySummary(), [
     makeEvent({
-      activity: "millionaire",
-      lessonSlug: "past-simple",
+      activity: "quiz",
+      lessonSlug: "present-simple",
       scorePercentage: 90,
       completedAt: 1,
     }),
     makeEvent({
+      activity: "millionaire",
+      lessonSlug: "present-simple",
+      scorePercentage: 90,
+      completedAt: 2,
+    }),
+    makeEvent({
+      activity: "millionaire",
+      lessonSlug: "past-simple",
+      scorePercentage: 90,
+      completedAt: 3,
+    }),
+    makeEvent({
       activity: "flash-cards",
       lessonSlug: "past-simple",
-      completedAt: 2,
+      completedAt: 4,
       flashEasy: 0,
       flashMedium: 3,
       flashHard: 3,
@@ -390,16 +411,16 @@ export function verifyLessonScoresAreNotMixed(): void {
     }),
   ]);
   assert(
-    otherLessonFlash.lessonSlug === "present-simple",
-    "case 10c: current is Present Simple",
+    otherLessonFlash.lessonSlug === "past-simple",
+    "case 10c: active advances to Past Simple after Present completes",
   );
   assert(
-    otherLessonFlash.stage === "COMPLETE",
-    "case 10c: other-lesson flash does not override",
+    otherLessonFlash.stage === "REVIEW",
+    "case 10c: Past Simple flash is evaluated without Present Simple scores",
   );
   assert(
-    otherLessonFlash.nextLessonSlug === "past-simple",
-    "case 10c: next lesson still Past Simple",
+    otherLessonFlash.reasonCode === "FLASH_WEAK_OVERRIDE",
+    "case 10c: Past Simple flash override",
   );
 }
 

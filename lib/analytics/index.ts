@@ -26,6 +26,11 @@ export {
   buildLearningJourney,
 } from "./journey";
 export {
+  isLessonComplete,
+  resolveActiveLesson,
+  type ActiveLessonResolution,
+} from "./activeLesson";
+export {
   DEFAULT_RECOMMENDATION_LESSON_SLUG,
   RECOMMENDATION_THRESHOLDS,
   buildLearningRecommendation,

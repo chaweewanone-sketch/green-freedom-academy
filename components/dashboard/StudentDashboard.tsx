@@ -138,7 +138,7 @@ export function StudentDashboard({
             </dd>
           </div>
           <div>
-            <dt>บทเรียน</dt>
+            <dt>บทเรียนของกิจกรรมล่าสุด</dt>
             <dd>
               {summary.latestLesson
                 ? formatLessonSlug(summary.latestLesson)

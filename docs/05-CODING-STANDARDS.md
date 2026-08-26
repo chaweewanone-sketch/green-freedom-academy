@@ -108,10 +108,12 @@ Example tone (student dashboard, current):
 - Activity engines and analytics must not call `localStorage` — persist through `recordActivityCompletion()` / `LearningHistoryRepository`
 - `/dashboard` must not auto-seed sample history; it reads the repository through `loadDashboardHistory()` / `loadDashboardLearningState()`
 - Next-best-action copy comes from `buildLearningRecommendation(summary)` — do not read `localStorage` in the recommendation engine
-- Current-stage copy comes from `buildLearningJourney(summary, events?)` — keep journey and recommendation as separate engines. When events are provided, scores and stages are calculated for the active lesson only
+- Current-stage copy comes from `buildLearningJourney(summary, events?)` — keep journey and recommendation as separate engines. When events are provided, the active lesson comes from `resolveActiveLesson`, not `latestLesson`
+- `latestActivity` / `latestLesson` = what the learner did most recently. Active curriculum lesson = first incomplete lesson in curriculum order. Do not treat these as the same value
 - Curriculum order comes from `getCurriculumLessons()` / `getNextCurriculumLesson()` — do not invent a second lesson-content registry
+- Lesson COMPLETE is defined only by `isLessonComplete()` / `evaluateLessonJourney()` — do not add a second completion policy
 - Journey CTAs must use `getLessonPath()`, `getActivityPath()`, or `getDashboardPath()` from `lib/routes.ts` — do not scatter hardcoded lesson/activity URLs
-- The journey engine must not import `localStorage` or `LearningHistoryRepository`
+- The journey engine, lesson evaluator, and active-lesson resolver must not import `localStorage` or `LearningHistoryRepository`
 
 ### Planned (Supabase)
 

@@ -40,7 +40,7 @@ FUTURE           AI generators, Teacher Studio, Classroom Companion
 | Activity completion recording | CURRENT | Completed quiz, millionaire, and flash-cards save `LearningEvent`s through the history repository |
 | Student dashboard history | CURRENT | `/dashboard` reads real persisted events only; no automatic sample seeding |
 | Learning path recommendation | CURRENT | Deterministic v1 rules on `LearningSummary` (not AI/LLM); dashboard CTA only |
-| Learning journey / progression | CURRENT | Deterministic multi-lesson curriculum path (Present Simple → Past Simple) with a required next-step route on the dashboard CTA |
+| Learning journey / progression | CURRENT | Curriculum-order active lesson (not latest activity) with per-lesson Learn → Practice → Play → Review → Complete |
 
 **Known gaps in Phase 0:**
 
@@ -49,6 +49,7 @@ FUTURE           AI generators, Teacher Studio, Classroom Companion
 - Teacher "สร้างห้องเรียน" button has no handler.
 - Coming-soon activities (matching, monopoly, spin-wheel, sentence-builder) have no completion recording yet.
 - Curriculum currently has two registry lessons (Present Simple, then Past Simple). Completing the final lesson returns to `/dashboard`; there is no invented third lesson.
+- Recommendation remains latest-activity driven and may disagree with the curriculum-order Journey when a learner does a later lesson early.
 
 ---
 

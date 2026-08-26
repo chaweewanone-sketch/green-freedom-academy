@@ -42,7 +42,7 @@ export function JourneyCard({ journey }: JourneyCardProps) {
       <span className="eyebrow">LEARNING JOURNEY</span>
       <h2>เส้นทางการเรียน</h2>
       <p>
-        <strong>{lessonTitle}</strong>
+        บทเรียนปัจจุบัน: <strong>{lessonTitle}</strong>
         {" · "}
         ขั้น{stageLabel}
         {" · "}
