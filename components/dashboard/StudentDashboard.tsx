@@ -1,4 +1,7 @@
-import type { LearningSummary } from "@/types/analytics";
+import type {
+  AggregatableLearningEvent,
+  LearningSummary,
+} from "@/types/analytics";
 import { buildLearningJourney } from "@/lib/analytics/journey";
 import { buildLearningRecommendation } from "@/lib/analytics/recommendation";
 import { JourneyCard } from "./JourneyCard";
@@ -6,6 +9,7 @@ import { RecommendationCard } from "./RecommendationCard";
 
 type StudentDashboardProps = {
   summary: LearningSummary;
+  events?: AggregatableLearningEvent[];
 };
 
 function formatActivityLabel(activity: string): string {
@@ -31,8 +35,11 @@ function formatScore(value: number): string {
   return `${value}%`;
 }
 
-export function StudentDashboard({ summary }: StudentDashboardProps) {
-  const journey = buildLearningJourney(summary);
+export function StudentDashboard({
+  summary,
+  events,
+}: StudentDashboardProps) {
+  const journey = buildLearningJourney(summary, events);
   const recommendation = buildLearningRecommendation(summary);
 
   if (summary.totalActivities === 0) {

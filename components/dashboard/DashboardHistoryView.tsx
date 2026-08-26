@@ -3,25 +3,25 @@
 import { useEffect, useState } from "react";
 import {
   createLearningHistoryRepository,
-  loadDashboardHistory,
+  loadDashboardLearningState,
+  type DashboardLearningState,
 } from "@/lib/history";
-import type { LearningSummary } from "@/types/analytics";
 import { StudentDashboard } from "./StudentDashboard";
 
 export function DashboardHistoryView() {
-  const [summary, setSummary] = useState<LearningSummary | null>(null);
+  const [state, setState] = useState<DashboardLearningState | null>(null);
 
   useEffect(() => {
-    setSummary(loadDashboardHistory());
+    setState(loadDashboardLearningState());
   }, []);
 
   function handleClear() {
     const repository = createLearningHistoryRepository();
     repository.clear();
-    setSummary(loadDashboardHistory(repository));
+    setState(loadDashboardLearningState(repository));
   }
 
-  if (!summary) {
+  if (!state) {
     return (
       <section className="panel studentDashboardEmpty">
         <span className="eyebrow">LEARNING SUMMARY</span>
@@ -32,8 +32,8 @@ export function DashboardHistoryView() {
 
   return (
     <>
-      <StudentDashboard summary={summary} />
-      {summary.totalActivities > 0 ? (
+      <StudentDashboard summary={state.summary} events={state.events} />
+      {state.summary.totalActivities > 0 ? (
         <section className="panel studentDashboardSection">
           <button type="button" className="button primary" onClick={handleClear}>
             ล้างประวัติการเรียน

@@ -106,10 +106,12 @@ Example tone (student dashboard, current):
   - `gfa-demo-role` — demo login role
   - `gfa.learningHistory.v1` — persisted learning events (`LocalStorageLearningHistoryRepository` only; do not scatter this key)
 - Activity engines and analytics must not call `localStorage` — persist through `recordActivityCompletion()` / `LearningHistoryRepository`
-- `/dashboard` must not auto-seed sample history; it reads the repository through `loadDashboardHistory()`
+- `/dashboard` must not auto-seed sample history; it reads the repository through `loadDashboardHistory()` / `loadDashboardLearningState()`
 - Next-best-action copy comes from `buildLearningRecommendation(summary)` — do not read `localStorage` in the recommendation engine
-- Current-stage copy comes from `buildLearningJourney(summary)` — keep journey and recommendation as separate engines
-- Journey CTAs must use `getLessonPath()`, `getActivityPath()`, or `getDashboardPath()` — do not scatter hardcoded lesson/activity URLs
+- Current-stage copy comes from `buildLearningJourney(summary, events?)` — keep journey and recommendation as separate engines. When events are provided, scores and stages are calculated for the active lesson only
+- Curriculum order comes from `getCurriculumLessons()` / `getNextCurriculumLesson()` — do not invent a second lesson-content registry
+- Journey CTAs must use `getLessonPath()`, `getActivityPath()`, or `getDashboardPath()` from `lib/routes.ts` — do not scatter hardcoded lesson/activity URLs
+- The journey engine must not import `localStorage` or `LearningHistoryRepository`
 
 ### Planned (Supabase)
 

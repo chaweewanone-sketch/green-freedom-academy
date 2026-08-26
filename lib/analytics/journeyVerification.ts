@@ -1,6 +1,4 @@
-import { getActivityPath } from "@/lib/activities";
-import { getLessonPath } from "@/lib/lessons";
-import { getDashboardPath } from "@/lib/routes";
+import { getActivityPath, getDashboardPath, getLessonPath } from "@/lib/routes";
 import type { LearningSummary } from "@/types/analytics";
 import {
   DEFAULT_JOURNEY_LESSON_SLUG,
@@ -275,13 +273,19 @@ export function verifyReviewMillionaireRoutesToQuiz(): void {
 }
 
 export function verifyCompleteRoutesToDashboard(): void {
+  const journey = buildLearningJourney({
+    ...millionaireSummary(90),
+    latestLesson: "past-simple",
+  });
   assertAction(
-    buildLearningJourney(millionaireSummary(90)),
+    journey,
     "CONTINUE",
     JOURNEY_ACTION_LABELS.complete,
     getDashboardPath(),
     "complete route",
   );
+  assert(journey.isCurriculumComplete, "final complete: curriculum complete");
+  assert(!journey.nextLessonSlug, "final complete: no invented next lesson");
 }
 
 export function verifySameInputSameNextAction(): void {

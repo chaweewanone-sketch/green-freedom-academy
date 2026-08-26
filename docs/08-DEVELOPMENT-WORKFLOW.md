@@ -51,7 +51,8 @@ npm run dev
 | `/student` | Student dashboard |
 | `/dashboard` | Real history, journey stage, and a journey CTA that opens the next real route |
 | `/teacher` | Teacher dashboard |
-| `/lesson/present-simple` | Interactive lesson |
+| `/lesson/present-simple` | Interactive lesson (first curriculum lesson) |
+| `/lesson/past-simple` | Interactive lesson (next / currently final curriculum lesson) |
 | `/lesson/present-simple/activity/quiz` | Quiz — completion writes learning history |
 | `/lesson/present-simple/activity/millionaire` | Millionaire Challenge — completion writes learning history |
 | `/lesson/present-simple/activity/flash-cards` | Flash Cards — completion writes learning history |

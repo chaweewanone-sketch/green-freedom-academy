@@ -30,4 +30,8 @@ export {
   RECOMMENDATION_THRESHOLDS,
   buildLearningRecommendation,
 } from "./recommendation";
-export { buildLearningSummary, buildLearningSummaryFromRepository } from "./summary";
+export {
+  buildLearningSummary,
+  buildLearningSummaryForLesson,
+  buildLearningSummaryFromRepository,
+} from "./summary";

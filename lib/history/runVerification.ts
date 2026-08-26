@@ -1,3 +1,4 @@
+import { runJourneyCurriculumVerification } from "@/lib/analytics/journeyCurriculumVerification";
 import { runJourneyActionVerification, runJourneyVerification } from "@/lib/analytics/journeyVerification";
 import { runRecommendationVerification } from "@/lib/analytics/recommendationVerification";
 import { runCompletionVerification } from "./completionVerification";
@@ -21,3 +22,6 @@ console.log("journey verification passed");
 
 runJourneyActionVerification();
 console.log("journey action verification passed");
+
+runJourneyCurriculumVerification();
+console.log("journey curriculum verification passed");

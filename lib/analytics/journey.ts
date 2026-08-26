@@ -1,7 +1,13 @@
-import { getActivityPath } from "@/lib/activities";
-import { getLessonBySlug, getLessonPath, hasLesson } from "@/lib/lessons";
-import { getDashboardPath } from "@/lib/routes";
+import { buildLearningSummaryForLesson } from "@/lib/analytics/summary";
+import {
+  getFirstCurriculumLesson,
+  getLessonBySlug,
+  getNextCurriculumLesson,
+  hasLesson,
+} from "@/lib/lessons";
+import { getActivityPath, getDashboardPath, getLessonPath } from "@/lib/routes";
 import type {
+  AggregatableLearningEvent,
   JourneyAction,
   JourneyActionType,
   JourneyReasonCode,
@@ -11,17 +17,18 @@ import type {
 } from "@/types/analytics";
 
 /**
- * Journey answers "ตอนนี้อยู่ขั้นไหน".
+ * Journey answers "ตอนนี้อยู่ขั้นไหน" for the active curriculum lesson.
  * Recommendation (buildLearningRecommendation) answers "ควรทำอะไรต่อ".
- * These engines stay separate and both read LearningSummary only.
+ * These engines stay separate.
  *
- * Path precedence (v1):
+ * Path precedence within one lesson (v1):
  * 1. Empty / malformed → LEARN
  * 2. If Millionaire attempts exist → millionaire band (REVIEW / PLAY / COMPLETE)
  * 3. Else if Quiz attempts exist → quiz band (PRACTICE / PLAY)
  * 4. Else → LEARN
- * 5. Flash-card weak retention (Sprint 20 semantics) overrides the path stage
- *    to REVIEW, including COMPLETE. Empty history is never overridden.
+ * 5. Flash-card weak retention overrides the path stage to REVIEW, including COMPLETE.
+ * 6. COMPLETE + a later curriculum lesson → CTA to that lesson (not marked learned).
+ * 7. COMPLETE on the final curriculum lesson → dashboard.
  */
 export const JOURNEY_THRESHOLDS = {
   quizReview: 70,
@@ -42,7 +49,8 @@ export const JOURNEY_PROGRESS = {
   flashOverrideComplete: 90,
 } as const;
 
-export const DEFAULT_JOURNEY_LESSON_SLUG = "present-simple";
+export const DEFAULT_JOURNEY_LESSON_SLUG =
+  getFirstCurriculumLesson()?.slug ?? "present-simple";
 
 export const JOURNEY_STAGE_LABELS: Record<LearningJourneyStage, string> = {
   LEARN: "เรียน",
@@ -67,6 +75,7 @@ export const JOURNEY_ACTION_LABELS = {
   reviewQuiz: "กลับไปฝึก Quiz",
   reviewFlash: "ทบทวน Flash Cards",
   complete: "ดูสรุปการเรียน",
+  nextLesson: "เรียนบทถัดไป",
 } as const;
 
 function journeyAction(
@@ -153,10 +162,13 @@ function journey(input: {
   progressPercent: number;
   nextAction: JourneyAction;
   reasonCode: JourneyReasonCode;
+  nextLessonSlug?: string;
+  isCurriculumComplete?: boolean;
 }): LearningJourney {
   return {
     ...input,
     progressPercent: clampPercent(input.progressPercent),
+    isCurriculumComplete: input.isCurriculumComplete ?? false,
   };
 }
 
@@ -307,6 +319,33 @@ function applyFlashOverride(
   });
 }
 
+function withCurriculumNavigation(pathJourney: LearningJourney): LearningJourney {
+  if (pathJourney.stage !== "COMPLETE") {
+    return pathJourney;
+  }
+
+  const nextLesson = getNextCurriculumLesson(pathJourney.lessonSlug);
+  if (!nextLesson) {
+    return journey({
+      ...pathJourney,
+      isCurriculumComplete: true,
+    });
+  }
+
+  return journey({
+    ...pathJourney,
+    title: `เรียน ${lessonTitle(pathJourney.lessonSlug)} สำเร็จ`,
+    message: "ผ่านขั้นเล่นแล้ว สามารถไปบทเรียนถัดไปได้",
+    nextAction: journeyAction(
+      "LEARN",
+      JOURNEY_ACTION_LABELS.nextLesson,
+      getLessonPath(nextLesson.slug),
+    ),
+    nextLessonSlug: nextLesson.slug,
+    isCurriculumComplete: false,
+  });
+}
+
 function buildPathJourney(
   summary: LearningSummary,
   lessonSlug: string,
@@ -326,19 +365,75 @@ function buildPathJourney(
   return learnJourney(lessonSlug, "FALLBACK_LEARN");
 }
 
-export function buildLearningJourney(summary: unknown): LearningJourney {
+function findLatestEvent(
+  events: AggregatableLearningEvent[],
+): AggregatableLearningEvent | undefined {
+  if (events.length === 0) {
+    return undefined;
+  }
+
+  return events.reduce((latest, event) =>
+    event.completedAt >= latest.completedAt ? event : latest,
+  );
+}
+
+function isLearningEvent(
+  value: unknown,
+): value is AggregatableLearningEvent {
+  return (
+    isRecord(value) &&
+    typeof value.lessonSlug === "string" &&
+    typeof value.activity === "string" &&
+    typeof value.completedAt === "number" &&
+    Number.isFinite(value.completedAt)
+  );
+}
+
+function finishJourney(
+  summary: LearningSummary,
+  lessonSlug: string,
+): LearningJourney {
+  const pathJourney = buildPathJourney(summary, lessonSlug);
+
+  if (summary.totalActivities <= 0) {
+    return pathJourney;
+  }
+
+  return withCurriculumNavigation(applyFlashOverride(pathJourney, summary));
+}
+
+export function buildLearningJourney(
+  summary: unknown,
+  events?: AggregatableLearningEvent[],
+): LearningJourney {
+  if (Array.isArray(events)) {
+    const validEvents = events.filter(isLearningEvent);
+
+    if (validEvents.length === 0) {
+      return learnJourney(resolveLessonSlug(), "EMPTY_HISTORY");
+    }
+
+    const latest = findLatestEvent(validEvents);
+    const latestSlug = latest?.lessonSlug;
+
+    if (!latestSlug || !hasLesson(latestSlug)) {
+      return learnJourney(resolveLessonSlug(), "FALLBACK_LEARN");
+    }
+
+    const lessonSummary = buildLearningSummaryForLesson(validEvents, latestSlug);
+    return finishJourney(lessonSummary, latestSlug);
+  }
+
   const parsed = parseSummary(summary);
 
   if (!parsed) {
     return learnJourney(resolveLessonSlug(), "FALLBACK_LEARN");
   }
 
-  const lessonSlug = resolveLessonSlug(parsed.latestLesson);
-  const pathJourney = buildPathJourney(parsed, lessonSlug);
-
-  if (parsed.totalActivities <= 0) {
-    return pathJourney;
+  if (parsed.latestLesson && !hasLesson(parsed.latestLesson)) {
+    return learnJourney(resolveLessonSlug(), "FALLBACK_LEARN");
   }
 
-  return applyFlashOverride(pathJourney, parsed);
+  const lessonSlug = resolveLessonSlug(parsed.latestLesson);
+  return finishJourney(parsed, lessonSlug);
 }

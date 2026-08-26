@@ -31,6 +31,9 @@ function stageClassName(
 export function JourneyCard({ journey }: JourneyCardProps) {
   const lessonTitle =
     getLessonBySlug(journey.lessonSlug)?.title ?? journey.lessonSlug;
+  const nextLessonTitle = journey.nextLessonSlug
+    ? getLessonBySlug(journey.nextLessonSlug)?.title
+    : undefined;
   const stageLabel = JOURNEY_STAGE_LABELS[journey.stage];
   const action = journey.nextAction;
 
@@ -56,6 +59,7 @@ export function JourneyCard({ journey }: JourneyCardProps) {
         <div style={{ width: `${journey.progressPercent}%` }} />
       </div>
       <p>{journey.message}</p>
+      {nextLessonTitle ? <p>บทถัดไป: {nextLessonTitle}</p> : null}
       <ol className="journeyTrack" aria-label="ลำดับเส้นทางการเรียน">
         {JOURNEY_TRACK.map((stage) => (
           <li
@@ -71,7 +75,11 @@ export function JourneyCard({ journey }: JourneyCardProps) {
         <Link
           className="button primary"
           href={action.href}
-          aria-label={action.label}
+          aria-label={
+            nextLessonTitle
+              ? `${action.label}: ${nextLessonTitle}`
+              : action.label
+          }
         >
           {action.label}
         </Link>

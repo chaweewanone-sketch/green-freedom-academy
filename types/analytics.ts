@@ -89,6 +89,8 @@ export type LearningJourney = {
   progressPercent: number;
   nextAction: JourneyAction;
   reasonCode: JourneyReasonCode;
+  nextLessonSlug?: string;
+  isCurriculumComplete: boolean;
 };
 
 export type AggregatableLearningEvent = LearningEvent & {

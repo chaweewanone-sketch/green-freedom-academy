@@ -71,3 +71,12 @@ export function buildLearningSummaryFromRepository(
     repository.getAll() as AggregatableLearningEvent[],
   );
 }
+
+export function buildLearningSummaryForLesson(
+  events: AggregatableLearningEvent[],
+  lessonSlug: string,
+): LearningSummary {
+  return buildLearningSummary(
+    events.filter((event) => event.lessonSlug === lessonSlug),
+  );
+}
