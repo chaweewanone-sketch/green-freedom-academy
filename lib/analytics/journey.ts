@@ -23,7 +23,7 @@ import type {
 /**
  * Journey answers "ตอนนี้อยู่ขั้นไหน" for the ACTIVE curriculum lesson.
  * Recommendation (buildLearningRecommendation) answers "ควรทำอะไรต่อ"
- * from latest-activity / global summary. These engines stay separate.
+ * for the same active curriculum lesson. These engines stay separate.
  *
  * When events are provided:
  *   History by lesson → lesson completion evaluator → curriculum order

@@ -107,7 +107,7 @@ Example tone (student dashboard, current):
   - `gfa.learningHistory.v1` — persisted learning events (`LocalStorageLearningHistoryRepository` only; do not scatter this key)
 - Activity engines and analytics must not call `localStorage` — persist through `recordActivityCompletion()` / `LearningHistoryRepository`
 - `/dashboard` must not auto-seed sample history; it reads the repository through `loadDashboardHistory()` / `loadDashboardLearningState()`
-- Next-best-action copy comes from `buildLearningRecommendation(summary)` — do not read `localStorage` in the recommendation engine
+- Next-best-action copy comes from `buildLearningRecommendation(summary, events?)` — do not read `localStorage` in the recommendation engine. When events are provided, reuse `resolveActiveLesson` and lesson-scoped summaries; do not pick the lesson from `latestLesson`
 - Current-stage copy comes from `buildLearningJourney(summary, events?)` — keep journey and recommendation as separate engines. When events are provided, the active lesson comes from `resolveActiveLesson`, not `latestLesson`
 - `latestActivity` / `latestLesson` = what the learner did most recently. Active curriculum lesson = first incomplete lesson in curriculum order. Do not treat these as the same value
 - Curriculum order comes from `getCurriculumLessons()` / `getNextCurriculumLesson()` — do not invent a second lesson-content registry

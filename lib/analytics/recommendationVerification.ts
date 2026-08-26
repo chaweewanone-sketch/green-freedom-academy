@@ -1,5 +1,4 @@
-import { getActivityPath } from "@/lib/activities";
-import { getLessonPath } from "@/lib/lessons";
+import { getActivityPath, getLessonPath } from "@/lib/routes";
 import type { LearningSummary } from "@/types/analytics";
 import {
   DEFAULT_RECOMMENDATION_LESSON_SLUG,
@@ -148,7 +147,15 @@ export function verifyMillionaireStrongContinue(): void {
     recommendation.reasonCode === "MILLIONAIRE_STRONG",
     "millionaire 90: reason",
   );
-  assert(recommendation.activity === "flash-cards", "millionaire 90: flash-cards");
+  assert(
+    recommendation.lessonSlug === "past-simple",
+    "millionaire 90: next lesson",
+  );
+  assert(
+    recommendation.href === getLessonPath("past-simple"),
+    "millionaire 90: next lesson href",
+  );
+  assert(recommendation.ctaLabel === "เรียนบทถัดไป", "millionaire 90: CTA");
 }
 
 export function verifyWeakFlashReview(): void {
@@ -165,6 +172,10 @@ export function verifyStrongHistoryIsStable(): void {
 
   assert(first.kind === "CONTINUE", "strong history: CONTINUE");
   assert(first.reasonCode === "MILLIONAIRE_STRONG", "strong history: latest millionaire");
+  assert(
+    first.href === getLessonPath("past-simple"),
+    "strong history: next curriculum lesson",
+  );
   assert(
     JSON.stringify(first) === JSON.stringify(second),
     "strong history: deterministic output",

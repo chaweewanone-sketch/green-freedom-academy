@@ -40,7 +40,7 @@ export function StudentDashboard({
   events,
 }: StudentDashboardProps) {
   const journey = buildLearningJourney(summary, events);
-  const recommendation = buildLearningRecommendation(summary);
+  const recommendation = buildLearningRecommendation(summary, events);
 
   if (summary.totalActivities === 0) {
     return (

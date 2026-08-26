@@ -138,21 +138,19 @@ Activity UI
        ├── MemoryLearningHistoryRepository   (SSR / tests)
        └── LocalStorageLearningHistoryRepository (browser)
   → Analytics (`LearningSummary`)
-       ├── latestActivity / latestLesson   // what the learner did most recently
-       ├── Recommendation Engine           // still latest-activity / global summary
-       └── Journey Engine
-              Learning History
-                → Per-Lesson Evaluation (`evaluateLessonJourney` / `isLessonComplete`)
-                → Curriculum Completion State
-                → Active Lesson Resolver (`resolveActiveLesson`)
-                → Journey stage + nextAction
-              → JourneyCard
+       latestActivity / latestLesson   // descriptive only: what the learner did most recently
+
+  Learning History
+    → Per-Lesson Evaluation (`evaluateLessonJourney` / `isLessonComplete`)
+    → Curriculum Completion State
+    → Active Lesson Resolver (`resolveActiveLesson`)
+         ├── Journey Engine (`buildLearningJourney`)     // current curriculum stage
+         └── Recommendation Engine (`buildLearningRecommendation`) // next best action
+              → JourneyCard / RecommendationCard
               → shared route helpers (`lib/routes.ts`)
 ```
 
-`latestActivity` ≠ `active curriculum lesson`.
-
-Out-of-order history is kept. Completing Past Simple early does not make Past Simple the active lesson while Present Simple is unfinished.
+Journey = current curriculum stage. Recommendation = next best action within the active curriculum lesson. They stay separate engines and both reuse `resolveActiveLesson`. `latestActivity` remains dashboard analytics only.
 
 | Piece | Role |
 |-------|------|
@@ -164,7 +162,7 @@ Out-of-order history is kept. Completing Past Simple early does not make Past Si
 | `createLearningHistoryRepository()` | Browser → localStorage repository; non-browser → memory repository |
 | `loadDashboardHistory()` | Shared dashboard summary read path — repository → analytics summary. Does not seed sample events. |
 | `loadDashboardLearningState()` | Dashboard read path that returns the summary plus the same events, so the journey can stay lesson-specific without importing the repository. |
-| `buildLearningRecommendation()` | Deterministic next-best-action rules over `LearningSummary`. No `localStorage`, no LLM, no backend. Thresholds are v1 policy constants (`70` / `85` / flash review ratio `0.5`). |
+| `buildLearningRecommendation()` | Next-best-action for the **active curriculum lesson**. When events are provided, scores come from that lesson only via `buildLearningSummaryForLesson`. Strong Millionaire on a completed lesson continues to the next curriculum lesson, or `/dashboard` if final. No `localStorage`, no LLM, no backend. Thresholds stay `70` / `85` / flash review ratio `0.5`. Separate from Journey. |
 | `getCurriculumLessons()` | Explicit curriculum order from the existing lesson registry: Present Simple, then Past Simple. |
 | `isLessonComplete()` | Same COMPLETE policy as the Journey Engine (strong Millionaire, no weak flash override). |
 | `resolveActiveLesson()` | First curriculum lesson that is not COMPLETE. If all are complete, returns the final lesson with `isCurriculumComplete`. Does not read `localStorage` or the repository. |
@@ -178,7 +176,7 @@ Out-of-order history is kept. Completing Past Simple early does not make Past Si
 
 **Supported persisted activities:** quiz, millionaire, flash-cards.
 
-**Recommendation v1:** the dashboard shows one "แนะนำขั้นต่อไป" card from `LearningSummary` (latest lesson when known, otherwise Present Simple). Rules are explicit and testable — not personalized by AI. Recommendation may disagree with Journey when latest activity is a later lesson than the active curriculum lesson.
+**Recommendation v1:** the dashboard shows one "แนะนำขั้นต่อไป" card for the **active curriculum lesson**. Journey = current stage. Recommendation = next best action in that lesson. They stay separate. Completing Present Simple recommends `เรียนบทถัดไป` to `/lesson/past-simple`. Completing the final lesson recommends `/dashboard`. Out-of-order later-lesson history is ignored until that lesson becomes active. No AI/LLM, no Supabase.
 
 **Journey v1:** the dashboard shows one "เส้นทางการเรียน" card for the **active curriculum lesson** from `resolveActiveLesson`. Completing Present Simple advances the active lesson to Past Simple at LEARN (existing Past Simple history is reused if present). Completing the final available lesson keeps COMPLETE and returns to `/dashboard`. No backend progression, no AI/LLM, no Supabase.
 

@@ -1,6 +1,13 @@
-import { getActivityPath } from "@/lib/activities";
-import { getLessonBySlug, getLessonPath, hasLesson } from "@/lib/lessons";
+import { resolveActiveLesson } from "@/lib/analytics/activeLesson";
+import {
+  JOURNEY_ACTION_LABELS,
+  isLearningEvent,
+} from "@/lib/analytics/lessonProgress";
+import { buildLearningSummaryForLesson } from "@/lib/analytics/summary";
+import { getFirstCurriculumLesson, getLessonBySlug, getNextCurriculumLesson, hasLesson } from "@/lib/lessons";
+import { getActivityPath, getDashboardPath, getLessonPath } from "@/lib/routes";
 import type {
+  AggregatableLearningEvent,
   LearningRecommendation,
   LearningSummary,
   RecommendationReasonCode,
@@ -13,7 +20,8 @@ export const RECOMMENDATION_THRESHOLDS = {
   flashWeakReviewRatio: 0.5,
 } as const;
 
-export const DEFAULT_RECOMMENDATION_LESSON_SLUG = "present-simple";
+export const DEFAULT_RECOMMENDATION_LESSON_SLUG =
+  getFirstCurriculumLesson()?.slug ?? "present-simple";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -105,12 +113,52 @@ function startRecommendation(
   return recommendation({
     kind: "START",
     title: `เริ่มเรียน ${title}`,
-    message: "ยังไม่มีประวัติการเรียน เริ่มจากบทเรียนนี้ แล้วไปฝึก Quiz ตามลำดับ Learn → Practice → Game",
+    message:
+      "ยังไม่มีประวัติการเรียน เริ่มจากบทเรียนนี้ แล้วไปฝึก Quiz ตามลำดับ Learn → Practice → Game",
     lessonSlug,
     href: getLessonPath(lessonSlug),
-    ctaLabel: "เริ่มเรียน",
+    ctaLabel: JOURNEY_ACTION_LABELS.learn,
     reasonCode,
   });
+}
+
+function nextLessonRecommendation(lessonSlug: string): LearningRecommendation {
+  const title = lessonTitle(lessonSlug);
+
+  return recommendation({
+    kind: "CONTINUE",
+    title: `เรียน ${title}`,
+    message: `บทถัดไป: ${title}`,
+    lessonSlug,
+    href: getLessonPath(lessonSlug),
+    ctaLabel: JOURNEY_ACTION_LABELS.nextLesson,
+    reasonCode: "MILLIONAIRE_STRONG",
+  });
+}
+
+function curriculumCompleteRecommendation(
+  lessonSlug: string,
+): LearningRecommendation {
+  return recommendation({
+    kind: "CONTINUE",
+    title: JOURNEY_ACTION_LABELS.complete,
+    message: "เรียนครบบทที่มีแล้ว สามารถดูสรุปการเรียนได้",
+    lessonSlug,
+    href: getDashboardPath(),
+    ctaLabel: JOURNEY_ACTION_LABELS.complete,
+    reasonCode: "MILLIONAIRE_STRONG",
+  });
+}
+
+function continueAfterStrongMillionaire(
+  lessonSlug: string,
+): LearningRecommendation {
+  const nextLesson = getNextCurriculumLesson(lessonSlug);
+  if (nextLesson) {
+    return nextLessonRecommendation(nextLesson.slug);
+  }
+
+  return curriculumCompleteRecommendation(lessonSlug);
 }
 
 function quizRecommendation(
@@ -191,16 +239,7 @@ function millionaireRecommendation(
     });
   }
 
-  return recommendation({
-    kind: "CONTINUE",
-    title: "ไปต่อด้วย Flash Cards",
-    message: "Millionaire แข็งแรงแล้ว ทบทวนความจำด้วย Flash Cards",
-    lessonSlug,
-    activity: "flash-cards",
-    href: getActivityPath(lessonSlug, "flash-cards"),
-    ctaLabel: "ฝึก Flash Cards",
-    reasonCode: "MILLIONAIRE_STRONG",
-  });
+  return continueAfterStrongMillionaire(lessonSlug);
 }
 
 function flashRecommendation(
@@ -211,11 +250,12 @@ function flashRecommendation(
     return recommendation({
       kind: "REVIEW",
       title: "ฝึก Flash Cards เพิ่มอีกนิด",
-      message: "การ์ดระดับ Medium และ Hard ยังเยอะ ลองทบทวนด้วย Flash Cards อีกครั้ง",
+      message:
+        "การ์ดระดับ Medium และ Hard ยังเยอะ ลองทบทวนด้วย Flash Cards อีกครั้ง",
       lessonSlug,
       activity: "flash-cards",
       href: getActivityPath(lessonSlug, "flash-cards"),
-      ctaLabel: "ทบทวน Flash Cards",
+      ctaLabel: JOURNEY_ACTION_LABELS.reviewFlash,
       reasonCode: "FLASH_WEAK",
     });
   }
@@ -223,7 +263,8 @@ function flashRecommendation(
   return recommendation({
     kind: "CONTINUE",
     title: `ทบทวน ${lessonTitle(lessonSlug)} อีกครั้ง`,
-    message: "Flash Cards จำได้คล่องแล้ว กลับไปทบทวนบทเรียนหรือไปกิจกรรมถัดไปได้",
+    message:
+      "Flash Cards จำได้คล่องแล้ว กลับไปทบทวนบทเรียนหรือไปกิจกรรมถัดไปได้",
     lessonSlug,
     href: getLessonPath(lessonSlug),
     ctaLabel: "เปิดบทเรียน",
@@ -231,9 +272,94 @@ function flashRecommendation(
   });
 }
 
+function recommendByLatestActivity(
+  summary: LearningSummary,
+  lessonSlug: string,
+): LearningRecommendation {
+  const focus = summary.latestActivity;
+
+  if (focus === "millionaire" && summary.millionaireAttempts > 0) {
+    return millionaireRecommendation(summary.averageMillionaireScore, lessonSlug);
+  }
+
+  if (focus === "flash-cards" && summary.flashCardAttempts > 0) {
+    return flashRecommendation(summary, lessonSlug);
+  }
+
+  if (focus === "quiz" && summary.quizAttempts > 0) {
+    return quizRecommendation(summary.averageQuizScore, lessonSlug);
+  }
+
+  if (summary.quizAttempts > 0) {
+    return quizRecommendation(summary.averageQuizScore, lessonSlug);
+  }
+
+  if (summary.millionaireAttempts > 0) {
+    return millionaireRecommendation(summary.averageMillionaireScore, lessonSlug);
+  }
+
+  if (summary.flashCardAttempts > 0) {
+    return flashRecommendation(summary, lessonSlug);
+  }
+
+  return startRecommendation(lessonSlug, "FALLBACK_START");
+}
+
+function recommendForActiveLesson(
+  summary: LearningSummary,
+  lessonSlug: string,
+): LearningRecommendation {
+  if (summary.totalActivities <= 0) {
+    return startRecommendation(lessonSlug, "EMPTY_HISTORY");
+  }
+
+  if (isWeakFlashRetention(summary)) {
+    return flashRecommendation(summary, lessonSlug);
+  }
+
+  return recommendByLatestActivity(summary, lessonSlug);
+}
+
+function recommendFromEvents(
+  events: AggregatableLearningEvent[],
+): LearningRecommendation {
+  const validEvents = events.filter(isLearningEvent);
+  const resolved = resolveActiveLesson(validEvents);
+
+  if (resolved.isCurriculumComplete) {
+    return curriculumCompleteRecommendation(resolved.lessonSlug);
+  }
+
+  const lessonSummary = buildLearningSummaryForLesson(
+    validEvents,
+    resolved.lessonSlug,
+  );
+
+  if (lessonSummary.totalActivities <= 0) {
+    if (validEvents.length === 0) {
+      return startRecommendation(resolved.lessonSlug, "EMPTY_HISTORY");
+    }
+
+    return nextLessonRecommendation(resolved.lessonSlug);
+  }
+
+  return recommendForActiveLesson(lessonSummary, resolved.lessonSlug);
+}
+
+/**
+ * Next-best-action for the ACTIVE curriculum lesson.
+ * Journey answers current stage; this engine answers what to do next.
+ * They stay separate. When events are provided, latestActivity is not used
+ * to pick the lesson.
+ */
 export function buildLearningRecommendation(
   summary: unknown,
+  events?: AggregatableLearningEvent[],
 ): LearningRecommendation {
+  if (Array.isArray(events)) {
+    return recommendFromEvents(events);
+  }
+
   const parsed = parseSummary(summary);
 
   if (!parsed) {
@@ -246,31 +372,5 @@ export function buildLearningRecommendation(
     return startRecommendation(lessonSlug, "EMPTY_HISTORY");
   }
 
-  const focus = parsed.latestActivity;
-
-  if (focus === "millionaire" && parsed.millionaireAttempts > 0) {
-    return millionaireRecommendation(parsed.averageMillionaireScore, lessonSlug);
-  }
-
-  if (focus === "flash-cards" && parsed.flashCardAttempts > 0) {
-    return flashRecommendation(parsed, lessonSlug);
-  }
-
-  if (focus === "quiz" && parsed.quizAttempts > 0) {
-    return quizRecommendation(parsed.averageQuizScore, lessonSlug);
-  }
-
-  if (parsed.quizAttempts > 0) {
-    return quizRecommendation(parsed.averageQuizScore, lessonSlug);
-  }
-
-  if (parsed.millionaireAttempts > 0) {
-    return millionaireRecommendation(parsed.averageMillionaireScore, lessonSlug);
-  }
-
-  if (parsed.flashCardAttempts > 0) {
-    return flashRecommendation(parsed, lessonSlug);
-  }
-
-  return startRecommendation(lessonSlug, "FALLBACK_START");
+  return recommendByLatestActivity(parsed, lessonSlug);
 }
