@@ -95,9 +95,9 @@ green-freedom-academy-v1/
 |-------|----------------|------|-------------|
 | `/` | Server | None | Static |
 | `/login` | Client | None | Demo → `localStorage` |
-| `/student` | Server | None (open) | Hardcoded |
+| `/student` | Server page + client home view | None (open) | Learning history → Student Learning Home composition |
 | `/teacher` | Server | None (open) | Hardcoded |
-| `/dashboard` | Server page + client history view | None | Learning history repository |
+| `/dashboard` | Server page + client history view | None | Learning history repository (analytics detail) |
 | `/lesson/[slug]` | Client lesson viewer | None | In-memory lesson state |
 | `/lesson/[slug]/activity/[activity]` | Server page + client player | None | Assessment session; completed quiz / millionaire / flash-cards persist via history repository |
 
@@ -114,7 +114,7 @@ green-freedom-academy-v1/
 
 ### Lesson experience
 
-1. Student opens `/lesson/present-simple` from dashboard.
+1. Student opens `/lesson/present-simple` from Student Home or dashboard.
 2. Slide index and completed slides live in React state.
 3. Progress bar derived from completed slide count.
 4. **Gap:** Progress is lost on page refresh; nothing persists to Supabase.
@@ -147,7 +147,23 @@ Activity UI
          ├── Recommendation Engine (`buildLearningRecommendation`) // next action
          ├── Curriculum Progress (`buildCurriculumProgress`)   // overview
          └── Resume Learning (`buildResumeLearning`)           // return-and-continue CTA
-              → ResumeLearningCard / CurriculumProgressCard / JourneyCard / RecommendationCard
+              → Student Learning Home (`buildStudentLearningHome`)  // action-first composition
+              → `/student` ResumeLearningCard (primary) + compact sections
+              → `/dashboard` CurriculumProgressCard / JourneyCard / RecommendationCard + compact Resume
+```
+
+Student Home answers “ฉันควรทำอะไรตอนนี้?” Dashboard answers “ผลการเรียนและความก้าวหน้าของฉันเป็นอย่างไร?”
+
+```
+Learning History
+      ↓
+Analytics
+      ↓
+Resume / Journey / Curriculum Progress
+      ↓
+Student Learning Home   (/student, action-oriented)
+      ↓
+Dashboard               (/dashboard, analytics detail)
 ```
 
 Resume Learning is a deterministic action-oriented projection of existing Recommendation + active lesson. It is not another scoring engine, not persistence, not auth, and not AI.
@@ -161,7 +177,7 @@ Resume Learning is a deterministic action-oriented projection of existing Recomm
 | `LocalStorageLearningHistoryRepository` | Browser persistence under one versioned key: `gfa.learningHistory.v1` |
 | `createLearningHistoryRepository()` | Browser → localStorage repository; non-browser → memory repository |
 | `loadDashboardHistory()` | Shared dashboard summary read path — repository → analytics summary. Does not seed sample events. |
-| `loadDashboardLearningState()` | Dashboard read path that returns the summary plus the same events, so the journey can stay lesson-specific without importing the repository. |
+| `loadDashboardLearningState()` | Dashboard and Student Home read path that returns the summary plus the same events, so composition stays repository-free. |
 | `buildLearningRecommendation()` | Next-best-action for the **active curriculum lesson**. When events are provided, scores come from that lesson only via `buildLearningSummaryForLesson`. Strong Millionaire on a completed lesson continues to the next curriculum lesson, or `/dashboard` if final. No `localStorage`, no LLM, no backend. Thresholds stay `70` / `85` / flash review ratio `0.5`. Separate from Journey. |
 | `getCurriculumLessons()` | Explicit curriculum order from the existing lesson registry: Present Simple, then Past Simple. |
 | `isLessonComplete()` | Same COMPLETE policy as the Journey Engine (strong Millionaire, no weak flash override). |
@@ -169,18 +185,21 @@ Resume Learning is a deterministic action-oriented projection of existing Recomm
 | `buildLearningJourney()` | Uses the active curriculum lesson when events are provided. Stage mapping stays LEARN→lesson, PRACTICE→Quiz, PLAY→Millionaire, REVIEW→Flash Cards or Quiz by `reasonCode`. All lessons complete → `/dashboard`. Separate from recommendation. |
 | `buildCurriculumProgress()` | Dashboard overview: each curriculum lesson is COMPLETE, ACTIVE, or LOCKED. Overall % is the unweighted average of per-lesson `progressPercent`. LOCKED lessons contribute 0 even if out-of-order history exists. Display only — does not block routes. |
 | `buildResumeLearning()` | One primary “return and continue” action. Reuses `buildLearningRecommendation` href/lesson and `resolveActiveLesson`. Does not score activities. |
+| `buildStudentLearningHome()` | View-model composition for `/student`. Reuses Resume, Journey, and Curriculum Progress. No `localStorage`, no repository, no new learning policy. |
 
-**Browser boundary:** `/dashboard` stays a Server Component. `DashboardHistoryView` is a Client Component that creates the repository after mount, so SSR/build never touches `localStorage`. Missing, unreadable, or malformed storage fails safe (empty history) and does not rewrite stored data on read.
+**Browser boundary:** `/student` and `/dashboard` stay Server Components. `StudentLearningHomeView` and `DashboardHistoryView` are Client Components that create the repository after mount, so SSR/build never touches `localStorage`. Missing, unreadable, or malformed storage fails safe (empty history) and does not rewrite stored data on read.
 
-**No automatic sample seeding:** `/dashboard` reads whatever the repository already has. Fresh storage shows the genuine empty state (`ยังไม่มีกิจกรรมการเรียน`). Sample helpers in `lib/analytics/sample-data.ts` remain for tests and explicit fixtures only.
+**No automatic sample seeding:** `/student` and `/dashboard` read whatever the repository already has. Fresh storage shows a clear start CTA on Student Home (`เริ่มการเรียนรู้`) and the genuine empty analytics state on `/dashboard`. Sample helpers in `lib/analytics/sample-data.ts` remain for tests and explicit fixtures only.
 
 **Current persistence:** browser `localStorage` via `LocalStorageLearningHistoryRepository`. Backend/Supabase persistence is deferred.
 
 **Supported persisted activities:** quiz, millionaire, flash-cards.
 
-**Recommendation v1:** the dashboard shows one "แนะนำขั้นต่อไป" card for the **active curriculum lesson**. Journey = current stage. Recommendation = next best action in that lesson. They stay separate. Completing Present Simple recommends `เรียนบทถัดไป` to `/lesson/past-simple`. Completing the final lesson recommends `/dashboard`. Out-of-order later-lesson history is ignored until that lesson becomes active. No AI/LLM, no Supabase.
+**Recommendation v1:** `/dashboard` shows one "แนะนำขั้นต่อไป" card for the **active curriculum lesson**. Journey = current stage. Recommendation = next best action in that lesson. They stay separate. Completing Present Simple recommends `เรียนบทถัดไป` to `/lesson/past-simple`. Completing the final lesson recommends `/dashboard`. Out-of-order later-lesson history is ignored until that lesson becomes active. No AI/LLM, no Supabase.
 
-**Journey v1:** the dashboard shows one "เส้นทางการเรียน" card for the **active curriculum lesson** from `resolveActiveLesson`. Completing Present Simple advances the active lesson to Past Simple at LEARN (existing Past Simple history is reused if present). Completing the final available lesson keeps COMPLETE and returns to `/dashboard`. No backend progression, no AI/LLM, no Supabase.
+**Journey v1:** `/dashboard` shows one "เส้นทางการเรียน" card for the **active curriculum lesson** from `resolveActiveLesson`. Completing Present Simple advances the active lesson to Past Simple at LEARN (existing Past Simple history is reused if present). Completing the final available lesson keeps COMPLETE and returns to `/dashboard`. No backend progression, no AI/LLM, no Supabase.
+
+**Student Learning Home v1:** `/student` is the action-oriented learner entry. It composes Resume (primary CTA), active lesson + stage, compact curriculum totals, and latest activity. It does not duplicate dashboard analytics or invent a second next-action policy. Curriculum complete shows `เรียนครบหลักสูตรแล้ว` with `ดูสรุปการเรียน` — no fake continue lesson.
 
 **Not yet wired:** matching, monopoly, spin-wheel, sentence-builder, and lesson-slide completion.
 

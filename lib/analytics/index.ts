@@ -16,6 +16,10 @@ export type {
   ResumeLearning,
   ResumeLearningAction,
   ResumeLearningActionType,
+  StudentLearningHomeActiveLesson,
+  StudentLearningHomeCurriculum,
+  StudentLearningHomeLatestActivity,
+  StudentLearningHomeModel,
 } from "@/types/analytics";
 export {
   normalizeActivityResult,
@@ -49,6 +53,7 @@ export {
   buildResumeLearning,
   isKnownResumeHref,
 } from "./resumeLearning";
+export { buildStudentLearningHome } from "./studentHome";
 export {
   buildLearningSummary,
   buildLearningSummaryForLesson,

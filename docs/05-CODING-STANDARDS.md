@@ -93,7 +93,7 @@ export function MyComponent() {
 
 Example tone (student dashboard, current):
 
-> สวัสดี นักเรียน GFA 🌱 — วันนี้เรียนต่ออีกนิด แล้วเก็บ XP เพิ่มกันค่ะ
+> ฉันควรทำอะไรตอนนี้? — เรียนต่อจากจุดที่ค้างไว้
 
 ---
 
@@ -106,7 +106,7 @@ Example tone (student dashboard, current):
   - `gfa-demo-role` — demo login role
   - `gfa.learningHistory.v1` — persisted learning events (`LocalStorageLearningHistoryRepository` only; do not scatter this key)
 - Activity engines and analytics must not call `localStorage` — persist through `recordActivityCompletion()` / `LearningHistoryRepository`
-- `/dashboard` must not auto-seed sample history; it reads the repository through `loadDashboardHistory()` / `loadDashboardLearningState()`
+- `/dashboard` and `/student` must not auto-seed sample history; they read the repository through `loadDashboardHistory()` / `loadDashboardLearningState()`
 - Next-best-action copy comes from `buildLearningRecommendation(summary, events?)` — do not read `localStorage` in the recommendation engine. When events are provided, reuse `resolveActiveLesson` and lesson-scoped summaries; do not pick the lesson from `latestLesson`
 - Current-stage copy comes from `buildLearningJourney(summary, events?)` — keep journey and recommendation as separate engines. When events are provided, the active lesson comes from `resolveActiveLesson`, not `latestLesson`
 - `latestActivity` / `latestLesson` = what the learner did most recently. Active curriculum lesson = first incomplete lesson in curriculum order. Do not treat these as the same value
@@ -114,8 +114,9 @@ Example tone (student dashboard, current):
 - Lesson COMPLETE is defined only by `isLessonComplete()` / `evaluateLessonJourney()` — do not add a second completion policy
 - Curriculum dashboard overview comes from `buildCurriculumProgress(events)` — COMPLETE / ACTIVE / LOCKED is display state, not route access control. Overall progress is the unweighted average of per-lesson percents; LOCKED lessons count as 0
 - Resume Learning comes from `buildResumeLearning(summary, events?)` — project Recommendation’s next action into one CTA. Do not add a second scoring or curriculum policy
-- Journey CTAs must use `getLessonPath()`, `getActivityPath()`, or `getDashboardPath()` from `lib/routes.ts` — do not scatter hardcoded lesson/activity URLs
-- The journey engine, lesson evaluator, active-lesson resolver, recommendation engine, curriculum progress builder, and resume builder must not import `localStorage` or `LearningHistoryRepository`
+- Student Learning Home comes from `buildStudentLearningHome(summary, events?)` — compose Resume, Journey, and Curriculum Progress for `/student`. Do not add a second scoring, journey, or recommendation engine
+- Journey CTAs must use `getLessonPath()`, `getActivityPath()`, `getStudentPath()`, or `getDashboardPath()` from `lib/routes.ts` — do not scatter hardcoded lesson/activity URLs
+- The journey engine, lesson evaluator, active-lesson resolver, recommendation engine, curriculum progress builder, resume builder, and student-home view model must not import `localStorage` or `LearningHistoryRepository`
 
 ### Planned (Supabase)
 

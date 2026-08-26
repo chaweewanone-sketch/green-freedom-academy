@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type {
   AggregatableLearningEvent,
   LearningSummary,
@@ -6,6 +7,7 @@ import { buildCurriculumProgress } from "@/lib/analytics/curriculumProgress";
 import { buildLearningJourney } from "@/lib/analytics/journey";
 import { buildLearningRecommendation } from "@/lib/analytics/recommendation";
 import { buildResumeLearning } from "@/lib/analytics/resumeLearning";
+import { getStudentPath } from "@/lib/routes";
 import { CurriculumProgressCard } from "./CurriculumProgressCard";
 import { JourneyCard } from "./JourneyCard";
 import { RecommendationCard } from "./RecommendationCard";
@@ -58,11 +60,20 @@ export function StudentDashboard({
           <p className="studentDashboardEmptyMessage">
             เริ่มทำ Quiz, Millionaire หรือ Flash Cards เพื่อดูสรุปการเรียนที่นี่
           </p>
+          <div className="actions">
+            <Link
+              className="button secondary"
+              href={getStudentPath()}
+              aria-label="กลับไปหน้าเรียน"
+            >
+              กลับไปหน้าเรียน
+            </Link>
+          </div>
         </section>
-        <ResumeLearningCard resume={resume} />
         <CurriculumProgressCard progress={curriculumProgress} />
         <JourneyCard journey={journey} />
         <RecommendationCard recommendation={recommendation} />
+        <ResumeLearningCard resume={resume} compact />
       </>
     );
   }
@@ -98,10 +109,17 @@ export function StudentDashboard({
           <span className="eyebrow">STUDENT DASHBOARD</span>
           <h1>สรุปการเรียนของฉัน</h1>
           <p>ภาพรวมกิจกรรมและความก้าวหน้าจาก Analytics</p>
+          <div className="actions">
+            <Link
+              className="button secondary"
+              href={getStudentPath()}
+              aria-label="กลับไปหน้าเรียน"
+            >
+              กลับไปหน้าเรียน
+            </Link>
+          </div>
         </div>
       </section>
-
-      <ResumeLearningCard resume={resume} />
 
       <CurriculumProgressCard progress={curriculumProgress} />
 
@@ -160,6 +178,8 @@ export function StudentDashboard({
           </div>
         </dl>
       </section>
+
+      <ResumeLearningCard resume={resume} compact />
     </div>
   );
 }

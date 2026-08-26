@@ -140,3 +140,31 @@ export type ResumeLearning = {
   description: string;
   action: ResumeLearningAction;
 };
+
+export type StudentLearningHomeActiveLesson = {
+  lessonSlug: string;
+  lessonTitle: string;
+  stage: LearningJourneyStage;
+  stageLabel: string;
+};
+
+export type StudentLearningHomeCurriculum = {
+  completedLessons: number;
+  totalLessons: number;
+  overallProgressPercent: number;
+  isCurriculumComplete: boolean;
+};
+
+export type StudentLearningHomeLatestActivity = {
+  activity: string;
+  lessonSlug: string;
+};
+
+export type StudentLearningHomeModel = {
+  resumeLearning: ResumeLearning;
+  activeLesson: StudentLearningHomeActiveLesson | null;
+  curriculumProgress: StudentLearningHomeCurriculum;
+  latestActivity?: StudentLearningHomeLatestActivity;
+  dashboardHref: string;
+  hasHistory: boolean;
+};

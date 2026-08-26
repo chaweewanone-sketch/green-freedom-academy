@@ -27,7 +27,7 @@ FUTURE           AI generators, Teacher Studio, Classroom Companion
 | Next.js 15 App Router setup | CURRENT | `app/` routes |
 | Landing page (`/`) | CURRENT | Marketing hero, feature grid |
 | Demo login (`/login`) | CURRENT | Role tabs; stores `gfa-demo-role` in `localStorage`; no credential check |
-| Student dashboard (`/student`) | CURRENT | Hardcoded XP (120), progress (35%), locked stages |
+| Student Learning Home (`/student`) | CURRENT | Action-oriented learner entry: Resume Learning, active lesson, compact curriculum progress, latest activity |
 | Teacher dashboard (`/teacher`) | CURRENT | Hardcoded stats and student table |
 | Present Simple lesson (`/lesson/present-simple`) | CURRENT | 4 slides, client-side progress; lost on refresh |
 | `BrandHeader` component | CURRENT | Shared nav across main pages |
@@ -38,16 +38,16 @@ FUTURE           AI generators, Teacher Studio, Classroom Companion
 | README local dev + Vercel deploy | CURRENT | Thai instructions |
 | Learning history repository | CURRENT | Memory + browser `localStorage` (`gfa.learningHistory.v1`); no Supabase writes |
 | Activity completion recording | CURRENT | Completed quiz, millionaire, and flash-cards save `LearningEvent`s through the history repository |
-| Student dashboard history | CURRENT | `/dashboard` reads real persisted events only; no automatic sample seeding |
+| Student dashboard history | CURRENT | `/dashboard` is analytics/progress detail; reads real persisted events only; no automatic sample seeding |
 | Learning path recommendation | CURRENT | Deterministic next-best-action for the active curriculum lesson (not latest activity) |
 | Learning journey / progression | CURRENT | Curriculum-order active lesson (not latest activity) with per-lesson Learn → Practice → Play → Review → Complete |
 | Curriculum progress dashboard | CURRENT | Deterministic per-lesson status + overall average progress on `/dashboard` (display only, not access control) |
-| Resume learning | CURRENT | One primary dashboard CTA projected from curriculum-aware Recommendation |
+| Resume learning | CURRENT | One primary return-and-continue CTA projected from curriculum-aware Recommendation; primary on Student Home, compact on `/dashboard` |
 
 **Known gaps in Phase 0:**
 
 - Demo role in `localStorage` is written but never read for route guards.
-- Practice and Game links show "ยังล็อก" (locked) — no routes or logic exist.
+- Teacher dashboard still uses hardcoded demo stats; Student Home no longer uses fake XP.
 - Teacher "สร้างห้องเรียน" button has no handler.
 - Coming-soon activities (matching, monopoly, spin-wheel, sentence-builder) have no completion recording yet.
 - Curriculum currently has two registry lessons (Present Simple, then Past Simple). Completing the final lesson returns to `/dashboard`; there is no invented third lesson.
@@ -82,9 +82,9 @@ FUTURE           AI generators, Teacher Studio, Classroom Companion
 |---------|--------|-------|
 | Lesson content from database | PLANNED | `lessons.content` JSONB in schema |
 | Generic lesson viewer component | PLANNED | Replace hardcoded slide arrays |
-| Short Practice engine | PLANNED | UI placeholder on student dashboard |
-| Millionaire / Game engine | PLANNED | UI placeholder on student dashboard |
-| XP and badge system | PLANNED | Demo values only today |
+| Short Practice engine | PLANNED | Activity routes exist; engine work continues |
+| Millionaire / Game engine | PLANNED | Activity routes exist; engine work continues |
+| XP and badge system | PLANNED | Not shown on Student Home |
 | Course catalog (`courses` table) | PLANNED | Schema only |
 
 **Exit criteria:** One full P.6 English unit runs Learn → Practice → Game with progress saved per student.

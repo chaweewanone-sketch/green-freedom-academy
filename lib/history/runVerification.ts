@@ -4,6 +4,7 @@ import { runJourneyCurriculumVerification } from "@/lib/analytics/journeyCurricu
 import { runJourneyActionVerification, runJourneyVerification } from "@/lib/analytics/journeyVerification";
 import { runRecommendationCurriculumVerification } from "@/lib/analytics/recommendationCurriculumVerification";
 import { runResumeLearningVerification } from "@/lib/analytics/resumeLearningVerification";
+import { runStudentHomeVerification } from "@/lib/analytics/studentHomeVerification";
 import { runRecommendationVerification } from "@/lib/analytics/recommendationVerification";
 import { runCompletionVerification } from "./completionVerification";
 import { runDashboardVerification } from "./dashboardVerification";
@@ -41,3 +42,6 @@ console.log("curriculum progress verification passed");
 
 runResumeLearningVerification();
 console.log("resume learning verification passed");
+
+runStudentHomeVerification();
+console.log("student home verification passed");

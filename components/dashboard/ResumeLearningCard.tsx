@@ -3,18 +3,26 @@ import type { ResumeLearning } from "@/types/analytics";
 
 type ResumeLearningCardProps = {
   resume: ResumeLearning;
+  compact?: boolean;
 };
 
-export function ResumeLearningCard({ resume }: ResumeLearningCardProps) {
+export function ResumeLearningCard({
+  resume,
+  compact = false,
+}: ResumeLearningCardProps) {
   const { action } = resume;
 
   return (
     <section
-      className="panel studentDashboardSection resumeLearningCard"
+      className={
+        compact
+          ? "panel studentDashboardSection resumeLearningCard resumeLearningCardCompact"
+          : "panel studentDashboardSection resumeLearningCard"
+      }
       aria-label="เรียนต่อ"
     >
       <span className="eyebrow">RESUME LEARNING</span>
-      <h2>{resume.title}</h2>
+      {compact ? <h3>{resume.title}</h3> : <h2>{resume.title}</h2>}
       <p>
         <strong>{action.lessonTitle}</strong>
       </p>
