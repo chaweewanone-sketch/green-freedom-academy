@@ -4,6 +4,7 @@ import { StudentActivityPlayer } from "@/components/activities";
 import { createAssessmentSession } from "@/lib/assessment";
 import { getLearningActivities } from "@/lib/activities";
 import { getLessonBySlug } from "@/lib/lessons";
+import { getLessonPath } from "@/lib/routes";
 import type { ActivityStatus } from "@/types/activity";
 
 type ActivityPageProps = {
@@ -45,7 +46,7 @@ export default async function ActivityPage({ params }: ActivityPageProps) {
         <StudentActivityPlayer
           session={session}
           lessonTitle={lesson.title}
-          lessonPath={`/lesson/${slug}`}
+          lessonPath={getLessonPath(slug)}
         />
       </main>
     );
@@ -71,8 +72,8 @@ export default async function ActivityPage({ params }: ActivityPageProps) {
         <p className="activityPlaceholderMessage">
           This activity is not implemented yet.
         </p>
-        <Link className="button secondary" href={`/lesson/${slug}`}>
-          ← Back to lesson
+        <Link className="button secondary" href={getLessonPath(slug)}>
+          กลับไปบทเรียน
         </Link>
       </section>
     </main>

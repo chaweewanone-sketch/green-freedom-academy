@@ -115,7 +115,9 @@ Example tone (student dashboard, current):
 - Curriculum dashboard overview comes from `buildCurriculumProgress(events)` — COMPLETE / ACTIVE / LOCKED is display state, not route access control. Overall progress is the unweighted average of per-lesson percents; LOCKED lessons count as 0
 - Resume Learning comes from `buildResumeLearning(summary, events?)` — project Recommendation’s next action into one CTA. Do not add a second scoring or curriculum policy
 - Student Learning Home comes from `buildStudentLearningHome(summary, events?)` — compose Resume, Journey, and Curriculum Progress for `/student`. Do not add a second scoring, journey, or recommendation engine
-- Journey CTAs must use `getLessonPath()`, `getActivityPath()`, `getStudentPath()`, or `getDashboardPath()` from `lib/routes.ts` — do not scatter hardcoded lesson/activity URLs
+- One completed activity attempt = one `LearningEvent`. `recordActivityCompletion()` dedupes identical `sessionId` + `completedAt`. Do not save again from result-screen navigation or refresh
+- Journey, Recommendation, and Resume must share the active curriculum lesson when events are provided. Labels may differ; href lesson targets must not contradict
+- Student-facing lesson/activity/home/dashboard links should use `getLessonPath()`, `getActivityPath()`, `getStudentPath()`, or `getDashboardPath()` from `lib/routes.ts`
 - The journey engine, lesson evaluator, active-lesson resolver, recommendation engine, curriculum progress builder, resume builder, and student-home view model must not import `localStorage` or `LearningHistoryRepository`
 
 ### Planned (Supabase)

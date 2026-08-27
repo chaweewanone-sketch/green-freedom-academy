@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { HistoryLoadingPanel } from "@/components/HistoryLoadingPanel";
 import {
   createLearningHistoryRepository,
   loadDashboardLearningState,
@@ -23,10 +24,10 @@ export function DashboardHistoryView() {
 
   if (!state) {
     return (
-      <section className="panel studentDashboardEmpty">
-        <span className="eyebrow">LEARNING SUMMARY</span>
-        <h2>กำลังโหลดสรุปการเรียน...</h2>
-      </section>
+      <HistoryLoadingPanel
+        eyebrow="LEARNING SUMMARY"
+        message="กำลังโหลดสรุปการเรียน..."
+      />
     );
   }
 

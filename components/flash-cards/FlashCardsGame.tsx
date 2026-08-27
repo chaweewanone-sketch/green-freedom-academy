@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { useRef, useState } from "react";
+import { ActivityResultActions } from "@/components/activities/ActivityResultActions";
 import type { AssessmentSession } from "@/lib/assessment";
+import { getLessonPath } from "@/lib/routes";
 import type {
   FlashCardResult,
   FlashCardReview,
@@ -62,7 +64,7 @@ function ratingPercent(count: number, total: number): number {
 export function FlashCardsGame({ session, onComplete }: FlashCardsGameProps) {
   const cards = session.questions;
   const totalCards = cards.length;
-  const lessonPath = `/lesson/${session.lessonSlug}`;
+  const lessonPath = getLessonPath(session.lessonSlug);
   const hasRecordedCompletionRef = useRef(false);
 
   const [phase, setPhase] = useState<FlashCardsPhase>("intro");
@@ -184,7 +186,7 @@ export function FlashCardsGame({ session, onComplete }: FlashCardsGameProps) {
     return (
       <section className="flashCardsGame panel flashCardsSummary">
         <span className="eyebrow">SESSION SUMMARY</span>
-        <h2>สรุปการทบทวน</h2>
+        <h1>สรุปการทบทวน</h1>
         <p className="millionaireResultScore">
           ทบทวนครบ <strong>{result.reviewedCards}</strong> / {result.totalCards}{" "}
           การ์ด
@@ -211,18 +213,10 @@ export function FlashCardsGame({ session, onComplete }: FlashCardsGameProps) {
             </dd>
           </div>
         </dl>
-        <div className="millionaireResultActions">
-          <button
-            type="button"
-            className="button primary"
-            onClick={restartReview}
-          >
-            เริ่มใหม่
-          </button>
-          <Link className="button secondary" href={lessonPath}>
-            กลับไปบทเรียน
-          </Link>
-        </div>
+        <ActivityResultActions
+          lessonPath={lessonPath}
+          onRestart={restartReview}
+        />
       </section>
     );
   }

@@ -7,10 +7,12 @@ import type { CurriculumProgress } from "@/types/analytics";
 
 type CurriculumProgressCardProps = {
   progress: CurriculumProgress;
+  showOverallPercent?: boolean;
 };
 
 export function CurriculumProgressCard({
   progress,
+  showOverallPercent = true,
 }: CurriculumProgressCardProps) {
   const activeTitle = progress.activeLessonSlug
     ? getLessonBySlug(progress.activeLessonSlug)?.title ??
@@ -34,19 +36,21 @@ export function CurriculumProgressCard({
         </p>
       )}
       <p>
-        เรียนจบแล้ว {progress.completedLessons}/{progress.totalLessons} บท ·{" "}
-        {progress.overallProgressPercent}%
+        เรียนจบแล้ว {progress.completedLessons}/{progress.totalLessons} บท
+        {showOverallPercent ? ` · ${progress.overallProgressPercent}%` : null}
       </p>
-      <div
-        className="progress"
-        role="progressbar"
-        aria-valuenow={progress.overallProgressPercent}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-label="ความก้าวหน้าหลักสูตรโดยรวม"
-      >
-        <div style={{ width: `${progress.overallProgressPercent}%` }} />
-      </div>
+      {showOverallPercent ? (
+        <div
+          className="progress"
+          role="progressbar"
+          aria-valuenow={progress.overallProgressPercent}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label="ความก้าวหน้าหลักสูตรโดยรวม"
+        >
+          <div style={{ width: `${progress.overallProgressPercent}%` }} />
+        </div>
+      ) : null}
       <ol className="curriculumProgressList" aria-label="บทเรียนในหลักสูตร">
         {progress.lessons.map((lesson) => {
           const statusLabel = CURRICULUM_LESSON_STATUS_LABELS[lesson.status];

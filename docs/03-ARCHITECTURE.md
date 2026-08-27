@@ -155,6 +155,28 @@ Activity UI
 Student Home answers “ฉันควรทำอะไรตอนนี้?” Dashboard answers “ผลการเรียนและความก้าวหน้าของฉันเป็นอย่างไร?”
 
 ```
+Student Home
+  → Lesson
+  → Activity (quiz / millionaire / flash-cards)
+  → Completion (`recordActivityCompletion`)
+  → Persistence (`LearningHistoryRepository`)
+  → Resume / Journey / Recommendation (active lesson)
+  → Next Lesson
+  → Curriculum complete → `/dashboard` summary
+```
+
+**Integration invariants**
+
+- One completed attempt = one `LearningEvent` (`sessionId` + `completedAt` dedupe).
+- Refresh and React rerenders do not duplicate that event. Result screens are in-memory phases on the same activity URL; a refresh returns to the intro, not a silent resave.
+- Browser Back/Forward does not re-record unless the learner completes a genuine new attempt (`completedAt` changes).
+- Out-of-order later-lesson events are retained but do not hijack curriculum order.
+- Active lesson drives Journey, Recommendation, and Resume. Different labels are allowed; contradictory lesson targets are not.
+- Direct activity URLs load without route locking. Completions store under the URL’s lesson slug.
+- Dashboard remains analytics-first. Student Home remains action-first.
+- Activity result screens: `กลับหน้าหลักนักเรียน` · `เริ่มใหม่` · `กลับไปบทเรียน`.
+
+```
 Learning History
       ↓
 Analytics

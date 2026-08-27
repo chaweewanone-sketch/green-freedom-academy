@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { HistoryLoadingPanel } from "@/components/HistoryLoadingPanel";
 import { buildStudentLearningHome } from "@/lib/analytics/studentHome";
 import {
   loadDashboardLearningState,
@@ -17,10 +18,10 @@ export function StudentLearningHomeView() {
 
   if (!state) {
     return (
-      <section className="panel studentDashboardEmpty">
-        <span className="eyebrow">LEARNING HOME</span>
-        <h1>กำลังโหลดหน้าเรียน...</h1>
-      </section>
+      <HistoryLoadingPanel
+        eyebrow="LEARNING HOME"
+        message="กำลังโหลดหน้าเรียน..."
+      />
     );
   }
 

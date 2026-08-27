@@ -70,7 +70,7 @@ export function StudentDashboard({
             </Link>
           </div>
         </section>
-        <CurriculumProgressCard progress={curriculumProgress} />
+        <CurriculumProgressCard progress={curriculumProgress} showOverallPercent={false} />
         <JourneyCard journey={journey} />
         <RecommendationCard recommendation={recommendation} />
         <ResumeLearningCard resume={resume} compact />

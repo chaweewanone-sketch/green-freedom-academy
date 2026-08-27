@@ -24,6 +24,7 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Curriculum progress overview (`buildCurriculumProgress`) on the student dashboard: complete / active / locked lessons and an unweighted overall percent
 - Resume Learning (`buildResumeLearning`) — one primary return-and-continue CTA projected from curriculum-aware Recommendation
 - Student Learning Home (`buildStudentLearningHome`) — action-oriented `/student` composition of Resume, active lesson, curriculum totals, and latest activity
+- Activity result return actions (`ActivityResultActions`) — `กลับหน้าหลักนักเรียน`, `เริ่มใหม่`, `กลับไปบทเรียน` after Quiz / Millionaire / Flash Cards
 
 ### Changed
 - `/dashboard` history flow is client-loaded so events survive browser refresh
@@ -35,6 +36,8 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Student dashboard shows a compact Resume Learning card as a secondary continue CTA; Student Home owns the primary resume action
 - `/student` is the learner home (action-first) instead of a hardcoded XP demo; `/dashboard` remains analytics-first
 - `BrandHeader` includes ผลการเรียน → `/dashboard` and นักเรียน → `/student`
+- Lesson back link for students goes to Student Home (`หน้าหลักนักเรียน`) instead of the English “Dashboard” label
+- Empty dashboard hides the overall curriculum percent so 0 completed / 2 lessons is not mixed with the initial 10% average
 
 ---
 

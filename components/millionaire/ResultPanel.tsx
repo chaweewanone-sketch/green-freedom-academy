@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { ActivityResultActions } from "@/components/activities/ActivityResultActions";
 
 type ResultPanelProps = {
   score: number;
@@ -16,18 +16,11 @@ export function ResultPanel({
   return (
     <section className="millionaireResult panel">
       <span className="eyebrow">RESULT</span>
-      <h2>จบเกม Millionaire Challenge</h2>
+      <h1>จบเกม Millionaire Challenge</h1>
       <p className="millionaireResultScore">
         คะแนน <strong>{score}</strong> / {total}
       </p>
-      <div className="millionaireResultActions">
-        <button type="button" className="button primary" onClick={onRestart}>
-          เริ่มใหม่
-        </button>
-        <Link className="button secondary" href={lessonPath}>
-          กลับไปบทเรียน
-        </Link>
-      </div>
+      <ActivityResultActions lessonPath={lessonPath} onRestart={onRestart} />
     </section>
   );
 }

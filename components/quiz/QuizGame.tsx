@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { useRef, useState } from "react";
+import { ActivityResultActions } from "@/components/activities/ActivityResultActions";
 import { ChoiceButton } from "@/components/millionaire/ChoiceButton";
 import { buildAssessmentResult } from "@/lib/assessment";
+import { getLessonPath } from "@/lib/routes";
 import type { AssessmentSession } from "@/lib/assessment";
 import type { AssessmentResult } from "@/types/assessment-result";
 
@@ -31,7 +33,7 @@ export function QuizGame({ session, onComplete }: QuizGameProps) {
   const questions = session.questions;
   const totalQuestions = questions.length;
   const lessonTitle = formatLessonSlug(session.lessonSlug);
-  const lessonPath = `/lesson/${session.lessonSlug}`;
+  const lessonPath = getLessonPath(session.lessonSlug);
   const hasRecordedCompletionRef = useRef(false);
 
   const [phase, setPhase] = useState<QuizPhase>("intro");
@@ -150,7 +152,7 @@ export function QuizGame({ session, onComplete }: QuizGameProps) {
     return (
       <section className="millionaireResult panel">
         <span className="eyebrow">RESULT</span>
-        <h2>ผลการทำแบบทดสอบ</h2>
+        <h1>ผลการทำแบบทดสอบ</h1>
         <p className="millionaireResultScore">
           คะแนน <strong>{result.score}</strong> / {totalQuestions}
         </p>
@@ -168,14 +170,7 @@ export function QuizGame({ session, onComplete }: QuizGameProps) {
             <dd>{result.percentage}%</dd>
           </div>
         </dl>
-        <div className="millionaireResultActions">
-          <button type="button" className="button primary" onClick={restartQuiz}>
-            เริ่มใหม่
-          </button>
-          <Link className="button secondary" href={lessonPath}>
-            กลับไปบทเรียน
-          </Link>
-        </div>
+        <ActivityResultActions lessonPath={lessonPath} onRestart={restartQuiz} />
       </section>
     );
   }

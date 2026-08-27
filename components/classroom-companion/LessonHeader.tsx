@@ -14,7 +14,7 @@ type LessonHeaderProps = {
 
 export function LessonHeader({
   backHref,
-  backLabel = "Dashboard",
+  backLabel = "หน้าหลักนักเรียน",
   title,
   currentStep,
   totalSteps,
@@ -25,7 +25,9 @@ export function LessonHeader({
   return (
     <header className="companionHeader">
       <div className="companionHeaderStart">
-        <Link href={backHref}>← {backLabel}</Link>
+        <Link href={backHref} aria-label={backLabel}>
+          ← {backLabel}
+        </Link>
         <strong>{title}</strong>
       </div>
 

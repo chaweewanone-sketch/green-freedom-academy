@@ -9,6 +9,7 @@ import { LessonTimer } from "./LessonTimer";
 import { PlanningPanel } from "./PlanningPanel";
 import { TeachingPanel } from "./TeachingPanel";
 import { useLessonTimer } from "@/lib/hooks/useLessonTimer";
+import { getStudentPath } from "@/lib/routes";
 import type { CompanionMode, LessonData } from "@/types/lesson";
 
 type ClassroomCompanionProps = {
@@ -20,8 +21,8 @@ type ClassroomCompanionProps = {
 
 export function ClassroomCompanion({
   lesson,
-  backHref = "/student",
-  backLabel = "Dashboard",
+  backHref = getStudentPath(),
+  backLabel = "หน้าหลักนักเรียน",
   defaultMode = "teaching",
 }: ClassroomCompanionProps) {
   const { steps, title } = lesson;

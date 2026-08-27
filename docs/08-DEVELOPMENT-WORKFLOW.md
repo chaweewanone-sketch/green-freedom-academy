@@ -56,8 +56,11 @@ npm run dev
 | `/lesson/present-simple/activity/quiz` | Quiz — completion writes learning history |
 | `/lesson/present-simple/activity/millionaire` | Millionaire Challenge — completion writes learning history |
 | `/lesson/present-simple/activity/flash-cards` | Flash Cards — completion writes learning history |
+| `/lesson/past-simple/activity/quiz` | Past Simple Quiz (loads without route locking) |
+| `/lesson/past-simple/activity/millionaire` | Past Simple Millionaire |
+| `/lesson/past-simple/activity/flash-cards` | Past Simple Flash Cards |
 
-History / completion / journey / active-lesson / recommendation / curriculum-progress / resume-learning / student-home verification (no test runner yet):
+History / completion / journey / active-lesson / recommendation / curriculum-progress / resume-learning / student-home / flow-integration verification (no test runner yet):
 
 ```bash
 npx tsx lib/history/runVerification.ts

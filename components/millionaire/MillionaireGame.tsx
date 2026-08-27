@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRef, useState } from "react";
 import { ProgressBar } from "./ProgressBar";
 import { QuestionCard } from "./QuestionCard";
@@ -99,14 +100,20 @@ export function MillionaireGame({
             ไม่มีคำถามที่ตรงกับเงื่อนไขสำหรับบทเรียนนี้
           </p>
         )}
-        <button
-          type="button"
-          className="button primary"
-          onClick={startGame}
-          disabled={totalQuestions === 0}
-        >
-          เริ่มเกม
-        </button>
+        <div className="flashCardActions">
+          {totalQuestions > 0 ? (
+            <button
+              type="button"
+              className="button primary"
+              onClick={startGame}
+            >
+              เริ่มเกม
+            </button>
+          ) : null}
+          <Link className="button secondary" href={lessonPath}>
+            กลับไปบทเรียน
+          </Link>
+        </div>
       </section>
     );
   }

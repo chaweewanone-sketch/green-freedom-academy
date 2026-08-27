@@ -8,6 +8,7 @@ import { runStudentHomeVerification } from "@/lib/analytics/studentHomeVerificat
 import { runRecommendationVerification } from "@/lib/analytics/recommendationVerification";
 import { runCompletionVerification } from "./completionVerification";
 import { runDashboardVerification } from "./dashboardVerification";
+import { runFlowIntegrationVerification } from "./flowIntegrationVerification";
 import { runHistoryVerification } from "./verification";
 
 runHistoryVerification();
@@ -45,3 +46,6 @@ console.log("resume learning verification passed");
 
 runStudentHomeVerification();
 console.log("student home verification passed");
+
+runFlowIntegrationVerification();
+console.log("flow integration verification passed");

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { ClassroomCompanion } from "@/components/classroom-companion";
 import { getLessonBySlug } from "@/lib/lessons";
+import { getStudentPath } from "@/lib/routes";
 
 type LessonPageProps = {
   params: Promise<{ slug: string }>;
@@ -24,8 +25,8 @@ export default async function LessonPage({
   return (
     <ClassroomCompanion
       lesson={lesson}
-      backHref={isTeacherContext ? "/teacher" : "/student"}
-      backLabel={isTeacherContext ? "แดชบอร์ดครู" : "Dashboard"}
+      backHref={isTeacherContext ? "/teacher" : getStudentPath()}
+      backLabel={isTeacherContext ? "แดชบอร์ดครู" : "หน้าหลักนักเรียน"}
       defaultMode={isTeacherContext ? "planning" : "teaching"}
     />
   );
