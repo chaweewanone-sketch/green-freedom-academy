@@ -8,6 +8,7 @@ import { LessonProgress } from "./LessonProgress";
 import { LessonTimer } from "./LessonTimer";
 import { PlanningPanel } from "./PlanningPanel";
 import { TeachingPanel } from "./TeachingPanel";
+import { LessonEntryView } from "./LessonEntryView";
 import { useLessonTimer } from "@/lib/hooks/useLessonTimer";
 import { getStudentPath } from "@/lib/routes";
 import type { CompanionMode, LessonData } from "@/types/lesson";
@@ -17,6 +18,7 @@ type ClassroomCompanionProps = {
   backHref?: string;
   backLabel?: string;
   defaultMode?: CompanionMode;
+  showLearnerProgress?: boolean;
 };
 
 export function ClassroomCompanion({
@@ -24,6 +26,7 @@ export function ClassroomCompanion({
   backHref = getStudentPath(),
   backLabel = "หน้าหลักนักเรียน",
   defaultMode = "teaching",
+  showLearnerProgress = true,
 }: ClassroomCompanionProps) {
   const { steps, title } = lesson;
   const [currentStep, setCurrentStep] = useState(0);
@@ -86,6 +89,9 @@ export function ClassroomCompanion({
         </div>
 
         <div className="companionMain">
+          {showLearnerProgress ? (
+            <LessonEntryView lessonSlug={lesson.slug} />
+          ) : null}
           {mode === "teaching" ? (
             <TeachingPanel
               stepIndex={currentStep}

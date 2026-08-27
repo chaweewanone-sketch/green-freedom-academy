@@ -28,6 +28,7 @@ export default async function LessonPage({
       backHref={isTeacherContext ? "/teacher" : getStudentPath()}
       backLabel={isTeacherContext ? "แดชบอร์ดครู" : "หน้าหลักนักเรียน"}
       defaultMode={isTeacherContext ? "planning" : "teaching"}
+      showLearnerProgress={!isTeacherContext}
     />
   );
 }

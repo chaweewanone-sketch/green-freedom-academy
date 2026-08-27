@@ -1,4 +1,6 @@
 export { ClassroomCompanion } from "./ClassroomCompanion";
+export { LessonEntryCard } from "./LessonEntryCard";
+export { LessonEntryView } from "./LessonEntryView";
 export { LessonFooter } from "./LessonFooter";
 export { LessonHeader } from "./LessonHeader";
 export { LessonNavigator } from "./LessonNavigator";

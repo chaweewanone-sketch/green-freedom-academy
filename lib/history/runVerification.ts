@@ -5,6 +5,8 @@ import { runJourneyActionVerification, runJourneyVerification } from "@/lib/anal
 import { runRecommendationCurriculumVerification } from "@/lib/analytics/recommendationCurriculumVerification";
 import { runResumeLearningVerification } from "@/lib/analytics/resumeLearningVerification";
 import { runStudentHomeVerification } from "@/lib/analytics/studentHomeVerification";
+import { runLessonEntryVerification } from "@/lib/analytics/lessonEntryVerification";
+import { runQuizDistributionVerification } from "@/lib/question-bank/quizDistributionVerification";
 import { runRecommendationVerification } from "@/lib/analytics/recommendationVerification";
 import { runCompletionVerification } from "./completionVerification";
 import { runDashboardVerification } from "./dashboardVerification";
@@ -49,3 +51,9 @@ console.log("student home verification passed");
 
 runFlowIntegrationVerification();
 console.log("flow integration verification passed");
+
+runLessonEntryVerification();
+console.log("lesson entry verification passed");
+
+runQuizDistributionVerification();
+console.log("quiz distribution verification passed");

@@ -168,3 +168,30 @@ export type StudentLearningHomeModel = {
   dashboardHref: string;
   hasHistory: boolean;
 };
+
+export type LessonEntryNoticeKind = "active" | "complete" | "out-of-order";
+
+export type LessonEntryAction = {
+  label: string;
+  href: string;
+  actionType: ResumeLearningActionType;
+};
+
+export type LessonEntryState = {
+  lessonSlug: string;
+  lessonTitle: string;
+  isActiveLesson: boolean;
+  isComplete: boolean;
+  isLockedInCurriculum: boolean;
+  isCurriculumComplete: boolean;
+  hasLessonHistory: boolean;
+  stage: LearningJourneyStage;
+  stageLabel: string;
+  progressPercent: number;
+  statusLabel: string;
+  activeLessonSlug?: string;
+  activeLessonTitle?: string;
+  nextAction: LessonEntryAction;
+  noticeKind: LessonEntryNoticeKind;
+  notice: string;
+};

@@ -51,8 +51,8 @@ npm run dev
 | `/student` | Student Learning Home — resume, active lesson, compact progress |
 | `/dashboard` | Analytics / progress detail, curriculum, journey, recommendation |
 | `/teacher` | Teacher dashboard |
-| `/lesson/present-simple` | Interactive lesson (first curriculum lesson) |
-| `/lesson/past-simple` | Interactive lesson (next / currently final curriculum lesson) |
+| `/lesson/present-simple` | Interactive lesson + progress-aware entry card (first curriculum lesson) |
+| `/lesson/past-simple` | Interactive lesson + progress-aware entry card (loads without route locking) |
 | `/lesson/present-simple/activity/quiz` | Quiz — completion writes learning history |
 | `/lesson/present-simple/activity/millionaire` | Millionaire Challenge — completion writes learning history |
 | `/lesson/present-simple/activity/flash-cards` | Flash Cards — completion writes learning history |
@@ -60,7 +60,7 @@ npm run dev
 | `/lesson/past-simple/activity/millionaire` | Past Simple Millionaire |
 | `/lesson/past-simple/activity/flash-cards` | Past Simple Flash Cards |
 
-History / completion / journey / active-lesson / recommendation / curriculum-progress / resume-learning / student-home / flow-integration verification (no test runner yet):
+History / completion / journey / active-lesson / recommendation / curriculum-progress / resume-learning / student-home / flow-integration / lesson-entry verification (no test runner yet):
 
 ```bash
 npx tsx lib/history/runVerification.ts

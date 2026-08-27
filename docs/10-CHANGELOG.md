@@ -25,6 +25,8 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Resume Learning (`buildResumeLearning`) — one primary return-and-continue CTA projected from curriculum-aware Recommendation
 - Student Learning Home (`buildStudentLearningHome`) — action-oriented `/student` composition of Resume, active lesson, curriculum totals, and latest activity
 - Activity result return actions (`ActivityResultActions`) — `กลับหน้าหลักนักเรียน`, `เริ่มใหม่`, `กลับไปบทเรียน` after Quiz / Millionaire / Flash Cards
+- Lesson Entry (`buildLessonEntry`) — progress-aware `/lesson/[slug]` card for active, complete, and out-of-order lessons
+- Deterministic quiz correct-answer placement so Present/Past banks are not A-only
 
 ### Changed
 - `/dashboard` history flow is client-loaded so events survive browser refresh
@@ -38,6 +40,7 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - `BrandHeader` includes ผลการเรียน → `/dashboard` and นักเรียน → `/student`
 - Lesson back link for students goes to Student Home (`หน้าหลักนักเรียน`) instead of the English “Dashboard” label
 - Empty dashboard hides the overall curriculum percent so 0 completed / 2 lessons is not mixed with the initial 10% average
+- Student lesson pages show a compact history-aware progress card; teacher `from=teacher` context hides it
 
 ---
 

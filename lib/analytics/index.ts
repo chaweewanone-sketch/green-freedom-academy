@@ -20,6 +20,9 @@ export type {
   StudentLearningHomeCurriculum,
   StudentLearningHomeLatestActivity,
   StudentLearningHomeModel,
+  LessonEntryAction,
+  LessonEntryNoticeKind,
+  LessonEntryState,
 } from "@/types/analytics";
 export {
   normalizeActivityResult,
@@ -54,6 +57,7 @@ export {
   isKnownResumeHref,
 } from "./resumeLearning";
 export { buildStudentLearningHome } from "./studentHome";
+export { buildLessonEntry } from "./lessonEntry";
 export {
   buildLearningSummary,
   buildLearningSummaryForLesson,

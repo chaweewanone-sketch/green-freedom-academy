@@ -16,12 +16,22 @@ export function createBankQuestion(
   input: QuestionInput,
 ): Question {
   const correctChoiceId = `${lessonSlug}-bank-q${index}-correct`;
-  const choices: QuestionChoice[] = [
-    { id: correctChoiceId, text: input.correct },
-    ...input.distractors.map((text, distractorIndex) => ({
+  const correctChoice: QuestionChoice = {
+    id: correctChoiceId,
+    text: input.correct,
+  };
+  const distractorChoices: QuestionChoice[] = input.distractors.map(
+    (text, distractorIndex) => ({
       id: `${lessonSlug}-bank-q${index}-d${distractorIndex}`,
       text,
-    })),
+    }),
+  );
+  const slotCount = distractorChoices.length + 1;
+  const insertAt = slotCount > 0 ? index % slotCount : 0;
+  const choices = [
+    ...distractorChoices.slice(0, insertAt),
+    correctChoice,
+    ...distractorChoices.slice(insertAt),
   ];
 
   return {

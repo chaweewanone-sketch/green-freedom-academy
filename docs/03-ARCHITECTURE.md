@@ -98,7 +98,7 @@ green-freedom-academy-v1/
 | `/student` | Server page + client home view | None (open) | Learning history → Student Learning Home composition |
 | `/teacher` | Server | None (open) | Hardcoded |
 | `/dashboard` | Server page + client history view | None | Learning history repository (analytics detail) |
-| `/lesson/[slug]` | Client lesson viewer | None | In-memory lesson state |
+| `/lesson/[slug]` | Server page + client companion | None | Lesson registry + optional student history after mount |
 | `/lesson/[slug]/activity/[activity]` | Server page + client player | None | Assessment session; completed quiz / millionaire / flash-cards persist via history repository |
 
 ---
@@ -148,6 +148,7 @@ Activity UI
          ├── Curriculum Progress (`buildCurriculumProgress`)   // overview
          └── Resume Learning (`buildResumeLearning`)           // return-and-continue CTA
               → Student Learning Home (`buildStudentLearningHome`)  // action-first composition
+              → Lesson Entry (`buildLessonEntry`)                  // progress-aware lesson page
               → `/student` ResumeLearningCard (primary) + compact sections
               → `/dashboard` CurriculumProgressCard / JourneyCard / RecommendationCard + compact Resume
 ```
@@ -175,6 +176,19 @@ Student Home
 - Direct activity URLs load without route locking. Completions store under the URL’s lesson slug.
 - Dashboard remains analytics-first. Student Home remains action-first.
 - Activity result screens: `กลับหน้าหลักนักเรียน` · `เริ่มใหม่` · `กลับไปบทเรียน`.
+- Lesson Entry is progress-aware presentation only. LOCKED means display, not access control.
+
+```
+Learning History
+      ↓
+Lesson Progress (`evaluateLessonJourney` for the viewed slug)
+      ↓
+Active Lesson / Curriculum status
+      ↓
+Lesson Entry View Model (`buildLessonEntry`)
+      ↓
+Lesson Page compact card
+```
 
 ```
 Learning History
@@ -208,8 +222,9 @@ Resume Learning is a deterministic action-oriented projection of existing Recomm
 | `buildCurriculumProgress()` | Dashboard overview: each curriculum lesson is COMPLETE, ACTIVE, or LOCKED. Overall % is the unweighted average of per-lesson `progressPercent`. LOCKED lessons contribute 0 even if out-of-order history exists. Display only — does not block routes. |
 | `buildResumeLearning()` | One primary “return and continue” action. Reuses `buildLearningRecommendation` href/lesson and `resolveActiveLesson`. Does not score activities. |
 | `buildStudentLearningHome()` | View-model composition for `/student`. Reuses Resume, Journey, and Curriculum Progress. No `localStorage`, no repository, no new learning policy. |
+| `buildLessonEntry()` | View-model composition for `/lesson/[slug]`. Reuses curriculum status, per-lesson `evaluateLessonJourney`, and Resume for complete lessons. LOCKED is display-only. |
 
-**Browser boundary:** `/student` and `/dashboard` stay Server Components. `StudentLearningHomeView` and `DashboardHistoryView` are Client Components that create the repository after mount, so SSR/build never touches `localStorage`. Missing, unreadable, or malformed storage fails safe (empty history) and does not rewrite stored data on read.
+**Browser boundary:** `/student`, `/dashboard`, and `/lesson/[slug]` stay Server Components for routing. `StudentLearningHomeView`, `DashboardHistoryView`, and `LessonEntryView` are Client Components that read the repository after mount, so SSR/build never touches `localStorage`. Missing, unreadable, or malformed storage fails safe (empty history) and does not rewrite stored data on read.
 
 **No automatic sample seeding:** `/student` and `/dashboard` read whatever the repository already has. Fresh storage shows a clear start CTA on Student Home (`เริ่มการเรียนรู้`) and the genuine empty analytics state on `/dashboard`. Sample helpers in `lib/analytics/sample-data.ts` remain for tests and explicit fixtures only.
 
