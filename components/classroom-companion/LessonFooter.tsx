@@ -4,6 +4,7 @@ type LessonFooterProps = {
   onPrevious: () => void;
   onNext: () => void;
   onMarkComplete: () => void;
+  isLearnRecorded?: boolean;
 };
 
 export function LessonFooter({
@@ -12,9 +13,11 @@ export function LessonFooter({
   onPrevious,
   onNext,
   onMarkComplete,
+  isLearnRecorded = false,
 }: LessonFooterProps) {
   const isFirst = currentStep === 0;
   const isLast = currentStep === totalSteps - 1;
+  const completeDisabled = isLast && isLearnRecorded;
 
   return (
     <footer className="lessonActions companionFooter">
@@ -29,9 +32,11 @@ export function LessonFooter({
       <button
         type="button"
         className="button primary"
+        disabled={completeDisabled}
         onClick={onMarkComplete}
+        aria-live="polite"
       >
-        เข้าใจแล้ว ✓
+        {completeDisabled ? "บันทึกแล้ว ✓" : "เข้าใจแล้ว ✓"}
       </button>
       <button
         type="button"

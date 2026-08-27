@@ -12,6 +12,7 @@ import { runCompletionVerification } from "./completionVerification";
 import { runDashboardVerification } from "./dashboardVerification";
 import { runFlowIntegrationVerification } from "./flowIntegrationVerification";
 import { runStudentJourneyIntegrationVerification } from "./studentJourneyIntegrationVerification";
+import { runLearnCompletionVerification } from "./learnCompletionVerification";
 import { runHistoryVerification } from "./verification";
 
 runHistoryVerification();
@@ -61,3 +62,6 @@ console.log("quiz distribution verification passed");
 
 runStudentJourneyIntegrationVerification();
 console.log("student journey integration verification passed");
+
+runLearnCompletionVerification();
+console.log("learn completion verification passed");

@@ -11,14 +11,18 @@ import { LessonEntryCard } from "./LessonEntryCard";
 
 type LessonEntryViewProps = {
   lessonSlug: string;
+  historyEpoch?: number;
 };
 
-export function LessonEntryView({ lessonSlug }: LessonEntryViewProps) {
+export function LessonEntryView({
+  lessonSlug,
+  historyEpoch = 0,
+}: LessonEntryViewProps) {
   const [state, setState] = useState<DashboardLearningState | null>(null);
 
   useEffect(() => {
     setState(loadDashboardLearningState());
-  }, []);
+  }, [lessonSlug, historyEpoch]);
 
   if (!state) {
     return (

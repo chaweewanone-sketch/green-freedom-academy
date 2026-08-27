@@ -277,9 +277,9 @@ export function verifyBrandNewStudent(): void {
 }
 
 export function verifyLearnCompletedDoesNotInventProgress(): void {
-  // Learn is a journey STAGE. Classroom Companion slide completion is
-  // in-memory only and does not create a LearningEvent. Existing policy
-  // therefore stays LEARN / เริ่มเรียน after a Learn visit.
+  // Visiting Learn without recording still creates no event. Persisted Learn
+  // completion is Sprint 32 (`recordLearnCompletion`). Flash-only history
+  // still uses existing FALLBACK_LEARN policy.
   const events: AggregatableLearningEvent[] = [];
   const before = JSON.stringify(events);
   const surfaces = assertCrossSurfaceConsistency(events, "B");
@@ -640,8 +640,16 @@ export function verifyUiBoundariesDoNotPersistOnRender(): void {
 
   const companion = readFileSync(resolve(process.cwd(), files.companion), "utf8");
   assert(
+    !companion.includes("localStorage"),
+    "ui: companion does not touch localStorage",
+  );
+  assert(
     !companion.includes("recordActivityCompletion"),
-    "ui: Learn companion does not persist",
+    "ui: companion does not use activity recorder",
+  );
+  assert(
+    companion.includes("recordLearnCompletion"),
+    "ui: companion records Learn through history helper",
   );
 
   for (const [label, relative] of Object.entries(files)) {

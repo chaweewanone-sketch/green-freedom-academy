@@ -16,3 +16,10 @@ export {
   type ActivityCompletionResult,
   type RecordActivityCompletionInput,
 } from "./recordActivityCompletion";
+export {
+  LEARN_ACTIVITY,
+  hasLearnCompletion,
+  isLearnActivity,
+  recordLearnCompletion,
+  type RecordLearnCompletionInput,
+} from "./recordLearnCompletion";

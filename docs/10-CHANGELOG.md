@@ -28,6 +28,7 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Lesson Entry (`buildLessonEntry`) — progress-aware `/lesson/[slug]` card for active, complete, and out-of-order lessons
 - Deterministic quiz correct-answer placement so Present/Past banks are not A-only
 - End-to-end student journey verification (`lib/history/studentJourneyIntegrationVerification.ts`) for new-student, Learn, Quiz, Millionaire, lesson completion, returning-student, out-of-order, hydration, and cross-surface consistency
+- Learn completion persistence (`recordLearnCompletion`) — one unscored `learn` event per lesson; last-slide `เข้าใจแล้ว ✓` writes through the history repository
 
 ### Changed
 - `/dashboard` history flow is client-loaded so events survive browser refresh
@@ -42,6 +43,7 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Lesson back link for students goes to Student Home (`หน้าหลักนักเรียน`) instead of the English “Dashboard” label
 - Empty dashboard hides the overall curriculum percent so 0 completed / 2 lessons is not mixed with the initial 10% average
 - Student lesson pages show a compact history-aware progress card; teacher `from=teacher` context hides it
+- Last-slide Learn completion survives refresh; the companion restores completed slides from history after mount
 
 ---
 

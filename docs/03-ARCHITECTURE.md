@@ -117,7 +117,8 @@ green-freedom-academy-v1/
 1. Student opens `/lesson/present-simple` from Student Home or dashboard.
 2. Slide index and completed slides live in React state.
 3. Progress bar derived from completed slide count.
-4. **Gap:** Progress is lost on page refresh; nothing persists to Supabase.
+4. Marking the **last** slide complete (`เข้าใจแล้ว ✓`) writes one Learn `LearningEvent` through `recordLearnCompletion()` (no scores). After refresh, the companion restores completed slides from that event.
+5. **Gap:** Per-slide progress is not stored independently; nothing persists to Supabase.
 
 ### Teacher dashboard
 
@@ -126,7 +127,16 @@ green-freedom-academy-v1/
 
 ### Learning history persistence
 
-Completed student activities are adapted into `LearningEvent`s and saved through the repository. Analytics and the dashboard never talk to `localStorage` or a backend.
+```
+ClassroomCompanion (last slide + เข้าใจแล้ว ✓)
+  → recordLearnCompletion()
+  → LearningEvent { activity: "learn", lessonSlug, completedAt }  // no score
+  → LearningHistoryRepository
+```
+
+Idempotency: **one Learn event per lesson**. Repeating the completion action, revisit, or refresh returns the stored event and does not inflate analytics. Quiz / Millionaire retries remain separate attempt events.
+
+Existing journey policy after a Learn-only event is still LEARN (`FALLBACK_LEARN`) with `เริ่มเรียน` pointing at the lesson. That is not a new progression rule.
 
 ```
 Activity UI
@@ -157,7 +167,7 @@ Student Home answers “ฉันควรทำอะไรตอนนี้?�
 
 ```
 Student Home
-  → Lesson
+  → Lesson (Learn completion via `recordLearnCompletion`)
   → Activity (quiz / millionaire / flash-cards)
   → Completion (`recordActivityCompletion`)
   → Persistence (`LearningHistoryRepository`)
@@ -177,7 +187,7 @@ Student Home
 - Dashboard remains analytics-first. Student Home remains action-first.
 - Activity result screens: `กลับหน้าหลักนักเรียน` · `เริ่มใหม่` · `กลับไปบทเรียน`.
 - Lesson Entry is progress-aware presentation only. LOCKED means display, not access control.
-- Student Home, Lesson Entry, Curriculum Progress, Dashboard engines, and Recommendation must agree on the active/complete lesson for the same history. Learn slide completion is in-memory only and does not create a `LearningEvent`.
+- Student Home, Lesson Entry, Curriculum Progress, Dashboard engines, and Recommendation must agree on the active/complete lesson for the same history. Learn completion is one `LearningEvent` per lesson (`activity: "learn"`), with no score.
 
 ```
 Learning History
@@ -208,6 +218,7 @@ Resume Learning is a deterministic action-oriented projection of existing Recomm
 | Piece | Role |
 |-------|------|
 | `recordActivityCompletion()` | Shared completion recorder in `lib/history/recordActivityCompletion.ts`. Persists only completed results. Dedupes identical `sessionId` + `completedAt` callbacks/rerenders. New attempts with a new timestamp save a new event. |
+| `recordLearnCompletion()` | Shared Learn-phase recorder in `lib/history/recordLearnCompletion.ts`. Writes one unscored `learn` event per lesson through the existing repository. Repeats are no-ops. ClassroomCompanion does not touch `localStorage`. |
 | `StudentActivityPlayer` | Client boundary that wires `onComplete` for implemented activities. Engines stay reusable and do not import the repository. |
 | `LearningHistoryRepository` | Contract in `types/history.ts` — `save`, `getAll`, `getByLesson`, `getByActivity`, `getLatest`, `clear` |
 | `MemoryLearningHistoryRepository` | In-memory implementation; used on the server and in tests |
@@ -232,7 +243,9 @@ Resume Learning is a deterministic action-oriented projection of existing Recomm
 
 **Current persistence:** browser `localStorage` via `LocalStorageLearningHistoryRepository`. Backend/Supabase persistence is deferred.
 
-**Supported persisted activities:** quiz, millionaire, flash-cards.
+**Supported persisted activities:** quiz, millionaire, flash-cards, learn.
+
+**Learn completion v1:** Last-slide `เข้าใจแล้ว ✓` in student companion context records Learn through `recordLearnCompletion`. Teacher `from=teacher` does not write student history. After mount, a stored Learn event restores completed slides. Journey/recommendation policy is unchanged: Learn-only history stays LEARN (`FALLBACK_LEARN`).
 
 **Recommendation v1:** `/dashboard` shows one "แนะนำขั้นต่อไป" card for the **active curriculum lesson**. Journey = current stage. Recommendation = next best action in that lesson. They stay separate. Completing Present Simple recommends `เรียนบทถัดไป` to `/lesson/past-simple`. Completing the final lesson recommends `/dashboard`. Out-of-order later-lesson history is ignored until that lesson becomes active. No AI/LLM, no Supabase.
 
@@ -240,7 +253,7 @@ Resume Learning is a deterministic action-oriented projection of existing Recomm
 
 **Student Learning Home v1:** `/student` is the action-oriented learner entry. It composes Resume (primary CTA), active lesson + stage, compact curriculum totals, and latest activity. It does not duplicate dashboard analytics or invent a second next-action policy. Curriculum complete shows `เรียนครบหลักสูตรแล้ว` with `ดูสรุปการเรียน` — no fake continue lesson.
 
-**Not yet wired:** matching, monopoly, spin-wheel, sentence-builder, and lesson-slide completion.
+**Not yet wired:** matching, monopoly, spin-wheel, and sentence-builder.
 
 **Future backend path:** add a Supabase (or API) repository that implements the same `LearningHistoryRepository` contract, then extend the factory. Do not leak storage details into analytics or activity engines.
 

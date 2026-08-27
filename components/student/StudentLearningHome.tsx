@@ -11,6 +11,7 @@ function formatActivityLabel(activity: string): string {
   const labels: Record<string, string> = {
     millionaire: "Millionaire Challenge",
     quiz: "Quiz",
+    learn: "เรียน",
     "flash-cards": "Flash Cards",
     matching: "Matching Game",
     "final-test": "Final Test",

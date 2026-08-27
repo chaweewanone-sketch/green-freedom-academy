@@ -29,7 +29,7 @@ FUTURE           AI generators, Teacher Studio, Classroom Companion
 | Demo login (`/login`) | CURRENT | Role tabs; stores `gfa-demo-role` in `localStorage`; no credential check |
 | Student Learning Home (`/student`) | CURRENT | Action-oriented learner entry: Resume Learning, active lesson, compact curriculum progress, latest activity |
 | Teacher dashboard (`/teacher`) | CURRENT | Hardcoded stats and student table |
-| Present Simple lesson (`/lesson/present-simple`) | CURRENT | 4 slides, client-side progress; lost on refresh |
+| Present Simple lesson (`/lesson/present-simple`) | CURRENT | 4 slides; finishing the last slide records Learn completion in learning history |
 | `BrandHeader` component | CURRENT | Shared nav across main pages |
 | Global CSS design system | CURRENT | `app/globals.css` |
 | PWA manifest | CURRENT (partial) | `public/manifest.webmanifest`; `icons: []` |
@@ -37,7 +37,7 @@ FUTURE           AI generators, Teacher Studio, Classroom Companion
 | Database schema SQL | CURRENT (file only) | `supabase/schema.sql` — not applied by app |
 | README local dev + Vercel deploy | CURRENT | Thai instructions |
 | Learning history repository | CURRENT | Memory + browser `localStorage` (`gfa.learningHistory.v1`); no Supabase writes |
-| Activity completion recording | CURRENT | Completed quiz, millionaire, and flash-cards save `LearningEvent`s through the history repository |
+| Activity completion recording | CURRENT | Completed quiz, millionaire, flash-cards, and Learn save `LearningEvent`s through the history repository |
 | Student dashboard history | CURRENT | `/dashboard` is analytics/progress detail; reads real persisted events only; no automatic sample seeding |
 | Learning path recommendation | CURRENT | Deterministic next-best-action for the active curriculum lesson (not latest activity) |
 | Learning journey / progression | CURRENT | Curriculum-order active lesson (not latest activity) with per-lesson Learn → Practice → Play → Review → Complete |
@@ -70,7 +70,7 @@ FUTURE           AI generators, Teacher Studio, Classroom Companion
 | Server-side Supabase client | PLANNED | Not in repo yet |
 | Auth middleware / route protection | PLANNED | `/student`, `/teacher` currently open |
 | Row Level Security completion | PLANNED | Only `profiles` and `student_progress` have policies today |
-| Student progress persistence | PLANNED | Completed quiz / millionaire / flash-cards persist in the browser today; `student_progress` table still unused |
+| Student progress persistence | PLANNED | Completed quiz / millionaire / flash-cards / Learn persist in the browser today; `student_progress` table still unused |
 | Classroom create / join | PLANNED | `classrooms` table defined; UI button only |
 
 **Exit criteria:** Teacher and student log in with real accounts; lesson completion saves to Supabase; dashboards read live data.
