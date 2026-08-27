@@ -177,6 +177,7 @@ Student Home
 - Dashboard remains analytics-first. Student Home remains action-first.
 - Activity result screens: `กลับหน้าหลักนักเรียน` · `เริ่มใหม่` · `กลับไปบทเรียน`.
 - Lesson Entry is progress-aware presentation only. LOCKED means display, not access control.
+- Student Home, Lesson Entry, Curriculum Progress, Dashboard engines, and Recommendation must agree on the active/complete lesson for the same history. Learn slide completion is in-memory only and does not create a `LearningEvent`.
 
 ```
 Learning History
@@ -223,6 +224,7 @@ Resume Learning is a deterministic action-oriented projection of existing Recomm
 | `buildResumeLearning()` | One primary “return and continue” action. Reuses `buildLearningRecommendation` href/lesson and `resolveActiveLesson`. Does not score activities. |
 | `buildStudentLearningHome()` | View-model composition for `/student`. Reuses Resume, Journey, and Curriculum Progress. No `localStorage`, no repository, no new learning policy. |
 | `buildLessonEntry()` | View-model composition for `/lesson/[slug]`. Reuses curriculum status, per-lesson `evaluateLessonJourney`, and Resume for complete lessons. LOCKED is display-only. |
+| Student journey verification | Domain-layer end-to-end checks (`lib/history/studentJourneyIntegrationVerification.ts`) that the Home → Learn → Quiz → Millionaire → Review/Complete → Dashboard → next lesson surfaces stay aligned. |
 
 **Browser boundary:** `/student`, `/dashboard`, and `/lesson/[slug]` stay Server Components for routing. `StudentLearningHomeView`, `DashboardHistoryView`, and `LessonEntryView` are Client Components that read the repository after mount, so SSR/build never touches `localStorage`. Missing, unreadable, or malformed storage fails safe (empty history) and does not rewrite stored data on read.
 

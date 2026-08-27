@@ -45,6 +45,7 @@ FUTURE           AI generators, Teacher Studio, Classroom Companion
 | Resume learning | CURRENT | One primary return-and-continue CTA projected from curriculum-aware Recommendation; primary on Student Home, compact on `/dashboard` |
 | Student learning flow integration | CURRENT | Home → lesson → quiz/millionaire/flash-cards → save → Home resume; result screens return to `/student` |
 | Lesson entry progress UX | CURRENT | Lesson pages show active/complete/out-of-order status from existing analytics; display only, no route locking |
+| End-to-end student journey verification | CURRENT | Deterministic Home / Lesson Entry / Quiz / Millionaire / curriculum / dashboard / hydration checks on the existing policy |
 
 **Known gaps in Phase 0:**
 

@@ -11,6 +11,7 @@ import { runRecommendationVerification } from "@/lib/analytics/recommendationVer
 import { runCompletionVerification } from "./completionVerification";
 import { runDashboardVerification } from "./dashboardVerification";
 import { runFlowIntegrationVerification } from "./flowIntegrationVerification";
+import { runStudentJourneyIntegrationVerification } from "./studentJourneyIntegrationVerification";
 import { runHistoryVerification } from "./verification";
 
 runHistoryVerification();
@@ -57,3 +58,6 @@ console.log("lesson entry verification passed");
 
 runQuizDistributionVerification();
 console.log("quiz distribution verification passed");
+
+runStudentJourneyIntegrationVerification();
+console.log("student journey integration verification passed");

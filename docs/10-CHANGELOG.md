@@ -27,6 +27,7 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Activity result return actions (`ActivityResultActions`) — `กลับหน้าหลักนักเรียน`, `เริ่มใหม่`, `กลับไปบทเรียน` after Quiz / Millionaire / Flash Cards
 - Lesson Entry (`buildLessonEntry`) — progress-aware `/lesson/[slug]` card for active, complete, and out-of-order lessons
 - Deterministic quiz correct-answer placement so Present/Past banks are not A-only
+- End-to-end student journey verification (`lib/history/studentJourneyIntegrationVerification.ts`) for new-student, Learn, Quiz, Millionaire, lesson completion, returning-student, out-of-order, hydration, and cross-surface consistency
 
 ### Changed
 - `/dashboard` history flow is client-loaded so events survive browser refresh
