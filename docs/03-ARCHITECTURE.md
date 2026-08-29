@@ -185,7 +185,7 @@ Student Home
 - Active lesson drives Journey, Recommendation, and Resume. Different labels are allowed; contradictory lesson targets are not.
 - Direct activity URLs load without route locking. Completions store under the URL’s lesson slug.
 - Dashboard remains analytics-first. Student Home remains action-first.
-- Activity result screens: `กลับหน้าหลักนักเรียน` · `เริ่มใหม่` · `กลับไปบทเรียน`.
+- Activity result screens persist first, then may show the canonical forward Recommendation as the primary CTA. Strong Quiz → `เล่น Millionaire`. Completed Millionaire → next lesson or `/dashboard`. Weak/developing Quiz, weak/developing Millionaire, and Flash Cards keep `กลับหน้าหลักนักเรียน` · `เริ่มใหม่` · `กลับไปบทเรียน`. This is display guidance, not route locking.
 - Lesson Entry is progress-aware presentation only. LOCKED means display, not access control.
 - Student Home, Lesson Entry, Curriculum Progress, Dashboard engines, and Recommendation must agree on the active/complete lesson for the same history. Learn completion is one `LearningEvent` per lesson (`activity: "learn"`), with no score.
 
@@ -219,7 +219,7 @@ Resume Learning is a deterministic action-oriented projection of existing Recomm
 |-------|------|
 | `recordActivityCompletion()` | Shared completion recorder in `lib/history/recordActivityCompletion.ts`. Persists only completed results. Dedupes identical `sessionId` + `completedAt` callbacks/rerenders. New attempts with a new timestamp save a new event. |
 | `recordLearnCompletion()` | Shared Learn-phase recorder in `lib/history/recordLearnCompletion.ts`. Writes one unscored `learn` event per lesson through the existing repository. Repeats are no-ops. ClassroomCompanion does not touch `localStorage`. |
-| `StudentActivityPlayer` | Client boundary that wires `onComplete` for implemented activities. Engines stay reusable and do not import the repository. |
+| `StudentActivityPlayer` | Client boundary that wires `onComplete` for implemented activities. After persist, Quiz and Millionaire receive an optional forward `nextAction` from Recommendation. Engines stay reusable and do not import the repository. Flash Cards do not receive `nextAction`. |
 | `LearningHistoryRepository` | Contract in `types/history.ts` — `save`, `getAll`, `getByLesson`, `getByActivity`, `getLatest`, `clear` |
 | `MemoryLearningHistoryRepository` | In-memory implementation; used on the server and in tests |
 | `LocalStorageLearningHistoryRepository` | Browser persistence under one versioned key: `gfa.learningHistory.v1` |
@@ -232,7 +232,8 @@ Resume Learning is a deterministic action-oriented projection of existing Recomm
 | `resolveActiveLesson()` | First curriculum lesson that is not COMPLETE. If all are complete, returns the final lesson with `isCurriculumComplete`. Does not read `localStorage` or the repository. |
 | `buildLearningJourney()` | Uses the active curriculum lesson when events are provided. Stage mapping stays LEARN→lesson, PRACTICE→Quiz, PLAY→Millionaire, REVIEW→Flash Cards or Quiz by `reasonCode`. All lessons complete → `/dashboard`. Separate from recommendation. |
 | `buildCurriculumProgress()` | Dashboard overview: each curriculum lesson is COMPLETE, ACTIVE, or LOCKED. Overall % is the unweighted average of per-lesson `progressPercent`. LOCKED lessons contribute 0 even if out-of-order history exists. Display only — does not block routes. |
-| `buildResumeLearning()` | One primary “return and continue” action. Reuses `buildLearningRecommendation` href/lesson and `resolveActiveLesson`. Does not score activities. |
+| `buildResumeLearning()` | One primary “return and continue” action. Reuses `buildLearningRecommendation` href/lesson and `resolveActiveLesson`. Does not score activities. Passes through `ทำ Quiz` and `เล่น Millionaire` labels when Recommendation already uses those CTAs. |
+| `resolveForwardResultNextAction()` | Result-screen composition. Reloads persisted state via the player, then uses `buildLearningRecommendation` plus a href/activity forward-action guard. Does not duplicate scoring thresholds. Flash always returns no nextAction. |
 | `buildStudentLearningHome()` | View-model composition for `/student`. Reuses Resume, Journey, and Curriculum Progress. No `localStorage`, no repository, no new learning policy. |
 | `buildLessonEntry()` | View-model composition for `/lesson/[slug]`. Reuses curriculum status, per-lesson `evaluateLessonJourney`, and Resume for complete lessons. LOCKED is display-only. |
 | Student journey verification | Domain-layer end-to-end checks (`lib/history/studentJourneyIntegrationVerification.ts`) that the Home → Learn → Quiz → Millionaire → Review/Complete → Dashboard → next lesson surfaces stay aligned. |

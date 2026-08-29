@@ -147,6 +147,10 @@ export function verifyStrongPresentQuizResumesMillionaire(): void {
       getActivityPath("present-simple", "millionaire"),
     "3: Present Millionaire",
   );
+  assert(
+    model.resumeLearning.action.label === "เล่น Millionaire",
+    "3: เล่น Millionaire",
+  );
   assert(model.activeLesson?.lessonSlug === "present-simple", "3: active Present");
 }
 

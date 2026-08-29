@@ -352,6 +352,11 @@ export function verifyQuizCompletedOnce(): void {
       getActivityPath("present-simple", "millionaire"),
     "C: next Millionaire",
   );
+  assert(
+    surfaces.home.resumeLearning.action.label ===
+      JOURNEY_ACTION_LABELS.playMillionaire,
+    "C: Resume เล่น Millionaire",
+  );
   assert(surfaces.presentEntry.noticeKind === "active", "C: Present entry active");
   assert(!surfaces.presentEntry.isComplete, "C: quiz alone is not lesson complete");
 }

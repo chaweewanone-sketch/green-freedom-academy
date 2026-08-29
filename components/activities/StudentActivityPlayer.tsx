@@ -1,10 +1,14 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { FlashCardsGame } from "@/components/flash-cards";
 import { MillionaireGame } from "@/components/millionaire";
 import { QuizGame } from "@/components/quiz";
-import { recordActivityCompletion } from "@/lib/history";
+import {
+  resolveForwardResultNextAction,
+  type ResultNextAction,
+} from "@/lib/analytics/resultNextAction";
+import { loadDashboardLearningState, recordActivityCompletion } from "@/lib/history";
 import type { AssessmentSession } from "@/lib/assessment";
 import type { AssessmentResult } from "@/types/assessment-result";
 import type { FlashCardResult } from "@/types/recall";
@@ -20,14 +24,32 @@ export function StudentActivityPlayer({
   lessonTitle,
   lessonPath,
 }: StudentActivityPlayerProps) {
+  const [resultNextAction, setResultNextAction] =
+    useState<ResultNextAction | null>(null);
+
   const handleComplete = useCallback(
     (result: AssessmentResult | FlashCardResult) => {
       recordActivityCompletion({
         result,
         lessonSlug: session.lessonSlug,
       });
+
+      if (session.activity === "flash-cards") {
+        setResultNextAction(null);
+        return;
+      }
+
+      const { summary, events } = loadDashboardLearningState();
+      setResultNextAction(
+        resolveForwardResultNextAction({
+          currentActivity: session.activity,
+          currentLessonSlug: session.lessonSlug,
+          summary,
+          events,
+        }),
+      );
     },
-    [session.lessonSlug],
+    [session.activity, session.lessonSlug],
   );
 
   if (session.activity === "millionaire") {
@@ -37,12 +59,19 @@ export function StudentActivityPlayer({
         lessonTitle={lessonTitle}
         lessonPath={lessonPath}
         onComplete={handleComplete}
+        nextAction={resultNextAction ?? undefined}
       />
     );
   }
 
   if (session.activity === "quiz") {
-    return <QuizGame session={session} onComplete={handleComplete} />;
+    return (
+      <QuizGame
+        session={session}
+        onComplete={handleComplete}
+        nextAction={resultNextAction ?? undefined}
+      />
+    );
   }
 
   if (session.activity === "flash-cards") {

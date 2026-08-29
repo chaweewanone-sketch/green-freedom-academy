@@ -1,10 +1,12 @@
 import { ActivityResultActions } from "@/components/activities/ActivityResultActions";
+import type { ResultNextAction } from "@/lib/analytics/resultNextAction";
 
 type ResultPanelProps = {
   score: number;
   total: number;
   lessonPath: string;
   onRestart: () => void;
+  nextAction?: ResultNextAction;
 };
 
 export function ResultPanel({
@@ -12,6 +14,7 @@ export function ResultPanel({
   total,
   lessonPath,
   onRestart,
+  nextAction,
 }: ResultPanelProps) {
   return (
     <section className="millionaireResult panel">
@@ -20,7 +23,11 @@ export function ResultPanel({
       <p className="millionaireResultScore">
         คะแนน <strong>{score}</strong> / {total}
       </p>
-      <ActivityResultActions lessonPath={lessonPath} onRestart={onRestart} />
+      <ActivityResultActions
+        lessonPath={lessonPath}
+        onRestart={onRestart}
+        nextAction={nextAction}
+      />
     </section>
   );
 }

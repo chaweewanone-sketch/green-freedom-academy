@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import { ProgressBar } from "./ProgressBar";
 import { QuestionCard } from "./QuestionCard";
 import { ResultPanel } from "./ResultPanel";
+import type { ResultNextAction } from "@/lib/analytics/resultNextAction";
 import { buildAssessmentResult } from "@/lib/assessment";
 import type { AssessmentSession } from "@/lib/assessment";
 import type { AssessmentResult } from "@/types/assessment-result";
@@ -14,6 +15,7 @@ type MillionaireGameProps = {
   lessonTitle: string;
   lessonPath: string;
   onComplete?: (result: AssessmentResult) => void;
+  nextAction?: ResultNextAction;
 };
 
 type GamePhase = "start" | "playing" | "result";
@@ -23,6 +25,7 @@ export function MillionaireGame({
   lessonTitle,
   lessonPath,
   onComplete,
+  nextAction,
 }: MillionaireGameProps) {
   const gameQuestions = session.questions;
   const totalQuestions = gameQuestions.length;
@@ -125,6 +128,7 @@ export function MillionaireGame({
         total={totalQuestions}
         lessonPath={lessonPath}
         onRestart={restartGame}
+        nextAction={nextAction}
       />
     );
   }

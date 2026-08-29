@@ -53,6 +53,12 @@ export {
   buildLearningRecommendation,
 } from "./recommendation";
 export {
+  resolveForwardResultNextAction,
+  toForwardResultNextAction,
+  type ResultNextAction,
+  type ResolveForwardResultNextActionInput,
+} from "./resultNextAction";
+export {
   buildResumeLearning,
   isKnownResumeHref,
 } from "./resumeLearning";

@@ -15,6 +15,7 @@ import { runFlowIntegrationVerification } from "./flowIntegrationVerification";
 import { runStudentJourneyIntegrationVerification } from "./studentJourneyIntegrationVerification";
 import { runLearnCompletionVerification } from "./learnCompletionVerification";
 import { runPresentSimpleContentVerification } from "@/lib/lessons/presentSimpleContentVerification";
+import { runResultNextActionVerification } from "@/lib/analytics/resultNextActionVerification";
 import { runHistoryVerification } from "./verification";
 
 runHistoryVerification();
@@ -73,3 +74,6 @@ console.log("quiz practice length verification passed");
 
 runPresentSimpleContentVerification();
 console.log("present simple content verification passed");
+
+runResultNextActionVerification();
+console.log("result next action verification passed");

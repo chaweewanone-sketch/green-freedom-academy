@@ -32,6 +32,7 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Learn → Short Practice continuity — a persisted Learn event advances Journey / Recommendation / Resume to Quiz (`ทำ Quiz`); flash-only history stays FALLBACK_LEARN
 - Short Practice Quiz default length is 10 questions per attempt; 10-question answer placement is near-balanced (3/3/2/2); historical 20-question percentage events remain readable
 - Present Simple Learn examples are distinct per slide (base verb, -s/-es, don't/doesn't) instead of one reused pair
+- Activity Result forward CTA — after persist, a strong Quiz Result primary action is `เล่น Millionaire`; a completing Millionaire Result primary action is the canonical next lesson or dashboard. Weak/developing Quiz, weak/developing Millionaire, and Flash Cards keep the generic Result buttons
 
 ### Changed
 - `/dashboard` history flow is client-loaded so events survive browser refresh
@@ -47,6 +48,8 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Empty dashboard hides the overall curriculum percent so 0 completed / 2 lessons is not mixed with the initial 10% average
 - Student lesson pages show a compact history-aware progress card; teacher `from=teacher` context hides it
 - Last-slide Learn completion survives refresh; the companion restores completed slides from history after mount
+- Resume Learning after a strong Quiz uses `เล่น Millionaire` instead of generic `เรียนต่อ` (href was already Millionaire)
+- Shared `ActivityResultActions` can show one guided next-learning CTA when a forward Recommendation exists; otherwise the original three buttons remain
 
 ---
 

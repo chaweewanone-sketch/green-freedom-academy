@@ -151,6 +151,7 @@ export function verifyStrongPresentQuizResume(): void {
     resume.action.href === getActivityPath("present-simple", "millionaire"),
     "4: Present Millionaire",
   );
+  assert(resume.action.label === "เล่น Millionaire", "4: เล่น Millionaire");
 }
 
 export function verifyWeakPresentMillionaireResume(): void {

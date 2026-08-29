@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { ActivityResultActions } from "@/components/activities/ActivityResultActions";
 import { ChoiceButton } from "@/components/millionaire/ChoiceButton";
+import type { ResultNextAction } from "@/lib/analytics/resultNextAction";
 import { buildAssessmentResult } from "@/lib/assessment";
 import { getLessonPath } from "@/lib/routes";
 import type { AssessmentSession } from "@/lib/assessment";
@@ -12,6 +13,7 @@ import type { AssessmentResult } from "@/types/assessment-result";
 type QuizGameProps = {
   session: AssessmentSession;
   onComplete?: (result: AssessmentResult) => void;
+  nextAction?: ResultNextAction;
 };
 
 type QuizPhase = "intro" | "question" | "result";
@@ -29,7 +31,7 @@ function formatLessonSlug(slug: string): string {
     .join(" ");
 }
 
-export function QuizGame({ session, onComplete }: QuizGameProps) {
+export function QuizGame({ session, onComplete, nextAction }: QuizGameProps) {
   const questions = session.questions;
   const totalQuestions = questions.length;
   const lessonTitle = formatLessonSlug(session.lessonSlug);
@@ -170,7 +172,11 @@ export function QuizGame({ session, onComplete }: QuizGameProps) {
             <dd>{result.percentage}%</dd>
           </div>
         </dl>
-        <ActivityResultActions lessonPath={lessonPath} onRestart={restartQuiz} />
+        <ActivityResultActions
+          lessonPath={lessonPath}
+          onRestart={restartQuiz}
+          nextAction={nextAction}
+        />
       </section>
     );
   }

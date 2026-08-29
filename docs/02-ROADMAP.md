@@ -48,6 +48,7 @@ FUTURE           AI generators, Teacher Studio, Classroom Companion
 | End-to-end student journey verification | CURRENT | Deterministic Home / Lesson Entry / Quiz / Millionaire / curriculum / dashboard / hydration checks on the existing policy |
 | Learn → Short Practice continuity | CURRENT | After a persisted Learn event, Journey / Recommendation / Resume / Home / Lesson Entry point to Quiz (`ทำ Quiz`) |
 | Short Practice Quiz length | CURRENT | Default Quiz attempt is 10 questions; percentage scoring unchanged; answer positions stay near-balanced (3/3/2/2) |
+| Activity Result forward CTA | CURRENT | After persist, Result can show the canonical Recommendation when it is a forward action: strong Quiz → `เล่น Millionaire`; completed Millionaire → next lesson or dashboard. Weak/developing Quiz, weak/developing Millionaire, and Flash Cards keep the generic Result buttons |
 
 **Known gaps in Phase 0:**
 
