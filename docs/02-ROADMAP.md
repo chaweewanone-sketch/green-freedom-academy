@@ -47,6 +47,7 @@ FUTURE           AI generators, Teacher Studio, Classroom Companion
 | Lesson entry progress UX | CURRENT | Lesson pages show active/complete/out-of-order status from existing analytics; display only, no route locking |
 | End-to-end student journey verification | CURRENT | Deterministic Home / Lesson Entry / Quiz / Millionaire / curriculum / dashboard / hydration checks on the existing policy |
 | Learn → Short Practice continuity | CURRENT | After a persisted Learn event, Journey / Recommendation / Resume / Home / Lesson Entry point to Quiz (`ทำ Quiz`) |
+| Short Practice Quiz length | CURRENT | Default Quiz attempt is 10 questions; percentage scoring unchanged; answer positions stay near-balanced (3/3/2/2) |
 
 **Known gaps in Phase 0:**
 

@@ -43,13 +43,13 @@ export function countCorrectPositions(
   return counts;
 }
 
-function isNearBalanced(counts: ChoiceDistribution, total: number): boolean {
+export function isNearBalanced(counts: ChoiceDistribution, total: number): boolean {
   const values = [counts.A, counts.B, counts.C, counts.D];
   const max = Math.max(...values);
   const min = Math.min(...values);
 
-  if (total === 20) {
-    return values.every((value) => value === 5);
+  if (total >= 4) {
+    return max - min <= 1 && values.every((value) => value > 0);
   }
 
   return max - min <= 1;
@@ -126,14 +126,14 @@ export function verifyPresentSimpleDistribution(): void {
     isNearBalanced(counts, bank.questions.length),
     `5: Present bank near-balanced ${JSON.stringify(counts)}`,
   );
-  const quizSlice = bank.questions.slice(0, 20);
+  const quizSlice = bank.questions.slice(0, 10);
   const quizCounts = countCorrectPositions(quizSlice);
   assert(
-    quizCounts.A === 5 &&
-      quizCounts.B === 5 &&
-      quizCounts.C === 5 &&
-      quizCounts.D === 5,
-    `5: first 20 Present questions are 5/5/5/5 ${JSON.stringify(quizCounts)}`,
+    quizCounts.A === 3 &&
+      quizCounts.B === 3 &&
+      quizCounts.C === 2 &&
+      quizCounts.D === 2,
+    `5: first 10 Present questions are 3/3/2/2 ${JSON.stringify(quizCounts)}`,
   );
 }
 
@@ -194,23 +194,23 @@ export function verifyKnownAnswerScoringFixture(): void {
 
   const lesson = requirePresentSimpleLesson();
   const session = createAssessmentSession(lesson, "quiz", {
-    questionCount: 20,
+    questionCount: 10,
     randomize: false,
   });
-  const result = buildAssessmentResult(session, 15, 5);
-  assert(result.percentage === 75, "8: 15/20 = 75%");
-  assert(result.correct === 15, "8: correct count");
-  assert(result.incorrect === 5, "8: incorrect count");
+  const result = buildAssessmentResult(session, 7, 3);
+  assert(result.percentage === 70, "8: 7/10 = 70%");
+  assert(result.correct === 7, "8: correct count");
+  assert(result.incorrect === 3, "8: incorrect count");
   assert(result.activity === "quiz", "8: quiz result");
 }
 
 export function verifyQuizCompletionStillOneEvent(): void {
   const lesson = requirePresentSimpleLesson();
   const session = createAssessmentSession(lesson, "quiz", {
-    questionCount: 20,
+    questionCount: 10,
     randomize: false,
   });
-  const result = buildAssessmentResult(session, 15, 5);
+  const result = buildAssessmentResult(session, 7, 3);
   const repository = new MemoryLearningHistoryRepository();
   recordActivityCompletion({
     result,

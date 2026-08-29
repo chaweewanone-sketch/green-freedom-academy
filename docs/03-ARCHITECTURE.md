@@ -247,6 +247,8 @@ Resume Learning is a deterministic action-oriented projection of existing Recomm
 
 **Learn completion v1:** Last-slide `เข้าใจแล้ว ✓` in student companion context records Learn through `recordLearnCompletion`. Teacher `from=teacher` does not write student history. After mount, a stored Learn event restores completed slides. Learn-only history for the active lesson advances to Short Practice (`ทำ Quiz`). Flash-only history remains LEARN / flash override.
 
+**Short Practice Quiz v1:** Default Quiz attempt length is 10 questions (`ACTIVITY_DEFAULTS.quiz.questionCount`). Scoring stays percentage-based (`correct / total`). A 10-question bank slice is near-balanced A/B/C/D (3/3/2/2). Historical events store `scorePercentage` only, so older 20-question attempts remain readable without migration. Millionaire stays 10 questions; Flash Cards stay 20.
+
 **Recommendation v1:** `/dashboard` shows one "แนะนำขั้นต่อไป" card for the **active curriculum lesson**. Journey = current stage. Recommendation = next best action in that lesson. They stay separate. Completing Present Simple recommends `เรียนบทถัดไป` to `/lesson/past-simple`. Completing the final lesson recommends `/dashboard`. Out-of-order later-lesson history is ignored until that lesson becomes active. No AI/LLM, no Supabase.
 
 **Journey v1:** `/dashboard` shows one "เส้นทางการเรียน" card for the **active curriculum lesson** from `resolveActiveLesson`. Completing Present Simple advances the active lesson to Past Simple at LEARN (existing Past Simple history is reused if present). Completing the final available lesson keeps COMPLETE and returns to `/dashboard`. No backend progression, no AI/LLM, no Supabase.

@@ -7,6 +7,7 @@ import { runResumeLearningVerification } from "@/lib/analytics/resumeLearningVer
 import { runStudentHomeVerification } from "@/lib/analytics/studentHomeVerification";
 import { runLessonEntryVerification } from "@/lib/analytics/lessonEntryVerification";
 import { runQuizDistributionVerification } from "@/lib/question-bank/quizDistributionVerification";
+import { runQuizPracticeLengthVerification } from "@/lib/question-bank/quizPracticeLengthVerification";
 import { runRecommendationVerification } from "@/lib/analytics/recommendationVerification";
 import { runCompletionVerification } from "./completionVerification";
 import { runDashboardVerification } from "./dashboardVerification";
@@ -65,3 +66,6 @@ console.log("student journey integration verification passed");
 
 runLearnCompletionVerification();
 console.log("learn completion verification passed");
+
+runQuizPracticeLengthVerification();
+console.log("quiz practice length verification passed");

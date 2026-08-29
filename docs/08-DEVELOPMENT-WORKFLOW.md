@@ -60,7 +60,7 @@ npm run dev
 | `/lesson/past-simple/activity/millionaire` | Past Simple Millionaire |
 | `/lesson/past-simple/activity/flash-cards` | Past Simple Flash Cards |
 
-History / completion / journey / active-lesson / recommendation / curriculum-progress / resume-learning / student-home / flow-integration / lesson-entry / quiz-distribution / student-journey / learn-completion verification (no test runner yet):
+History / completion / journey / active-lesson / recommendation / curriculum-progress / resume-learning / student-home / flow-integration / lesson-entry / quiz-distribution / student-journey / learn-completion / quiz-practice-length verification (no test runner yet):
 
 ```bash
 npx tsx lib/history/runVerification.ts

@@ -7,7 +7,7 @@ type ActivityDefaults = {
 
 export const ACTIVITY_DEFAULTS: Record<AssessmentActivity, ActivityDefaults> = {
   millionaire: { questionCount: 10, randomize: true },
-  quiz: { questionCount: 20, randomize: true },
+  quiz: { questionCount: 10, randomize: true },
   "flash-cards": { questionCount: 20, randomize: true },
   matching: { questionCount: 8, randomize: true },
   "final-test": { questionCount: 40, randomize: true },
