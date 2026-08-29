@@ -14,6 +14,7 @@ import { runDashboardVerification } from "./dashboardVerification";
 import { runFlowIntegrationVerification } from "./flowIntegrationVerification";
 import { runStudentJourneyIntegrationVerification } from "./studentJourneyIntegrationVerification";
 import { runLearnCompletionVerification } from "./learnCompletionVerification";
+import { runPresentSimpleContentVerification } from "@/lib/lessons/presentSimpleContentVerification";
 import { runHistoryVerification } from "./verification";
 
 runHistoryVerification();
@@ -69,3 +70,6 @@ console.log("learn completion verification passed");
 
 runQuizPracticeLengthVerification();
 console.log("quiz practice length verification passed");
+
+runPresentSimpleContentVerification();
+console.log("present simple content verification passed");

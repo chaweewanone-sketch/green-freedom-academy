@@ -29,7 +29,7 @@ FUTURE           AI generators, Teacher Studio, Classroom Companion
 | Demo login (`/login`) | CURRENT | Role tabs; stores `gfa-demo-role` in `localStorage`; no credential check |
 | Student Learning Home (`/student`) | CURRENT | Action-oriented learner entry: Resume Learning, active lesson, compact curriculum progress, latest activity |
 | Teacher dashboard (`/teacher`) | CURRENT | Hardcoded stats and student table |
-| Present Simple lesson (`/lesson/present-simple`) | CURRENT | 4 slides; finishing the last slide records Learn completion in learning history |
+| Present Simple lesson (`/lesson/present-simple`) | CURRENT | 4 slides with grammar-point-specific examples; finishing the last slide records Learn completion |
 | `BrandHeader` component | CURRENT | Shared nav across main pages |
 | Global CSS design system | CURRENT | `app/globals.css` |
 | PWA manifest | CURRENT (partial) | `public/manifest.webmanifest`; `icons: []` |

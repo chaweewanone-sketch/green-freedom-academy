@@ -31,6 +31,7 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Learn completion persistence (`recordLearnCompletion`) — one unscored `learn` event per lesson; last-slide `เข้าใจแล้ว ✓` writes through the history repository
 - Learn → Short Practice continuity — a persisted Learn event advances Journey / Recommendation / Resume to Quiz (`ทำ Quiz`); flash-only history stays FALLBACK_LEARN
 - Short Practice Quiz default length is 10 questions per attempt; 10-question answer placement is near-balanced (3/3/2/2); historical 20-question percentage events remain readable
+- Present Simple Learn examples are distinct per slide (base verb, -s/-es, don't/doesn't) instead of one reused pair
 
 ### Changed
 - `/dashboard` history flow is client-loaded so events survive browser refresh
