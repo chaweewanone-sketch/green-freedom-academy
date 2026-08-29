@@ -29,6 +29,7 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Deterministic quiz correct-answer placement so Present/Past banks are not A-only
 - End-to-end student journey verification (`lib/history/studentJourneyIntegrationVerification.ts`) for new-student, Learn, Quiz, Millionaire, lesson completion, returning-student, out-of-order, hydration, and cross-surface consistency
 - Learn completion persistence (`recordLearnCompletion`) — one unscored `learn` event per lesson; last-slide `เข้าใจแล้ว ✓` writes through the history repository
+- Learn → Short Practice continuity — a persisted Learn event advances Journey / Recommendation / Resume to Quiz (`ทำ Quiz`); flash-only history stays FALLBACK_LEARN
 
 ### Changed
 - `/dashboard` history flow is client-loaded so events survive browser refresh

@@ -29,6 +29,7 @@ export type RecommendationKind =
 
 export type RecommendationReasonCode =
   | "EMPTY_HISTORY"
+  | "LEARN_COMPLETE"
   | "QUIZ_WEAK"
   | "QUIZ_DEVELOPING"
   | "QUIZ_STRONG"
@@ -72,6 +73,7 @@ export type JourneyAction = {
 
 export type JourneyReasonCode =
   | "EMPTY_HISTORY"
+  | "LEARN_COMPLETE"
   | "QUIZ_WEAK"
   | "QUIZ_DEVELOPING"
   | "QUIZ_STRONG"

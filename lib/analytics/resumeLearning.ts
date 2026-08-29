@@ -93,6 +93,10 @@ function resumeCtaLabel(
     return JOURNEY_ACTION_LABELS.learn;
   }
 
+  if (recommendation.ctaLabel === JOURNEY_ACTION_LABELS.practiceQuiz) {
+    return JOURNEY_ACTION_LABELS.practiceQuiz;
+  }
+
   return "เรียนต่อ";
 }
 

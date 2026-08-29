@@ -178,6 +178,24 @@ function learnJourney(
   });
 }
 
+function practiceAfterLearnJourney(lessonSlug: string): LearningJourney {
+  const title = lessonTitle(lessonSlug);
+
+  return journey({
+    lessonSlug,
+    stage: "PRACTICE",
+    title: "พร้อมฝึก Quiz",
+    message: `เรียน ${title} แล้ว ไปทำ Quiz ได้`,
+    progressPercent: JOURNEY_PROGRESS.quizWeak,
+    nextAction: journeyAction(
+      "PRACTICE",
+      JOURNEY_ACTION_LABELS.practiceQuiz,
+      getActivityPath(lessonSlug, "quiz"),
+    ),
+    reasonCode: "LEARN_COMPLETE",
+  });
+}
+
 function quizJourney(score: number, lessonSlug: string): LearningJourney {
   const title = lessonTitle(lessonSlug);
 
@@ -318,6 +336,10 @@ function buildPathJourney(
 
   if (summary.quizAttempts > 0) {
     return quizJourney(summary.averageQuizScore, lessonSlug);
+  }
+
+  if (summary.latestActivity === "learn") {
+    return practiceAfterLearnJourney(lessonSlug);
   }
 
   return learnJourney(lessonSlug, "FALLBACK_LEARN");

@@ -196,6 +196,20 @@ export function verifyReloadRecognizesLearn(): void {
   assert(first.summary.latestActivity === LEARN_ACTIVITY, "C: latest learn");
   assert(first.summary.quizAttempts === 0, "C: no fake quiz");
   assert(first.summary.millionaireAttempts === 0, "C: no fake millionaire");
+
+  const firstJourney = buildLearningJourney(first.summary, first.events);
+  const secondJourney = buildLearningJourney(second.summary, second.events);
+  assert(firstJourney.stage === "PRACTICE", "C: still PRACTICE");
+  assert(
+    firstJourney.nextAction.href === getActivityPath("present-simple", "quiz"),
+    "C: still Quiz",
+  );
+  assert(
+    JSON.stringify(firstJourney.nextAction) ===
+      JSON.stringify(secondJourney.nextAction),
+    "C: next action stable",
+  );
+  assert(first.events.length === 1, "C: no duplicate learn event");
 }
 
 export function verifyHomeAndEntryAgreeAfterLearn(): void {
@@ -212,21 +226,64 @@ export function verifyHomeAndEntryAgreeAfterLearn(): void {
   const entry = buildLessonEntry("present-simple", events);
   const lessonSummary = buildLearningSummaryForLesson(events, "present-simple");
   const path = evaluateLessonJourney(lessonSummary, "present-simple");
+  const quizHref = getActivityPath("present-simple", "quiz");
 
-  assert(path.stage === "LEARN", "D: existing policy stays LEARN");
-  assert(path.reasonCode === "FALLBACK_LEARN", "D: FALLBACK_LEARN");
+  assert(path.stage === "PRACTICE", "D: Learn complete → PRACTICE");
+  assert(path.reasonCode === "LEARN_COMPLETE", "D: LEARN_COMPLETE");
   assert(home.activeLesson?.lessonSlug === "present-simple", "D: home Present");
+  assert(home.activeLesson?.stage === "PRACTICE", "D: home PRACTICE");
   assert(entry.isActiveLesson, "D: entry Present active");
+  assert(entry.stage === "PRACTICE", "D: entry PRACTICE");
+  assert(!entry.isComplete, "D: not lesson COMPLETE");
   assert(home.hasHistory, "D: home has history");
   assert(entry.hasLessonHistory, "D: entry has history");
+  assert(summary.averageQuizScore === 0, "D: no fabricated quiz score");
   assert(
-    home.resumeLearning.action.label === JOURNEY_ACTION_LABELS.learn,
-    "D: existing เริ่มเรียน CTA",
+    home.resumeLearning.action.label === JOURNEY_ACTION_LABELS.practiceQuiz,
+    "D: Home CTA ทำ Quiz",
+  );
+  assert(home.resumeLearning.action.href === quizHref, "D: Home Quiz href");
+  assert(entry.nextAction.label === JOURNEY_ACTION_LABELS.practiceQuiz, "D: entry CTA");
+  assert(entry.nextAction.href === quizHref, "D: entry Quiz href");
+  assert(path.nextAction.href === quizHref, "D: journey Quiz href");
+}
+
+export function verifyFlashOnlyDoesNotAdvanceToQuiz(): void {
+  const events = [
+    makeEvent({
+      activity: "flash-cards",
+      lessonSlug: "present-simple",
+      flashEasy: 4,
+      flashMedium: 0,
+      flashHard: 0,
+    }),
+  ];
+  const summary = buildLearningSummary(events);
+  const path = evaluateLessonJourney(
+    buildLearningSummaryForLesson(events, "present-simple"),
+    "present-simple",
+  );
+  const home = buildStudentLearningHome(summary, events);
+  const entry = buildLessonEntry("present-simple", events);
+  const recommendation = buildLearningRecommendation(summary, events);
+
+  assert(!hasLearnCompletion(events, "present-simple"), "E-flash: no learn event");
+  assert(path.stage === "LEARN", "E-flash: stays LEARN");
+  assert(path.reasonCode === "FALLBACK_LEARN", "E-flash: FALLBACK_LEARN");
+  assert(
+    path.nextAction.href === getLessonPath("present-simple"),
+    "E-flash: lesson href not Quiz",
   );
   assert(
-    entry.nextAction.href === getLessonPath("present-simple"),
-    "D: entry still Present lesson",
+    home.resumeLearning.action.href !==
+      getActivityPath("present-simple", "quiz"),
+    "E-flash: home not Quiz",
   );
+  assert(
+    entry.nextAction.href !== getActivityPath("present-simple", "quiz"),
+    "E-flash: entry not Quiz",
+  );
+  assert(recommendation.reasonCode !== "LEARN_COMPLETE", "E-flash: not LEARN_COMPLETE");
 }
 
 export function verifyRepeatedLearnDoesNotInflate(): void {
@@ -253,6 +310,12 @@ export function verifyRepeatedLearnDoesNotInflate(): void {
   assert(summary.totalActivities === 1, "E: analytics not inflated");
   assert(summary.averageQuizScore === 0, "E: no quiz score");
   assert(summary.averageMillionaireScore === 0, "E: no millionaire score");
+  const journey = buildLearningJourney(summary, repository.getAll() as AggregatableLearningEvent[]);
+  assert(journey.stage === "PRACTICE", "E: still PRACTICE");
+  assert(
+    journey.nextAction.href === getActivityPath("present-simple", "quiz"),
+    "E: still Quiz",
+  );
 }
 
 export function verifyQuizStillWorksAfterLearn(): void {
@@ -399,8 +462,19 @@ export function verifyDashboardReadsLearnWithoutScoring(): void {
   assert(summary.latestActivity === LEARN_ACTIVITY, "dashboard: latest learn");
   assert(summary.averageQuizScore === 0, "dashboard: no quiz score");
   assert(curriculum.lessons[0]?.status === "ACTIVE", "dashboard: Present ACTIVE");
+  assert(curriculum.lessons[0]?.stage === "PRACTICE", "dashboard: Present PRACTICE");
   assert(recommendation.lessonSlug === "present-simple", "dashboard: rec Present");
+  assert(
+    recommendation.href === getActivityPath("present-simple", "quiz"),
+    "dashboard: rec Quiz",
+  );
+  assert(recommendation.ctaLabel === JOURNEY_ACTION_LABELS.practiceQuiz, "dashboard: ทำ Quiz");
   assert(resume.action.lessonSlug === "present-simple", "dashboard: resume Present");
+  assert(
+    resume.action.href === getActivityPath("present-simple", "quiz"),
+    "dashboard: resume Quiz",
+  );
+  assert(resume.action.label === JOURNEY_ACTION_LABELS.practiceQuiz, "dashboard: resume CTA");
 }
 
 export function verifyInvalidLearnIsIgnored(): void {
@@ -427,6 +501,7 @@ export function runLearnCompletionVerification(): void {
   verifyLearnCompletionWritesHistory();
   verifyReloadRecognizesLearn();
   verifyHomeAndEntryAgreeAfterLearn();
+  verifyFlashOnlyDoesNotAdvanceToQuiz();
   verifyRepeatedLearnDoesNotInflate();
   verifyQuizStillWorksAfterLearn();
   verifyMillionaireStillWorksAfterLearn();

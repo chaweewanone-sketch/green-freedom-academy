@@ -161,6 +161,23 @@ function continueAfterStrongMillionaire(
   return curriculumCompleteRecommendation(lessonSlug);
 }
 
+function practiceAfterLearnRecommendation(
+  lessonSlug: string,
+): LearningRecommendation {
+  const title = lessonTitle(lessonSlug);
+
+  return recommendation({
+    kind: "PRACTICE",
+    title: `พร้อมฝึก Quiz ${title}`,
+    message: `เรียน ${title} แล้ว ไปทำ Quiz ได้`,
+    lessonSlug,
+    activity: "quiz",
+    href: getActivityPath(lessonSlug, "quiz"),
+    ctaLabel: JOURNEY_ACTION_LABELS.practiceQuiz,
+    reasonCode: "LEARN_COMPLETE",
+  });
+}
+
 function quizRecommendation(
   score: number,
   lessonSlug: string,
@@ -300,6 +317,10 @@ function recommendByLatestActivity(
 
   if (summary.flashCardAttempts > 0) {
     return flashRecommendation(summary, lessonSlug);
+  }
+
+  if (focus === "learn") {
+    return practiceAfterLearnRecommendation(lessonSlug);
   }
 
   return startRecommendation(lessonSlug, "FALLBACK_START");

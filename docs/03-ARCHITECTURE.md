@@ -136,7 +136,7 @@ ClassroomCompanion (last slide + เข้าใจแล้ว ✓)
 
 Idempotency: **one Learn event per lesson**. Repeating the completion action, revisit, or refresh returns the stored event and does not inflate analytics. Quiz / Millionaire retries remain separate attempt events.
 
-Existing journey policy after a Learn-only event is still LEARN (`FALLBACK_LEARN`) with `เริ่มเรียน` pointing at the lesson. That is not a new progression rule.
+After a real Learn event (and no Quiz / Millionaire yet), Journey and Recommendation advance that lesson to Short Practice: stage PRACTICE, CTA `ทำ Quiz`, href `/lesson/[slug]/activity/quiz`. Flash-only history still uses LEARN (`FALLBACK_LEARN`) / flash override and does not count as Learn-complete-to-Quiz.
 
 ```
 Activity UI
@@ -245,7 +245,7 @@ Resume Learning is a deterministic action-oriented projection of existing Recomm
 
 **Supported persisted activities:** quiz, millionaire, flash-cards, learn.
 
-**Learn completion v1:** Last-slide `เข้าใจแล้ว ✓` in student companion context records Learn through `recordLearnCompletion`. Teacher `from=teacher` does not write student history. After mount, a stored Learn event restores completed slides. Journey/recommendation policy is unchanged: Learn-only history stays LEARN (`FALLBACK_LEARN`).
+**Learn completion v1:** Last-slide `เข้าใจแล้ว ✓` in student companion context records Learn through `recordLearnCompletion`. Teacher `from=teacher` does not write student history. After mount, a stored Learn event restores completed slides. Learn-only history for the active lesson advances to Short Practice (`ทำ Quiz`). Flash-only history remains LEARN / flash override.
 
 **Recommendation v1:** `/dashboard` shows one "แนะนำขั้นต่อไป" card for the **active curriculum lesson**. Journey = current stage. Recommendation = next best action in that lesson. They stay separate. Completing Present Simple recommends `เรียนบทถัดไป` to `/lesson/past-simple`. Completing the final lesson recommends `/dashboard`. Out-of-order later-lesson history is ignored until that lesson becomes active. No AI/LLM, no Supabase.
 
