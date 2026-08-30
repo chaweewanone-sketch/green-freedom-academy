@@ -77,7 +77,7 @@ function applyChoice(
   question: Question,
   choiceId: string,
 ) {
-  if (snapshot.revealed) {
+  if (snapshot.phase !== "question" || snapshot.revealed) {
     return snapshot;
   }
 
@@ -104,16 +104,47 @@ function quizResultFromCounts(
 }
 
 export function verifyRestartAttemptStateIsClean(): void {
-  const restart = createQuizAttemptSnapshot("question");
-  assert(restart.phase === "question", "A: phase is question");
-  assert(restart.currentIndex === 0, "A: index 0");
-  assert(restart.correctCount === 0, "A: correct 0");
-  assert(restart.incorrectCount === 0, "A: incorrect 0");
-  assert(restart.selectedChoiceId === null, "A: selected null");
-  assert(restart.revealed === false, "A: revealed false");
-  assert(restart.result === null, "A: result null");
-  assert(restart.hasRecordedCompletion === false, "A: completion flag false");
-  assert(nextQuizAttemptKey(0) === 1, "A: restart increments attempt key");
+  const attempt1 = buildAssessmentResult(frozenQuizSession(), 8, 2);
+  const retry = createQuizAttemptSnapshot("intro");
+
+  assert(attempt1.score === 8, "A: attempt 1 is 8/10");
+  assert(attempt1.percentage === 80, "A: attempt 1 is 80%");
+  assert(retry.phase === "intro", "B: retry returns to intro");
+  assert(retry.currentIndex === 0, "B: index 0");
+  assert(retry.correctCount === 0, "B: correct 0");
+  assert(retry.incorrectCount === 0, "B: incorrect 0");
+  assert(retry.selectedChoiceId === null, "B: selected null");
+  assert(retry.revealed === false, "B: revealed false");
+  assert(retry.result === null, "B: result null");
+  assert(retry.hasRecordedCompletion === false, "B: completion flag false");
+  assert(nextQuizAttemptKey(0) === 1, "B: restart still remounts");
+}
+
+export function verifyIntroBlocksAnswersUntilStart(): void {
+  const session = frozenQuizSession();
+  const question = session.questions[0];
+  if (!question) {
+    throw new Error("C: Q1 exists");
+  }
+
+  const intro = createQuizAttemptSnapshot("intro");
+  const ignored = applyChoice(intro, question, firstWrongChoiceId(question));
+
+  assert(ignored.phase === "intro", "C: stays on intro");
+  assert(ignored.incorrectCount === 0, "C: intro cannot record an answer");
+  assert(ignored.selectedChoiceId === null, "C: no selected choice");
+  assert(ignored.revealed === false, "C: no reveal");
+}
+
+export function verifyStartOpensCleanQuestionOne(): void {
+  const started = createQuizAttemptSnapshot("question");
+  assert(started.phase === "question", "D: start enters question");
+  assert(started.currentIndex === 0, "D: Question 1");
+  assert(started.correctCount === 0, "D: correct 0");
+  assert(started.incorrectCount === 0, "D: incorrect 0");
+  assert(started.selectedChoiceId === null, "D: selected null");
+  assert(started.revealed === false, "D: revealed false");
+  assert(started.result === null, "D: no prior result");
 }
 
 export function verifyQ1WrongIncrementsIncorrectOnly(): void {
@@ -129,28 +160,28 @@ export function verifyQ1WrongIncrementsIncorrectOnly(): void {
     firstWrongChoiceId(question),
   );
 
-  assert(afterWrong.correctCount === 0, "B: correct stays 0");
-  assert(afterWrong.incorrectCount === 1, "B: incorrect is 1");
-  assert(afterWrong.revealed === true, "B: revealed after intentional answer");
-  assert(afterWrong.selectedChoiceId !== question.correctChoiceId, "B: wrong pick");
+  assert(afterWrong.correctCount === 0, "E: correct stays 0");
+  assert(afterWrong.incorrectCount === 1, "E: incorrect is 1");
+  assert(afterWrong.revealed === true, "E: revealed after intentional answer");
+  assert(afterWrong.selectedChoiceId !== question.correctChoiceId, "E: wrong pick");
 }
 
 export function verifyAttempt2ResultIgnoresAttempt1(): void {
   const session = frozenQuizSession();
   const attempt1 = buildAssessmentResult(session, 8, 2);
-  const restart = createQuizAttemptSnapshot("question");
+  const restart = createQuizAttemptSnapshot("intro");
 
-  assert(attempt1.score === 8, "C: attempt 1 is 8/10");
-  assert(attempt1.percentage === 80, "C: attempt 1 is 80%");
-  assert(restart.result === null, "C: remounted attempt has no result");
-  assert(restart.correctCount === 0, "C: remounted counts start at 0");
-  assert(restart.incorrectCount === 0, "C: remounted incorrect starts at 0");
+  assert(attempt1.score === 8, "H: attempt 1 is 8/10");
+  assert(attempt1.percentage === 80, "H: attempt 1 is 80%");
+  assert(restart.result === null, "H: retry intro has no result");
+  assert(restart.correctCount === 0, "H: retry counts start at 0");
+  assert(restart.incorrectCount === 0, "H: retry incorrect starts at 0");
 
   const attempt2 = buildAssessmentResult(session, 3, 7);
-  assert(attempt2.sessionId === session.sessionId, "C: same session identity");
-  assert(attempt2.score === 3, "C: attempt 2 uses attempt 2 counts");
-  assert(attempt2.score !== attempt1.score, "C: attempt 2 is not stale 8/10");
-  assert(attempt2.percentage !== attempt1.percentage, "C: percentage is attempt 2");
+  assert(attempt2.sessionId === session.sessionId, "H: same session identity");
+  assert(attempt2.score === 3, "H: attempt 2 uses attempt 2 counts");
+  assert(attempt2.score !== attempt1.score, "H: attempt 2 is not stale 8/10");
+  assert(attempt2.percentage !== attempt1.percentage, "H: percentage is attempt 2");
 }
 
 export function verifyWeakAndDevelopingRestartSameSession(): void {
@@ -235,27 +266,29 @@ export function verifyHistoryWritesOncePerFinishedAttempt(): void {
     lessonSlug: session.lessonSlug,
     repository,
   });
-  assert(first !== null, "F: attempt 1 writes");
-  assert(repository.getAll().length === 1, "F: one event after attempt 1");
+  assert(first !== null, "I: attempt 1 writes");
+  assert(repository.getAll().length === 1, "I: one event after attempt 1");
 
-  const restart = createQuizAttemptSnapshot("question");
-  assert(restart.hasRecordedCompletion === false, "F: restart writes nothing");
-  assert(repository.getAll().length === 1, "F: restart does not append");
+  const retry = createQuizAttemptSnapshot("intro");
+  const started = createQuizAttemptSnapshot("question");
+  assert(retry.hasRecordedCompletion === false, "I: retry CTA writes nothing");
+  assert(started.hasRecordedCompletion === false, "I: intro Start writes nothing");
+  assert(repository.getAll().length === 1, "I: retry/start do not append");
 
   const second = recordActivityCompletion({
     result: quizResultFromCounts(session, 3, 7, 1_700_040_000_500),
     lessonSlug: session.lessonSlug,
     repository,
   });
-  assert(second !== null, "F: attempt 2 writes");
-  assert(repository.getAll().length === 2, "F: one additional event");
+  assert(second !== null, "I: attempt 2 writes");
+  assert(repository.getAll().length === 2, "I: one additional event");
   assert(
     repository.getAll()[0]?.sessionId === repository.getAll()[1]?.sessionId,
-    "F: same sessionId is reused",
+    "I: same sessionId is reused",
   );
   assert(
     repository.getAll()[0]?.completedAt !== repository.getAll()[1]?.completedAt,
-    "F: not a stale duplicate timestamp",
+    "I: not a stale duplicate timestamp",
   );
 }
 
@@ -272,14 +305,12 @@ export function verifyQuizGameRemountsOnRestart(): void {
   assert(source.includes("function QuizAttempt"), "G: attempt owner extracted");
   assert(source.includes("key={attemptKey}"), "G: remount uses attempt key");
   assert(source.includes("nextQuizAttemptKey"), "G: restart increments key");
+  assert(source.includes('initialPhase="intro"'), "G: retry remounts to intro");
   assert(
-    source.includes('initialPhase={attemptKey === 0 ? "intro" : "question"}'),
-    "G: remount starts at question 1",
+    !source.includes('initialPhase={attemptKey === 0 ? "intro" : "question"}'),
+    "G: retry no longer opens Question 1 in the same click",
   );
-  assert(
-    source.includes("choiceInputArmed"),
-    "G: remounted choices wait for the restart click to finish",
-  );
+  assert(source.includes("เริ่มทำแบบทดสอบ"), "G: intro Start remains");
   assert(
     !source.includes("createAssessmentSession"),
     "G: restart does not create a new session",
@@ -290,6 +321,8 @@ export function verifyQuizGameRemountsOnRestart(): void {
 
 export function runQuizAttemptResetVerification(): void {
   verifyRestartAttemptStateIsClean();
+  verifyIntroBlocksAnswersUntilStart();
+  verifyStartOpensCleanQuestionOne();
   verifyQ1WrongIncrementsIncorrectOnly();
   verifyAttempt2ResultIgnoresAttempt1();
   verifyWeakAndDevelopingRestartSameSession();

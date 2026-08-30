@@ -312,7 +312,7 @@ export function QuizGame({ session, onComplete, nextAction }: QuizGameProps) {
       session={session}
       onComplete={onComplete}
       nextAction={nextAction}
-      initialPhase={attemptKey === 0 ? "intro" : "question"}
+      initialPhase="intro"
       onRequestRestart={() => {
         setAttemptKey((current) => nextQuizAttemptKey(current));
       }}

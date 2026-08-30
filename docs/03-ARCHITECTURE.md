@@ -187,7 +187,7 @@ Student Home
 - Active lesson drives Journey, Recommendation, and Resume. Different labels are allowed; contradictory lesson targets are not.
 - Direct activity URLs load without route locking. Completions store under the URL’s lesson slug.
 - Dashboard remains analytics-first. Student Home remains action-first.
-- Activity result screens persist first, then may show the canonical Recommendation as the primary CTA. Quiz uses the engine label: weak `ทำ Quiz อีกครั้ง` and developing `ฝึก Quiz` remount a clean attempt on the same in-memory session (same 10 questions; no new server session); strong `เล่น Millionaire`. Completed Millionaire → next lesson or `/dashboard`. Weak/developing Millionaire and Flash Cards keep `กลับหน้าหลักนักเรียน` · `เริ่มใหม่` · `กลับไปบทเรียน`. This is display guidance, not route locking.
+- Activity result screens persist first, then may show the canonical Recommendation as the primary CTA. Quiz uses the engine label: weak `ทำ Quiz อีกครั้ง` and developing `ฝึก Quiz` remount the same in-memory session to the intro Start screen (same 10 questions; no new server session); strong `เล่น Millionaire`. Completed Millionaire → next lesson or `/dashboard`. Weak/developing Millionaire and Flash Cards keep `กลับหน้าหลักนักเรียน` · `เริ่มใหม่` · `กลับไปบทเรียน`. This is display guidance, not route locking.
 - Lesson Entry is progress-aware presentation only. LOCKED means display, not access control.
 - Student Home, Lesson Entry, Curriculum Progress, Dashboard engines, and Recommendation must agree on the active/complete lesson for the same history. Learn completion is one `LearningEvent` per lesson (`activity: "learn"`), with no score.
 

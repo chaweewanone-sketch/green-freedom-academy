@@ -38,6 +38,7 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Lesson content versioning — Learn completion is one event per lesson + `contentVersion`; legacy unversioned Learn events are version 1; stale Present Simple Learn no longer unlocks PRACTICE
 - Guided Quiz Result — after persist, Quiz Result primary CTA uses the existing Recommendation: `ทำ Quiz อีกครั้ง` / `ฝึก Quiz` (same-session restart) or `เล่น Millionaire`; Home is no longer the Quiz Result primary
 - Quiz same-session retry remounts a fresh attempt so Question 1 starts unanswered and Attempt 2 cannot reuse the previous Result object
+- Quiz retry returns to the intro Start screen so the Result CTA click cannot also answer Question 1
 
 ### Changed
 - `/dashboard` history flow is client-loaded so events survive browser refresh
