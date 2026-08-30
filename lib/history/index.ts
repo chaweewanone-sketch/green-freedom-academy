@@ -18,8 +18,18 @@ export {
 } from "./recordActivityCompletion";
 export {
   LEARN_ACTIVITY,
-  hasLearnCompletion,
+  LEGACY_LEARN_CONTENT_VERSION,
+  buildLearnSessionId,
+  findCurrentLearnCompletion,
+  findHistoricalLearnCompletion,
+  getEffectiveLearnVersion,
+  getLessonContentVersion,
+  hasCurrentLearnCompletion,
+  hasHistoricalLearnCompletion,
   isLearnActivity,
+} from "./learnVersion";
+export {
+  hasLearnCompletion,
   recordLearnCompletion,
   type RecordLearnCompletionInput,
 } from "./recordLearnCompletion";

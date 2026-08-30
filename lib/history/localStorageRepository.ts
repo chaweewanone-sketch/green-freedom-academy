@@ -1,5 +1,6 @@
 import type { AggregatableLearningEvent, LearningEvent } from "@/types/analytics";
 import type { LearningHistoryRepository } from "@/types/history";
+import { isPositiveInteger } from "./learnVersion";
 
 export const LEARNING_HISTORY_STORAGE_KEY = "gfa.learningHistory.v1";
 
@@ -39,6 +40,10 @@ function cloneEvent(event: LearningEvent): LearningEvent {
 
   if (typeof source.flashHard === "number") {
     cloned.flashHard = source.flashHard;
+  }
+
+  if (isPositiveInteger(source.lessonContentVersion)) {
+    cloned.lessonContentVersion = source.lessonContentVersion;
   }
 
   return cloned;
@@ -100,6 +105,9 @@ function parseStoredEvent(value: unknown): LearningEvent | null {
       ? { flashMedium: value.flashMedium }
       : {}),
     ...(typeof value.flashHard === "number" ? { flashHard: value.flashHard } : {}),
+    ...(isPositiveInteger(value.lessonContentVersion)
+      ? { lessonContentVersion: value.lessonContentVersion }
+      : {}),
   } as AggregatableLearningEvent);
 }
 

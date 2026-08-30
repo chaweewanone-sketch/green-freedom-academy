@@ -1,43 +1,52 @@
 import type { AggregatableLearningEvent, LearningEvent } from "@/types/analytics";
 import type { LearningHistoryRepository } from "@/types/history";
 import { createLearningHistoryRepository } from "./createRepository";
+import {
+  LEARN_ACTIVITY,
+  buildLearnSessionId,
+  findCurrentLearnCompletion,
+  getLessonContentVersion,
+  hasHistoricalLearnCompletion,
+  isLearnActivity,
+  isPositiveInteger,
+} from "./learnVersion";
 
-export const LEARN_ACTIVITY = "learn";
+export {
+  LEARN_ACTIVITY,
+  findCurrentLearnCompletion,
+  findHistoricalLearnCompletion,
+  getEffectiveLearnVersion,
+  getLessonContentVersion,
+  hasCurrentLearnCompletion,
+  hasHistoricalLearnCompletion,
+  isLearnActivity,
+} from "./learnVersion";
 
 export type RecordLearnCompletionInput = {
   lessonSlug: string;
   repository?: LearningHistoryRepository;
   completedAt?: number;
+  lessonContentVersion?: number;
 };
 
-export function isLearnActivity(activity: string): boolean {
-  return activity === LEARN_ACTIVITY;
-}
-
+/**
+ * Historical completion: any Learn event exists for the lesson slug.
+ * Kept as the existing helper name so prior callers stay unambiguous.
+ */
 export function hasLearnCompletion(
   events: LearningEvent[],
   lessonSlug: string,
 ): boolean {
-  return events.some(
-    (event) =>
-      isLearnActivity(event.activity) && event.lessonSlug === lessonSlug,
-  );
-}
-
-function findLearnCompletion(
-  events: LearningEvent[],
-  lessonSlug: string,
-): LearningEvent | undefined {
-  return events.find(
-    (event) =>
-      isLearnActivity(event.activity) && event.lessonSlug === lessonSlug,
-  );
+  return hasHistoricalLearnCompletion(events, lessonSlug);
 }
 
 /**
- * Records that the learner finished the Learn slides for a lesson.
- * One Learn event per lesson. Repeats return the stored event and do not
- * add scores or extra history rows.
+ * Records Learn completion for the lesson's current contentVersion
+ * (or an explicit version). Idempotent per lessonSlug + version.
+ * A newer version writes a new event and does not erase older ones.
+ *
+ * New writes use sessionId `learn:${slug}:v${version}`. Historical
+ * `learn:${slug}` rows stay readable and are not renamed.
  */
 export function recordLearnCompletion(
   input: RecordLearnCompletionInput,
@@ -47,17 +56,26 @@ export function recordLearnCompletion(
     return null;
   }
 
+  const contentVersion = isPositiveInteger(input.lessonContentVersion)
+    ? input.lessonContentVersion
+    : getLessonContentVersion(lessonSlug);
+
   const repository = input.repository ?? createLearningHistoryRepository();
-  const existing = findLearnCompletion(repository.getAll(), lessonSlug);
+  const existing = findCurrentLearnCompletion(
+    repository.getAll(),
+    lessonSlug,
+    contentVersion,
+  );
   if (existing) {
     return existing;
   }
 
   const event: AggregatableLearningEvent = {
-    sessionId: `${LEARN_ACTIVITY}:${lessonSlug}`,
+    sessionId: buildLearnSessionId(lessonSlug, contentVersion),
     activity: LEARN_ACTIVITY,
     lessonSlug,
     completedAt: input.completedAt ?? Date.now(),
+    lessonContentVersion: contentVersion,
   };
 
   repository.save(event);

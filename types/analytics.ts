@@ -3,6 +3,8 @@ export interface LearningEvent {
   activity: string;
   lessonSlug: string;
   completedAt: number;
+  /** Present on versioned Learn writes. Absent legacy Learn events are version 1. */
+  lessonContentVersion?: number;
 }
 
 export interface LearningSummary {

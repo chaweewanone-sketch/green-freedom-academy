@@ -118,7 +118,7 @@ green-freedom-academy-v1/
 2. Present Simple Learn has 8 cards: usage, I/You/We/They, He/She/It + -s/-es, negatives, Yes/No + short answers, Wh-questions, frequency/time, and a structure summary. Quiz and Millionaire still draw 10 questions from the existing 50-item bank after this complete Learn.
 3. Slide index and completed slides live in React state.
 4. Progress bar derived from completed slide count.
-5. Student Learn is sequential: Sections 1–7 use `ต่อไป →`; Section 8 `เข้าใจแล้ว ✓ ไปฝึก Quiz` writes one Learn `LearningEvent` through `recordLearnCompletion()` (no scores) and navigates to Quiz. Teacher `?from=teacher` keeps mode tabs, timer, planning, ActivityGrid, and teacher tips. Existing Learn history sets `learnSaved` so the event is not rewritten; a new session still opens at Section 1.
+5. Student Learn is sequential: Sections 1–7 use `ต่อไป →`; Section 8 `เข้าใจแล้ว ✓ ไปฝึก Quiz` writes one Learn `LearningEvent` through `recordLearnCompletion()` (no scores) and navigates to Quiz. Teacher `?from=teacher` keeps mode tabs, timer, planning, ActivityGrid, and teacher tips. `learnSaved` means current-version Learn completion. A new session still opens at Section 1 with a fresh in-session walkthrough.
 6. **Gap:** Per-slide progress is not stored independently; nothing persists to Supabase.
 
 ### Teacher dashboard
@@ -131,14 +131,14 @@ green-freedom-academy-v1/
 ```
 ClassroomCompanion (Section 8 + เข้าใจแล้ว ✓ ไปฝึก Quiz)
   → recordLearnCompletion()
-  → LearningEvent { activity: "learn", lessonSlug, completedAt }  // no score
+  → LearningEvent { activity: "learn", lessonSlug, lessonContentVersion, completedAt }  // no score
   → LearningHistoryRepository
   → /lesson/[slug]/activity/quiz
 ```
 
-Idempotency: **one Learn event per lesson**. Repeating the completion action, revisit, or refresh returns the stored event and does not inflate analytics. Quiz / Millionaire retries remain separate attempt events.
+Idempotency: **one Learn event per lessonSlug + contentVersion**. A newer curriculum version writes a new Learn row and does not erase older ones. New writes use `sessionId` `learn:${slug}:v${version}`. Historical `learn:${slug}` rows stay readable. Quiz / Millionaire retries remain separate attempt events and are not versioned.
 
-After a real Learn event (and no Quiz / Millionaire yet), Journey and Recommendation advance that lesson to Short Practice: stage PRACTICE, CTA `ทำ Quiz`, href `/lesson/[slug]/activity/quiz`. Flash-only history still uses LEARN (`FALLBACK_LEARN`) / flash override and does not count as Learn-complete-to-Quiz.
+After a **current-version** Learn event (and no Quiz / Millionaire yet), Journey and Recommendation advance that lesson to Short Practice: stage PRACTICE, CTA `ทำ Quiz`. A stale Learn-only event (legacy Present Simple v1 against current v2) stays LEARN (`เริ่มเรียน`). Flash-only history still uses LEARN (`FALLBACK_LEARN`) / flash override. Quiz / Millionaire history still drives later stages.
 
 ```
 Activity UI
@@ -220,7 +220,7 @@ Resume Learning is a deterministic action-oriented projection of existing Recomm
 | Piece | Role |
 |-------|------|
 | `recordActivityCompletion()` | Shared completion recorder in `lib/history/recordActivityCompletion.ts`. Persists only completed results. Dedupes identical `sessionId` + `completedAt` callbacks/rerenders. New attempts with a new timestamp save a new event. |
-| `recordLearnCompletion()` | Shared Learn-phase recorder in `lib/history/recordLearnCompletion.ts`. Writes one unscored `learn` event per lesson through the existing repository. Repeats are no-ops. ClassroomCompanion does not touch `localStorage`. |
+| `recordLearnCompletion()` | Shared Learn-phase recorder in `lib/history/recordLearnCompletion.ts`. Writes one unscored `learn` event per lesson + `contentVersion`. Repeats of the same version are no-ops. ClassroomCompanion does not touch `localStorage`. |
 | `StudentActivityPlayer` | Client boundary that wires `onComplete` for implemented activities. After persist, Quiz and Millionaire receive an optional forward `nextAction` from Recommendation. Engines stay reusable and do not import the repository. Flash Cards do not receive `nextAction`. |
 | `LearningHistoryRepository` | Contract in `types/history.ts` — `save`, `getAll`, `getByLesson`, `getByActivity`, `getLatest`, `clear` |
 | `MemoryLearningHistoryRepository` | In-memory implementation; used on the server and in tests |
@@ -248,7 +248,9 @@ Resume Learning is a deterministic action-oriented projection of existing Recomm
 
 **Supported persisted activities:** quiz, millionaire, flash-cards, learn.
 
-**Learn completion v1:** Section 8 `เข้าใจแล้ว ✓ ไปฝึก Quiz` in student companion context records Learn through `recordLearnCompletion`, then goes to Quiz. Teacher `from=teacher` does not write student history. After mount, a stored Learn event only marks Learn as already saved; the session still opens at Section 1. Learn-only history for the active lesson advances to Short Practice (`ทำ Quiz`). Flash-only history remains LEARN / flash override.
+**Learn completion v1:** Section 8 `เข้าใจแล้ว ✓ ไปฝึก Quiz` in student companion context records Learn through `recordLearnCompletion` for the lesson’s current `contentVersion`, then goes to Quiz. Teacher `from=teacher` does not write student history. After mount, only a **current-version** Learn event sets `learnSaved`. Legacy unversioned Learn events are effective version 1. Present Simple current version is 2; Past Simple is 1 (so legacy Past Learn remains current). Historical vs current completion are separate lookups.
+
+**Curriculum version policy:** `LessonData.contentVersion` is human-controlled. Do not bump for typo, punctuation, CSS, formatting, clearer equivalent wording, or equivalent example replacement. Bump when a required concept is added/removed, the learning objective changes, assessed scope changes, or the required structure expands (for example 4 → 8 sections).
 
 **Guided Student Learn v1:** `/lesson/[slug]` hides teacher/planning tabs, the lesson timer, teacher tips, ActivityGrid, and the Lesson Entry journey CTA so the footer is the only primary path. The 8-section sidebar stays for review. `?from=teacher` keeps classroom chrome. Activity routes stay directly reachable (no route locking). Footer labels come from `buildGuidedLearnFooterState`.
 

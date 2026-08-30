@@ -3,6 +3,7 @@ import {
   JOURNEY_ACTION_LABELS,
   isLearningEvent,
 } from "@/lib/analytics/lessonProgress";
+import { hasCurrentLearnCompletion } from "@/lib/history/learnVersion";
 import { buildLearningSummaryForLesson } from "@/lib/analytics/summary";
 import { getFirstCurriculumLesson, getLessonBySlug, getNextCurriculumLesson, hasLesson } from "@/lib/lessons";
 import { getActivityPath, getDashboardPath, getLessonPath } from "@/lib/routes";
@@ -292,6 +293,7 @@ function flashRecommendation(
 function recommendByLatestActivity(
   summary: LearningSummary,
   lessonSlug: string,
+  events?: AggregatableLearningEvent[],
 ): LearningRecommendation {
   const focus = summary.latestActivity;
 
@@ -320,6 +322,10 @@ function recommendByLatestActivity(
   }
 
   if (focus === "learn") {
+    if (events && !hasCurrentLearnCompletion(events, lessonSlug)) {
+      return startRecommendation(lessonSlug, "FALLBACK_START");
+    }
+
     return practiceAfterLearnRecommendation(lessonSlug);
   }
 
@@ -329,6 +335,7 @@ function recommendByLatestActivity(
 function recommendForActiveLesson(
   summary: LearningSummary,
   lessonSlug: string,
+  events?: AggregatableLearningEvent[],
 ): LearningRecommendation {
   if (summary.totalActivities <= 0) {
     return startRecommendation(lessonSlug, "EMPTY_HISTORY");
@@ -338,7 +345,7 @@ function recommendForActiveLesson(
     return flashRecommendation(summary, lessonSlug);
   }
 
-  return recommendByLatestActivity(summary, lessonSlug);
+  return recommendByLatestActivity(summary, lessonSlug, events);
 }
 
 function recommendFromEvents(
@@ -364,7 +371,7 @@ function recommendFromEvents(
     return nextLessonRecommendation(resolved.lessonSlug);
   }
 
-  return recommendForActiveLesson(lessonSummary, resolved.lessonSlug);
+  return recommendForActiveLesson(lessonSummary, resolved.lessonSlug, validEvents);
 }
 
 /**

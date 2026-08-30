@@ -51,6 +51,7 @@ FUTURE           AI generators, Teacher Studio, Classroom Companion
 | Activity Result forward CTA | CURRENT | After persist, Result can show the canonical Recommendation when it is a forward action: strong Quiz → `เล่น Millionaire`; completed Millionaire → next lesson or dashboard. Weak/developing Quiz, weak/developing Millionaire, and Flash Cards keep the generic Result buttons |
 | Complete Present Simple Learn | CURRENT | Learner is taught the assessed Present Simple foundation before Short Practice. Quiz and Millionaire still use the existing 50-item bank (10 questions each) |
 | Guided Student Learn | CURRENT | `/lesson/[slug]` walks Sections 1–8 with one dominant footer action, then persists Learn on Section 8 and continues to Quiz. Teacher `?from=teacher` keeps classroom chrome |
+| Lesson content versioning | CURRENT | Learn completion is per lesson + `contentVersion`. Legacy unversioned Learn events are v1. Stale Present Simple Learn-only history stays LEARN until current v2 is completed |
 
 **Known gaps in Phase 0:**
 

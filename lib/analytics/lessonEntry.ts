@@ -94,6 +94,7 @@ export function buildLessonEntry(
   const viewedJourney = evaluateLessonJourney(
     lessonSummary,
     isKnown ? lessonSlug : fallbackSlug(),
+    history,
   );
   const isComplete = Boolean(viewedRow && viewedRow.status === "COMPLETE");
   const isActiveLesson = Boolean(

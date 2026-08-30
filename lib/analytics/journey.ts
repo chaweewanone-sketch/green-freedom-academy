@@ -86,6 +86,7 @@ export function buildLearningJourney(
     const pathJourney = evaluateLessonJourney(
       lessonSummary,
       resolved.lessonSlug,
+      validEvents,
     );
 
     if (resolved.isCurriculumComplete) {

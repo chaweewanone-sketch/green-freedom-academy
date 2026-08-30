@@ -35,6 +35,7 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Activity Result forward CTA — after persist, a strong Quiz Result primary action is `เล่น Millionaire`; a completing Millionaire Result primary action is the canonical next lesson or dashboard. Weak/developing Quiz, weak/developing Millionaire, and Flash Cards keep the generic Result buttons
 - Complete Present Simple Learn — 8 cards teach the assessed P.6 foundation (usage, affirmative, -s/-es, negatives, Yes/No + short answers, Wh-questions, frequency/time, summary) before Short Practice
 - Guided Student Learn — sequential footer (`ต่อไป →`, then Section 8 `เข้าใจแล้ว ✓ ไปฝึก Quiz`) persists Learn only on the final action and continues to Quiz; student Learn hides teacher chrome, timer, ActivityGrid, and the Lesson Entry journey CTA
+- Lesson content versioning — Learn completion is one event per lesson + `contentVersion`; legacy unversioned Learn events are version 1; stale Present Simple Learn no longer unlocks PRACTICE
 
 ### Changed
 - `/dashboard` history flow is client-loaded so events survive browser refresh
@@ -54,6 +55,7 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Shared `ActivityResultActions` can show one guided next-learning CTA when a forward Recommendation exists; otherwise the original three buttons remain
 - Present Simple Learn is a complete 8-card curriculum; Quiz and Millionaire still use the existing 50-item bank (10 questions each) instead of shrinking Practice to the old 4-card scope
 - Student `/lesson/[slug]` is a guided sequence; teacher/classroom `?from=teacher` still shows modes, timer, planning, tips, and ActivityGrid. Existing Learn history no longer jumps the learner to the last section on refresh
+- `recordLearnCompletion` is idempotent per lesson version, not per slug forever; companion `learnSaved` means current-version completion only
 
 ---
 

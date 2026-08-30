@@ -177,7 +177,11 @@ export function verifyLearnCompletionWritesHistory(): void {
   const events = repository.getAll();
   assert(events.length === 1, "B: one event");
   assert(hasLearnCompletion(events, "present-simple"), "B: recognized");
-  assert(events[0]?.sessionId === `${LEARN_ACTIVITY}:present-simple`, "B: session");
+  assert(
+    events[0]?.sessionId === `${LEARN_ACTIVITY}:present-simple:v2`,
+    "B: session",
+  );
+  assert(events[0]?.lessonContentVersion === 2, "B: current version written");
 }
 
 export function verifyReloadRecognizesLearn(): void {

@@ -12,7 +12,7 @@ import { TeachingPanel } from "./TeachingPanel";
 import { useLessonTimer } from "@/lib/hooks/useLessonTimer";
 import { shouldPersistLearnCompletion } from "@/lib/lessons/guidedLearnFooter";
 import {
-  hasLearnCompletion,
+  hasCurrentLearnCompletion,
   loadDashboardLearningState,
   recordLearnCompletion,
 } from "@/lib/history";
@@ -49,7 +49,7 @@ export function ClassroomCompanion({
     }
 
     const { events } = loadDashboardLearningState();
-    if (!hasLearnCompletion(events, lesson.slug)) {
+    if (!hasCurrentLearnCompletion(events, lesson.slug)) {
       return;
     }
 

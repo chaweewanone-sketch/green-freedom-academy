@@ -16,6 +16,7 @@ import { runStudentJourneyIntegrationVerification } from "./studentJourneyIntegr
 import { runLearnCompletionVerification } from "./learnCompletionVerification";
 import { runPresentSimpleContentVerification } from "@/lib/lessons/presentSimpleContentVerification";
 import { runGuidedLearnVerification } from "@/lib/lessons/guidedLearnVerification";
+import { runLearnVersionVerification } from "@/lib/history/learnVersionVerification";
 import { runResultNextActionVerification } from "@/lib/analytics/resultNextActionVerification";
 import { runHistoryVerification } from "./verification";
 
@@ -78,6 +79,9 @@ console.log("present simple content verification passed");
 
 runGuidedLearnVerification();
 console.log("guided learn verification passed");
+
+runLearnVersionVerification();
+console.log("learn version verification passed");
 
 runResultNextActionVerification();
 console.log("result next action verification passed");

@@ -58,7 +58,7 @@ function evaluatedLessonProgress(
   status: "ACTIVE" | "COMPLETE",
 ): CurriculumLessonProgress {
   const summary = buildLearningSummaryForLesson(events, lessonSlug);
-  const journey = evaluateLessonJourney(summary, lessonSlug);
+  const journey = evaluateLessonJourney(summary, lessonSlug, events);
 
   return {
     lessonSlug,

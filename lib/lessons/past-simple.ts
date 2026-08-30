@@ -3,6 +3,7 @@ import type { LessonData } from "@/types/lesson";
 export const pastSimpleLesson: LessonData = {
   slug: "past-simple",
   title: "Past Simple",
+  contentVersion: 1,
   steps: [
     {
       title: "Past Simple คืออะไร",

@@ -1,4 +1,5 @@
 import { buildLearningSummaryForLesson } from "@/lib/analytics/summary";
+import { hasCurrentLearnCompletion } from "@/lib/history/learnVersion";
 import { getFirstCurriculumLesson, getLessonBySlug, hasLesson } from "@/lib/lessons";
 import { getActivityPath, getDashboardPath, getLessonPath } from "@/lib/routes";
 import type {
@@ -325,6 +326,7 @@ function applyFlashOverride(
 function buildPathJourney(
   summary: LearningSummary,
   lessonSlug: string,
+  events?: AggregatableLearningEvent[],
 ): LearningJourney {
   if (summary.totalActivities <= 0) {
     return learnJourney(lessonSlug, "EMPTY_HISTORY");
@@ -339,6 +341,10 @@ function buildPathJourney(
   }
 
   if (summary.latestActivity === "learn") {
+    if (events && !hasCurrentLearnCompletion(events, lessonSlug)) {
+      return learnJourney(lessonSlug, "FALLBACK_LEARN");
+    }
+
     return practiceAfterLearnJourney(lessonSlug);
   }
 
@@ -360,8 +366,9 @@ export function isLearningEvent(
 export function evaluateLessonJourney(
   summary: LearningSummary,
   lessonSlug: string,
+  events?: AggregatableLearningEvent[],
 ): LearningJourney {
-  const pathJourney = buildPathJourney(summary, lessonSlug);
+  const pathJourney = buildPathJourney(summary, lessonSlug, events);
 
   if (summary.totalActivities <= 0) {
     return pathJourney;
@@ -375,7 +382,7 @@ export function isLessonComplete(
   lessonSlug: string,
 ): boolean {
   const summary = buildLearningSummaryForLesson(events, lessonSlug);
-  return evaluateLessonJourney(summary, lessonSlug).stage === "COMPLETE";
+  return evaluateLessonJourney(summary, lessonSlug, events).stage === "COMPLETE";
 }
 
 export function learnFallbackJourney(
