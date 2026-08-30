@@ -18,6 +18,7 @@ import { runPresentSimpleContentVerification } from "@/lib/lessons/presentSimple
 import { runGuidedLearnVerification } from "@/lib/lessons/guidedLearnVerification";
 import { runLearnVersionVerification } from "@/lib/history/learnVersionVerification";
 import { runResultNextActionVerification } from "@/lib/analytics/resultNextActionVerification";
+import { runQuizAttemptResetVerification } from "@/lib/quiz/quizAttemptResetVerification";
 import { runHistoryVerification } from "./verification";
 
 runHistoryVerification();
@@ -85,3 +86,6 @@ console.log("learn version verification passed");
 
 runResultNextActionVerification();
 console.log("result next action verification passed");
+
+runQuizAttemptResetVerification();
+console.log("quiz attempt reset verification passed");

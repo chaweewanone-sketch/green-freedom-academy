@@ -1,11 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ActivityResultActions } from "@/components/activities/ActivityResultActions";
 import { ChoiceButton } from "@/components/millionaire/ChoiceButton";
 import type { ResultNextAction } from "@/lib/analytics/resultNextAction";
 import { buildAssessmentResult } from "@/lib/assessment";
+import {
+  createQuizAttemptSnapshot,
+  nextQuizAttemptKey,
+  resolveQuizChoiceScore,
+  type QuizAttemptPhase,
+} from "@/lib/quiz/quizAttemptState";
 import { getLessonPath } from "@/lib/routes";
 import type { AssessmentSession } from "@/lib/assessment";
 import type { AssessmentResult } from "@/types/assessment-result";
@@ -15,8 +21,6 @@ type QuizGameProps = {
   onComplete?: (result: AssessmentResult) => void;
   nextAction?: ResultNextAction;
 };
-
-type QuizPhase = "intro" | "question" | "result";
 
 const difficultyLabels = {
   easy: "Easy",
@@ -31,20 +35,40 @@ function formatLessonSlug(slug: string): string {
     .join(" ");
 }
 
-export function QuizGame({ session, onComplete, nextAction }: QuizGameProps) {
+type QuizAttemptProps = {
+  session: AssessmentSession;
+  onComplete?: (result: AssessmentResult) => void;
+  nextAction?: ResultNextAction;
+  onRequestRestart: () => void;
+  initialPhase: QuizAttemptPhase;
+};
+
+function QuizAttempt({
+  session,
+  onComplete,
+  nextAction,
+  onRequestRestart,
+  initialPhase,
+}: QuizAttemptProps) {
   const questions = session.questions;
   const totalQuestions = questions.length;
   const lessonTitle = formatLessonSlug(session.lessonSlug);
   const lessonPath = getLessonPath(session.lessonSlug);
-  const hasRecordedCompletionRef = useRef(false);
+  const initial = createQuizAttemptSnapshot(initialPhase);
+  const hasRecordedCompletionRef = useRef(initial.hasRecordedCompletion);
 
-  const [phase, setPhase] = useState<QuizPhase>("intro");
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [correctCount, setCorrectCount] = useState(0);
-  const [incorrectCount, setIncorrectCount] = useState(0);
-  const [selectedChoiceId, setSelectedChoiceId] = useState<string | null>(null);
-  const [revealed, setRevealed] = useState(false);
-  const [result, setResult] = useState<AssessmentResult | null>(null);
+  const [phase, setPhase] = useState<QuizAttemptPhase>(initial.phase);
+  const [currentIndex, setCurrentIndex] = useState(initial.currentIndex);
+  const [correctCount, setCorrectCount] = useState(initial.correctCount);
+  const [incorrectCount, setIncorrectCount] = useState(initial.incorrectCount);
+  const [selectedChoiceId, setSelectedChoiceId] = useState<string | null>(
+    initial.selectedChoiceId,
+  );
+  const [revealed, setRevealed] = useState(initial.revealed);
+  const [result, setResult] = useState<AssessmentResult | null>(initial.result);
+  const [choiceInputArmed, setChoiceInputArmed] = useState(
+    initialPhase !== "question",
+  );
 
   const currentQuestion = questions[currentIndex];
   const progressPercent =
@@ -52,39 +76,46 @@ export function QuizGame({ session, onComplete, nextAction }: QuizGameProps) {
       ? Math.round(((currentIndex + 1) / totalQuestions) * 100)
       : 0;
 
+  useEffect(() => {
+    if (initialPhase !== "question") {
+      return;
+    }
+
+    setChoiceInputArmed(true);
+  }, [initialPhase]);
+
   function startQuiz() {
     if (totalQuestions === 0) {
       return;
     }
 
-    setPhase("question");
-    setCurrentIndex(0);
-    setCorrectCount(0);
-    setIncorrectCount(0);
-    setSelectedChoiceId(null);
-    setRevealed(false);
-    setResult(null);
-    hasRecordedCompletionRef.current = false;
-  }
-
-  function restartQuiz() {
-    startQuiz();
+    const started = createQuizAttemptSnapshot("question");
+    setPhase(started.phase);
+    setCurrentIndex(started.currentIndex);
+    setCorrectCount(started.correctCount);
+    setIncorrectCount(started.incorrectCount);
+    setSelectedChoiceId(started.selectedChoiceId);
+    setRevealed(started.revealed);
+    setResult(started.result);
+    hasRecordedCompletionRef.current = started.hasRecordedCompletion;
+    setChoiceInputArmed(true);
   }
 
   function handleChoice(choiceId: string) {
-    if (revealed || !currentQuestion) return;
+    if (!choiceInputArmed || revealed || !currentQuestion) return;
 
     const isValidChoice = currentQuestion.choices.some(
       (choice) => choice.id === choiceId,
     );
     if (!isValidChoice) return;
 
-    const isCorrect = choiceId === currentQuestion.correctChoiceId;
-
     setSelectedChoiceId(choiceId);
     setRevealed(true);
 
-    if (isCorrect) {
+    if (
+      resolveQuizChoiceScore(choiceId, currentQuestion.correctChoiceId) ===
+      "correct"
+    ) {
       setCorrectCount((prev) => prev + 1);
     } else {
       setIncorrectCount((prev) => prev + 1);
@@ -174,7 +205,7 @@ export function QuizGame({ session, onComplete, nextAction }: QuizGameProps) {
         </dl>
         <ActivityResultActions
           lessonPath={lessonPath}
-          onRestart={restartQuiz}
+          onRestart={onRequestRestart}
           nextAction={nextAction}
           guided
         />
@@ -245,7 +276,7 @@ export function QuizGame({ session, onComplete, nextAction }: QuizGameProps) {
                 key={choice.id}
                 label={choice.text}
                 onClick={() => handleChoice(choice.id)}
-                disabled={revealed}
+                disabled={revealed || !choiceInputArmed}
                 state={state}
               />
             );
@@ -256,17 +287,35 @@ export function QuizGame({ session, onComplete, nextAction }: QuizGameProps) {
             {currentQuestion.explanation}
           </div>
         )}
-        <div className="quizNextAction">
-          <button
-            type="button"
-            className="button primary"
-            onClick={handleNext}
-            disabled={!revealed}
-          >
-            {currentIndex >= totalQuestions - 1 ? "ดูผลคะแนน" : "ถัดไป"}
-          </button>
-        </div>
+        {revealed && (
+          <div className="quizNextAction">
+            <button
+              type="button"
+              className="button primary"
+              onClick={handleNext}
+            >
+              {currentIndex >= totalQuestions - 1 ? "ดูผลคะแนน" : "ถัดไป"}
+            </button>
+          </div>
+        )}
       </article>
     </section>
+  );
+}
+
+export function QuizGame({ session, onComplete, nextAction }: QuizGameProps) {
+  const [attemptKey, setAttemptKey] = useState(0);
+
+  return (
+    <QuizAttempt
+      key={attemptKey}
+      session={session}
+      onComplete={onComplete}
+      nextAction={nextAction}
+      initialPhase={attemptKey === 0 ? "intro" : "question"}
+      onRequestRestart={() => {
+        setAttemptKey((current) => nextQuizAttemptKey(current));
+      }}
+    />
   );
 }
