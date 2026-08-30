@@ -115,10 +115,11 @@ green-freedom-academy-v1/
 ### Lesson experience
 
 1. Student opens `/lesson/present-simple` from Student Home or dashboard.
-2. Slide index and completed slides live in React state.
-3. Progress bar derived from completed slide count.
-4. Marking the **last** slide complete (`เข้าใจแล้ว ✓`) writes one Learn `LearningEvent` through `recordLearnCompletion()` (no scores). After refresh, the companion restores completed slides from that event.
-5. **Gap:** Per-slide progress is not stored independently; nothing persists to Supabase.
+2. Present Simple Learn has 8 cards: usage, I/You/We/They, He/She/It + -s/-es, negatives, Yes/No + short answers, Wh-questions, frequency/time, and a structure summary. Quiz and Millionaire still draw 10 questions from the existing 50-item bank after this complete Learn.
+3. Slide index and completed slides live in React state.
+4. Progress bar derived from completed slide count.
+5. Marking the **last** slide complete (`เข้าใจแล้ว ✓`) writes one Learn `LearningEvent` through `recordLearnCompletion()` (no scores). After refresh, the companion restores completed slides from that event.
+6. **Gap:** Per-slide progress is not stored independently; nothing persists to Supabase.
 
 ### Teacher dashboard
 

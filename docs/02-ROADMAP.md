@@ -29,7 +29,7 @@ FUTURE           AI generators, Teacher Studio, Classroom Companion
 | Demo login (`/login`) | CURRENT | Role tabs; stores `gfa-demo-role` in `localStorage`; no credential check |
 | Student Learning Home (`/student`) | CURRENT | Action-oriented learner entry: Resume Learning, active lesson, compact curriculum progress, latest activity |
 | Teacher dashboard (`/teacher`) | CURRENT | Hardcoded stats and student table |
-| Present Simple lesson (`/lesson/present-simple`) | CURRENT | 4 slides with grammar-point-specific examples; finishing the last slide records Learn completion |
+| Present Simple lesson (`/lesson/present-simple`) | CURRENT | 8 Learn cards covering usage, affirmative, -s/-es, negatives, Yes/No + short answers, Wh-questions, frequency/time, and a structure summary; last card records Learn completion |
 | `BrandHeader` component | CURRENT | Shared nav across main pages |
 | Global CSS design system | CURRENT | `app/globals.css` |
 | PWA manifest | CURRENT (partial) | `public/manifest.webmanifest`; `icons: []` |
@@ -49,6 +49,7 @@ FUTURE           AI generators, Teacher Studio, Classroom Companion
 | Learn → Short Practice continuity | CURRENT | After a persisted Learn event, Journey / Recommendation / Resume / Home / Lesson Entry point to Quiz (`ทำ Quiz`) |
 | Short Practice Quiz length | CURRENT | Default Quiz attempt is 10 questions; percentage scoring unchanged; answer positions stay near-balanced (3/3/2/2) |
 | Activity Result forward CTA | CURRENT | After persist, Result can show the canonical Recommendation when it is a forward action: strong Quiz → `เล่น Millionaire`; completed Millionaire → next lesson or dashboard. Weak/developing Quiz, weak/developing Millionaire, and Flash Cards keep the generic Result buttons |
+| Complete Present Simple Learn | CURRENT | Learner is taught the assessed Present Simple foundation before Short Practice. Quiz and Millionaire still use the existing 50-item bank (10 questions each) |
 
 **Known gaps in Phase 0:**
 
