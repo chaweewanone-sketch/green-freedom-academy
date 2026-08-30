@@ -179,6 +179,13 @@ function practiceAfterLearnRecommendation(
   });
 }
 
+export function buildQuizScoreRecommendation(
+  score: number,
+  lessonSlug: string,
+): LearningRecommendation {
+  return quizRecommendation(score, lessonSlug);
+}
+
 function quizRecommendation(
   score: number,
   lessonSlug: string,

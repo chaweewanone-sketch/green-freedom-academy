@@ -92,6 +92,7 @@ function persistThenResolve(
   currentActivity: string,
   currentLessonSlug: string,
   results: AssessmentResult[],
+  currentResult?: AssessmentResult,
 ) {
   const repository = new MemoryLearningHistoryRepository();
 
@@ -109,6 +110,46 @@ function persistThenResolve(
     currentLessonSlug,
     summary: state.summary,
     events: state.events,
+    currentResult:
+      currentResult?.activity === "quiz"
+        ? {
+            activity: currentResult.activity,
+            percentage: currentResult.percentage,
+          }
+        : undefined,
+  });
+}
+
+function quizCurrentResult(percentage: number): AssessmentResult {
+  const score = Math.round(percentage / 10);
+  return assessmentResult({
+    activity: "quiz",
+    percentage,
+    score,
+    correct: score,
+    incorrect: 10 - score,
+  });
+}
+
+function nextActionFromCurrentQuiz(
+  currentPercentage: number,
+  historyPercentages: number[] = [],
+) {
+  const events = historyPercentages.map((scorePercentage, index) =>
+    makeEvent({
+      activity: "quiz",
+      lessonSlug: "present-simple",
+      scorePercentage,
+      completedAt: index + 1,
+    }),
+  );
+
+  return resolveForwardResultNextAction({
+    currentActivity: "quiz",
+    currentLessonSlug: "present-simple",
+    summary: emptySummary(),
+    events,
+    currentResult: quizCurrentResult(currentPercentage),
   });
 }
 
@@ -416,11 +457,18 @@ export function verifyHelperDoesNotDuplicateThresholds(): void {
     !source.includes("RECOMMENDATION_THRESHOLDS"),
     "policy: no recommendation thresholds",
   );
-  assert(!source.includes("scorePercentage"), "policy: does not inspect scores");
-  assert(!source.includes("percentage"), "policy: does not inspect percentage");
+  assert(!source.includes("scorePercentage"), "policy: does not inspect history scores");
+  assert(
+    !source.includes("developingMin") && !source.includes("strongMin"),
+    "policy: no local score bands",
+  );
+  assert(
+    source.includes("buildQuizScoreRecommendation"),
+    "policy: quiz Result reuses score-band helper",
+  );
   assert(
     source.includes("buildLearningRecommendation"),
-    "policy: reuses recommendation",
+    "policy: Millionaire still reuses recommendation",
   );
 }
 
@@ -490,6 +538,112 @@ export function verifyQuizGuidedResultUi(): void {
   assert(actions.includes("กลับหน้าหลักนักเรียน"), "ui: home secondary remains");
 }
 
+export function verifyCurrentQuizResultIgnoresHistoryAverage(): void {
+  const isolated60 = nextActionFromCurrentQuiz(60);
+  const isolated80 = nextActionFromCurrentQuiz(80);
+  const isolated90 = nextActionFromCurrentQuiz(90);
+  const history80Then90 = nextActionFromCurrentQuiz(90, [80, 80]);
+  const history90Then60 = nextActionFromCurrentQuiz(60, [90]);
+  const history60Then90 = nextActionFromCurrentQuiz(90, [60]);
+  const history90Then80 = nextActionFromCurrentQuiz(80, [90, 90]);
+
+  assert(isolated60?.label === "ทำ Quiz อีกครั้ง", "A: current 60");
+  assert(isolated60?.sameActivity === true, "A: 60 retries Quiz");
+  assert(isolated80?.label === "ฝึก Quiz", "B: current 80");
+  assert(isolated80?.sameActivity === true, "B: 80 retries Quiz");
+  assert(isolated90?.label === "เล่น Millionaire", "C: current 90");
+  assert(
+    isolated90?.href === getActivityPath("present-simple", "millionaire"),
+    "C: 90 routes to Millionaire",
+  );
+  assert(isolated90?.sameActivity !== true, "C: 90 is not retry");
+  assert(history80Then90?.label === "เล่น Millionaire", "D: 80,80 then 90");
+  assert(history90Then60?.label === "ทำ Quiz อีกครั้ง", "E: 90 then 60");
+  assert(history60Then90?.label === "เล่น Millionaire", "F: 60 then 90");
+  assert(history90Then80?.label === "ฝึก Quiz", "G: 90,90 then 80");
+
+  const persisted = persistThenResolve(
+    "quiz",
+    "present-simple",
+    [
+      assessmentResult({
+        activity: "quiz",
+        sessionId: "hist_80a",
+        percentage: 80,
+        score: 8,
+        correct: 8,
+        incorrect: 2,
+        completedAt: 1,
+      }),
+      assessmentResult({
+        activity: "quiz",
+        sessionId: "hist_80b",
+        percentage: 80,
+        score: 8,
+        correct: 8,
+        incorrect: 2,
+        completedAt: 2,
+      }),
+      quizCurrentResult(90),
+    ],
+    quizCurrentResult(90),
+  );
+  assert(persisted?.label === "เล่น Millionaire", "D: persist still uses current 90");
+}
+
+export function verifyHomeJourneyResumeKeepQuizAverage(): void {
+  const events = [
+    makeEvent({
+      activity: "quiz",
+      lessonSlug: "present-simple",
+      scorePercentage: 80,
+      completedAt: 1,
+    }),
+    makeEvent({
+      activity: "quiz",
+      lessonSlug: "present-simple",
+      scorePercentage: 80,
+      completedAt: 2,
+    }),
+    makeEvent({
+      activity: "quiz",
+      lessonSlug: "present-simple",
+      scorePercentage: 90,
+      completedAt: 3,
+    }),
+  ];
+  const recommendation = buildLearningRecommendation(emptySummary(), events);
+  const journey = evaluateLessonJourney(
+    buildLearningSummary(events),
+    "present-simple",
+  );
+  const resume = buildResumeLearning(emptySummary(), events);
+
+  assert(recommendation.ctaLabel === "ฝึก Quiz", "I: Home average stays developing");
+  assert(journey.stage === "PRACTICE", "I: Journey stays PRACTICE");
+  assert(
+    resume.action.href === getActivityPath("present-simple", "quiz"),
+    "I: Resume still points at Quiz from average",
+  );
+  assert(resume.action.actionType === "PRACTICE", "I: Resume type stays PRACTICE");
+}
+
+export function verifyQuizRetryClearsParentNextAction(): void {
+  const player = readFileSync(
+    resolve(process.cwd(), "components/activities/StudentActivityPlayer.tsx"),
+    "utf8",
+  );
+  const quiz = readFileSync(
+    resolve(process.cwd(), "components/quiz/QuizGame.tsx"),
+    "utf8",
+  );
+
+  assert(player.includes("onRestartAttempt={handleQuizRestart}"), "H: player binds restart");
+  assert(player.includes("setResultNextAction(null)"), "H: restart clears nextAction");
+  assert(quiz.includes("onRestartAttempt"), "H: QuizGame notifies parent");
+  assert(quiz.includes('initialPhase="intro"'), "J: intro retry boundary remains");
+}
+
 export function runResultNextActionVerification(): void {
   verifyQuiz60GuidesRetry();
   verifyQuiz80GuidesPractice();
@@ -503,4 +657,7 @@ export function runResultNextActionVerification(): void {
   verifyHelperDoesNotDuplicateThresholds();
   verifyResultUiDoesNotEncodeScorePolicy();
   verifyQuizGuidedResultUi();
+  verifyCurrentQuizResultIgnoresHistoryAverage();
+  verifyHomeJourneyResumeKeepQuizAverage();
+  verifyQuizRetryClearsParentNextAction();
 }

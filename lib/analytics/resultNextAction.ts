@@ -1,9 +1,13 @@
-import { buildLearningRecommendation } from "@/lib/analytics/recommendation";
+import {
+  buildLearningRecommendation,
+  buildQuizScoreRecommendation,
+} from "@/lib/analytics/recommendation";
 import { getActivityPath, getDashboardPath, getLessonPath } from "@/lib/routes";
 import type {
   AggregatableLearningEvent,
   LearningRecommendation,
 } from "@/types/analytics";
+import type { AssessmentResult } from "@/types/assessment-result";
 
 export type ResultNextAction = {
   label: string;
@@ -17,7 +21,18 @@ export type ResolveForwardResultNextActionInput = {
   currentLessonSlug: string;
   summary: unknown;
   events?: AggregatableLearningEvent[];
+  currentResult?: Pick<AssessmentResult, "activity" | "percentage">;
 };
+
+function isCurrentQuizResult(
+  result: ResolveForwardResultNextActionInput["currentResult"],
+): result is Pick<AssessmentResult, "activity" | "percentage"> {
+  return (
+    result !== undefined &&
+    result.activity === "quiz" &&
+    Number.isFinite(result.percentage)
+  );
+}
 
 function asForwardAction(
   recommendation: LearningRecommendation,
@@ -94,14 +109,27 @@ export function toForwardResultNextAction(
 }
 
 /**
- * Compose Result nextAction from the canonical recommendation engine
- * after the activity result has already been persisted.
+ * Compose Result nextAction after persist.
+ * Quiz Result uses the current attempt percentage via the shared
+ * score-band helper. Home/Journey/Resume keep historical average.
+ * Millionaire Result still uses the canonical history recommendation.
  */
 export function resolveForwardResultNextAction(
   input: ResolveForwardResultNextActionInput,
 ): ResultNextAction | null {
   if (input.currentActivity === "flash-cards") {
     return null;
+  }
+
+  if (input.currentActivity === "quiz" && isCurrentQuizResult(input.currentResult)) {
+    return toForwardResultNextAction(
+      input.currentActivity,
+      input.currentLessonSlug,
+      buildQuizScoreRecommendation(
+        input.currentResult.percentage,
+        input.currentLessonSlug,
+      ),
+    );
   }
 
   const recommendation = buildLearningRecommendation(

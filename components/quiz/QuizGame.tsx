@@ -20,6 +20,7 @@ type QuizGameProps = {
   session: AssessmentSession;
   onComplete?: (result: AssessmentResult) => void;
   nextAction?: ResultNextAction;
+  onRestartAttempt?: () => void;
 };
 
 const difficultyLabels = {
@@ -303,7 +304,12 @@ function QuizAttempt({
   );
 }
 
-export function QuizGame({ session, onComplete, nextAction }: QuizGameProps) {
+export function QuizGame({
+  session,
+  onComplete,
+  nextAction,
+  onRestartAttempt,
+}: QuizGameProps) {
   const [attemptKey, setAttemptKey] = useState(0);
 
   return (
@@ -314,6 +320,7 @@ export function QuizGame({ session, onComplete, nextAction }: QuizGameProps) {
       nextAction={nextAction}
       initialPhase="intro"
       onRequestRestart={() => {
+        onRestartAttempt?.();
         setAttemptKey((current) => nextQuizAttemptKey(current));
       }}
     />

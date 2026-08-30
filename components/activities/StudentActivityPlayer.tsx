@@ -46,11 +46,22 @@ export function StudentActivityPlayer({
           currentLessonSlug: session.lessonSlug,
           summary,
           events,
+          currentResult:
+            result.activity === "quiz"
+              ? {
+                  activity: result.activity,
+                  percentage: result.percentage,
+                }
+              : undefined,
         }),
       );
     },
     [session.activity, session.lessonSlug],
   );
+
+  const handleQuizRestart = useCallback(() => {
+    setResultNextAction(null);
+  }, []);
 
   if (session.activity === "millionaire") {
     return (
@@ -70,6 +81,7 @@ export function StudentActivityPlayer({
         session={session}
         onComplete={handleComplete}
         nextAction={resultNextAction ?? undefined}
+        onRestartAttempt={handleQuizRestart}
       />
     );
   }

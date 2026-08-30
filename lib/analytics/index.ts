@@ -51,6 +51,7 @@ export {
   DEFAULT_RECOMMENDATION_LESSON_SLUG,
   RECOMMENDATION_THRESHOLDS,
   buildLearningRecommendation,
+  buildQuizScoreRecommendation,
 } from "./recommendation";
 export {
   resolveForwardResultNextAction,
