@@ -7,6 +7,8 @@ type TeachingPanelProps = {
   totalSteps: number;
   step: LessonStep;
   lessonSlug: string;
+  showActivityGrid?: boolean;
+  showTeacherTip?: boolean;
 };
 
 export function TeachingPanel({
@@ -14,6 +16,8 @@ export function TeachingPanel({
   totalSteps,
   step,
   lessonSlug,
+  showActivityGrid = true,
+  showTeacherTip = true,
 }: TeachingPanelProps) {
   return (
     <article className="lessonContent companionTeaching">
@@ -29,17 +33,19 @@ export function TeachingPanel({
           {example}
         </div>
       ))}
-      {step.teacherTip && (
+      {showTeacherTip && step.teacherTip ? (
         <>
           <h2>คำแนะนำสำหรับครู</h2>
           <div className="planningTip">{step.teacherTip}</div>
         </>
-      )}
+      ) : null}
 
-      <ActivityGrid
-        activities={getLearningActivities()}
-        lessonSlug={lessonSlug}
-      />
+      {showActivityGrid ? (
+        <ActivityGrid
+          activities={getLearningActivities()}
+          lessonSlug={lessonSlug}
+        />
+      ) : null}
     </article>
   );
 }

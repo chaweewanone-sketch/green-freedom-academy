@@ -50,6 +50,7 @@ FUTURE           AI generators, Teacher Studio, Classroom Companion
 | Short Practice Quiz length | CURRENT | Default Quiz attempt is 10 questions; percentage scoring unchanged; answer positions stay near-balanced (3/3/2/2) |
 | Activity Result forward CTA | CURRENT | After persist, Result can show the canonical Recommendation when it is a forward action: strong Quiz → `เล่น Millionaire`; completed Millionaire → next lesson or dashboard. Weak/developing Quiz, weak/developing Millionaire, and Flash Cards keep the generic Result buttons |
 | Complete Present Simple Learn | CURRENT | Learner is taught the assessed Present Simple foundation before Short Practice. Quiz and Millionaire still use the existing 50-item bank (10 questions each) |
+| Guided Student Learn | CURRENT | `/lesson/[slug]` walks Sections 1–8 with one dominant footer action, then persists Learn on Section 8 and continues to Quiz. Teacher `?from=teacher` keeps classroom chrome |
 
 **Known gaps in Phase 0:**
 

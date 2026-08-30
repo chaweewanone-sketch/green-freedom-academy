@@ -1,3 +1,10 @@
+import {
+  GUIDED_LEARN_COMPLETE_LABEL,
+  GUIDED_LEARN_NEXT_LABEL,
+  GUIDED_LEARN_PREVIOUS_LABEL,
+  buildGuidedLearnFooterState,
+} from "@/lib/lessons/guidedLearnFooter";
+
 type LessonFooterProps = {
   currentStep: number;
   totalSteps: number;
@@ -5,6 +12,7 @@ type LessonFooterProps = {
   onNext: () => void;
   onMarkComplete: () => void;
   isLearnRecorded?: boolean;
+  guided?: boolean;
 };
 
 export function LessonFooter({
@@ -14,7 +22,35 @@ export function LessonFooter({
   onNext,
   onMarkComplete,
   isLearnRecorded = false,
+  guided = false,
 }: LessonFooterProps) {
+  if (guided) {
+    const state = buildGuidedLearnFooterState(currentStep, totalSteps);
+
+    return (
+      <footer className="lessonActions companionFooter guidedLearnFooter">
+        {state.showPrevious ? (
+          <button
+            type="button"
+            className="button secondary"
+            onClick={onPrevious}
+          >
+            {GUIDED_LEARN_PREVIOUS_LABEL}
+          </button>
+        ) : null}
+        <button
+          type="button"
+          className="button primary"
+          onClick={state.primaryKind === "complete" ? onMarkComplete : onNext}
+        >
+          {state.primaryKind === "complete"
+            ? GUIDED_LEARN_COMPLETE_LABEL
+            : GUIDED_LEARN_NEXT_LABEL}
+        </button>
+      </footer>
+    );
+  }
+
   const isFirst = currentStep === 0;
   const isLast = currentStep === totalSteps - 1;
   const completeDisabled = isLast && isLearnRecorded;

@@ -10,6 +10,7 @@ type LessonHeaderProps = {
   progressPercent: number;
   mode: CompanionMode;
   onModeChange: (mode: CompanionMode) => void;
+  showClassroomControls?: boolean;
 };
 
 export function LessonHeader({
@@ -21,9 +22,16 @@ export function LessonHeader({
   progressPercent,
   mode,
   onModeChange,
+  showClassroomControls = true,
 }: LessonHeaderProps) {
   return (
-    <header className="companionHeader">
+    <header
+      className={
+        showClassroomControls
+          ? "companionHeader"
+          : "companionHeader companionHeaderStudent"
+      }
+    >
       <div className="companionHeaderStart">
         <Link href={backHref} aria-label={backLabel}>
           ← {backLabel}
@@ -33,31 +41,33 @@ export function LessonHeader({
 
       <div className="companionHeaderCenter">
         <span className="stepIndicator">
-          ขั้นที่ {currentStep + 1} / {totalSteps}
+          บทที่ {currentStep + 1} จาก {totalSteps}
         </span>
         <span className="companionPercent">{progressPercent}%</span>
       </div>
 
-      <div className="modeTabs" role="tablist" aria-label="โหมดการใช้งาน">
-        <button
-          type="button"
-          role="tab"
-          aria-selected={mode === "teaching"}
-          className={mode === "teaching" ? "active" : ""}
-          onClick={() => onModeChange("teaching")}
-        >
-          โหมดสอน
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={mode === "planning"}
-          className={mode === "planning" ? "active" : ""}
-          onClick={() => onModeChange("planning")}
-        >
-          โหมดวางแผน
-        </button>
-      </div>
+      {showClassroomControls ? (
+        <div className="modeTabs" role="tablist" aria-label="โหมดการใช้งาน">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={mode === "teaching"}
+            className={mode === "teaching" ? "active" : ""}
+            onClick={() => onModeChange("teaching")}
+          >
+            โหมดสอน
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={mode === "planning"}
+            className={mode === "planning" ? "active" : ""}
+            onClick={() => onModeChange("planning")}
+          >
+            โหมดวางแผน
+          </button>
+        </div>
+      ) : null}
     </header>
   );
 }

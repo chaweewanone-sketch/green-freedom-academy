@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { LessonFooter } from "./LessonFooter";
 import { LessonHeader } from "./LessonHeader";
 import { LessonNavigator } from "./LessonNavigator";
@@ -8,14 +9,14 @@ import { LessonProgress } from "./LessonProgress";
 import { LessonTimer } from "./LessonTimer";
 import { PlanningPanel } from "./PlanningPanel";
 import { TeachingPanel } from "./TeachingPanel";
-import { LessonEntryView } from "./LessonEntryView";
 import { useLessonTimer } from "@/lib/hooks/useLessonTimer";
+import { shouldPersistLearnCompletion } from "@/lib/lessons/guidedLearnFooter";
 import {
   hasLearnCompletion,
   loadDashboardLearningState,
   recordLearnCompletion,
 } from "@/lib/history";
-import { getStudentPath } from "@/lib/routes";
+import { getActivityPath, getStudentPath } from "@/lib/routes";
 import type { CompanionMode, LessonData } from "@/types/lesson";
 
 type ClassroomCompanionProps = {
@@ -34,15 +35,16 @@ export function ClassroomCompanion({
   showLearnerProgress = true,
 }: ClassroomCompanionProps) {
   const { steps, title } = lesson;
+  const isStudentLearn = showLearnerProgress;
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [mode, setMode] = useState<CompanionMode>(defaultMode);
   const [learnSaved, setLearnSaved] = useState(false);
-  const [historyEpoch, setHistoryEpoch] = useState(0);
   const timer = useLessonTimer();
 
   useEffect(() => {
-    if (!showLearnerProgress) {
+    if (!isStudentLearn) {
       return;
     }
 
@@ -51,36 +53,56 @@ export function ClassroomCompanion({
       return;
     }
 
-    setCompletedSteps(steps.map((_, index) => index));
-    setCurrentStep(Math.max(0, steps.length - 1));
     setLearnSaved(true);
-  }, [lesson.slug, showLearnerProgress, steps.length]);
+  }, [isStudentLearn, lesson.slug]);
 
   const progressPercent = Math.round(
     (completedSteps.length / steps.length) * 100,
   );
   const activeStep = steps[currentStep];
 
+  function markStepSeen(stepIndex: number) {
+    setCompletedSteps((prev) =>
+      prev.includes(stepIndex) ? prev : [...prev, stepIndex],
+    );
+  }
+
   function goToPrevious() {
     setCurrentStep((prev) => Math.max(0, prev - 1));
   }
 
   function goToNext() {
+    markStepSeen(currentStep);
     setCurrentStep((prev) => Math.min(steps.length - 1, prev + 1));
   }
 
+  function finishLearnAndGoToQuiz() {
+    markStepSeen(currentStep);
+
+    if (
+      isStudentLearn &&
+      !learnSaved &&
+      shouldPersistLearnCompletion(currentStep, steps.length)
+    ) {
+      const saved = recordLearnCompletion({ lessonSlug: lesson.slug });
+      if (saved) {
+        setLearnSaved(true);
+      }
+    }
+
+    router.push(getActivityPath(lesson.slug, "quiz"));
+  }
+
   function markComplete() {
-    const isLastSlide = currentStep >= steps.length - 1;
-    setCompletedSteps((prev) =>
-      prev.includes(currentStep) ? prev : [...prev, currentStep],
-    );
+    const isLastSlide = shouldPersistLearnCompletion(currentStep, steps.length);
+    markStepSeen(currentStep);
 
     if (!isLastSlide) {
       setCurrentStep((prev) => Math.min(steps.length - 1, prev + 1));
       return;
     }
 
-    if (!showLearnerProgress || learnSaved) {
+    if (!isStudentLearn || learnSaved) {
       return;
     }
 
@@ -90,7 +112,6 @@ export function ClassroomCompanion({
     }
 
     setLearnSaved(true);
-    setHistoryEpoch((value) => value + 1);
   }
 
   return (
@@ -104,40 +125,45 @@ export function ClassroomCompanion({
         progressPercent={progressPercent}
         mode={mode}
         onModeChange={setMode}
+        showClassroomControls={!isStudentLearn}
       />
 
       <LessonProgress percent={progressPercent} />
 
       <section className="lessonShell companionShell">
-        <div className="companionSidebar">
+        <div
+          className={
+            isStudentLearn
+              ? "companionSidebar guidedLearnSidebar"
+              : "companionSidebar"
+          }
+        >
           <LessonNavigator
             steps={steps}
             currentStep={currentStep}
             completedSteps={completedSteps}
             onStepSelect={setCurrentStep}
           />
-          <LessonTimer
-            seconds={timer.seconds}
-            isRunning={timer.isRunning}
-            onStart={timer.start}
-            onPause={timer.pause}
-            onReset={timer.reset}
-          />
+          {!isStudentLearn ? (
+            <LessonTimer
+              seconds={timer.seconds}
+              isRunning={timer.isRunning}
+              onStart={timer.start}
+              onPause={timer.pause}
+              onReset={timer.reset}
+            />
+          ) : null}
         </div>
 
         <div className="companionMain">
-          {showLearnerProgress ? (
-            <LessonEntryView
-              lessonSlug={lesson.slug}
-              historyEpoch={historyEpoch}
-            />
-          ) : null}
           {mode === "teaching" ? (
             <TeachingPanel
               stepIndex={currentStep}
               totalSteps={steps.length}
               step={activeStep}
               lessonSlug={lesson.slug}
+              showActivityGrid={!isStudentLearn}
+              showTeacherTip={!isStudentLearn}
             />
           ) : (
             <PlanningPanel
@@ -153,8 +179,11 @@ export function ClassroomCompanion({
             totalSteps={steps.length}
             onPrevious={goToPrevious}
             onNext={goToNext}
-            onMarkComplete={markComplete}
+            onMarkComplete={
+              isStudentLearn ? finishLearnAndGoToQuiz : markComplete
+            }
             isLearnRecorded={learnSaved}
+            guided={isStudentLearn}
           />
         </div>
       </section>

@@ -118,7 +118,7 @@ green-freedom-academy-v1/
 2. Present Simple Learn has 8 cards: usage, I/You/We/They, He/She/It + -s/-es, negatives, Yes/No + short answers, Wh-questions, frequency/time, and a structure summary. Quiz and Millionaire still draw 10 questions from the existing 50-item bank after this complete Learn.
 3. Slide index and completed slides live in React state.
 4. Progress bar derived from completed slide count.
-5. Marking the **last** slide complete (`เข้าใจแล้ว ✓`) writes one Learn `LearningEvent` through `recordLearnCompletion()` (no scores). After refresh, the companion restores completed slides from that event.
+5. Student Learn is sequential: Sections 1–7 use `ต่อไป →`; Section 8 `เข้าใจแล้ว ✓ ไปฝึก Quiz` writes one Learn `LearningEvent` through `recordLearnCompletion()` (no scores) and navigates to Quiz. Teacher `?from=teacher` keeps mode tabs, timer, planning, ActivityGrid, and teacher tips. Existing Learn history sets `learnSaved` so the event is not rewritten; a new session still opens at Section 1.
 6. **Gap:** Per-slide progress is not stored independently; nothing persists to Supabase.
 
 ### Teacher dashboard
@@ -129,10 +129,11 @@ green-freedom-academy-v1/
 ### Learning history persistence
 
 ```
-ClassroomCompanion (last slide + เข้าใจแล้ว ✓)
+ClassroomCompanion (Section 8 + เข้าใจแล้ว ✓ ไปฝึก Quiz)
   → recordLearnCompletion()
   → LearningEvent { activity: "learn", lessonSlug, completedAt }  // no score
   → LearningHistoryRepository
+  → /lesson/[slug]/activity/quiz
 ```
 
 Idempotency: **one Learn event per lesson**. Repeating the completion action, revisit, or refresh returns the stored event and does not inflate analytics. Quiz / Millionaire retries remain separate attempt events.
@@ -247,7 +248,9 @@ Resume Learning is a deterministic action-oriented projection of existing Recomm
 
 **Supported persisted activities:** quiz, millionaire, flash-cards, learn.
 
-**Learn completion v1:** Last-slide `เข้าใจแล้ว ✓` in student companion context records Learn through `recordLearnCompletion`. Teacher `from=teacher` does not write student history. After mount, a stored Learn event restores completed slides. Learn-only history for the active lesson advances to Short Practice (`ทำ Quiz`). Flash-only history remains LEARN / flash override.
+**Learn completion v1:** Section 8 `เข้าใจแล้ว ✓ ไปฝึก Quiz` in student companion context records Learn through `recordLearnCompletion`, then goes to Quiz. Teacher `from=teacher` does not write student history. After mount, a stored Learn event only marks Learn as already saved; the session still opens at Section 1. Learn-only history for the active lesson advances to Short Practice (`ทำ Quiz`). Flash-only history remains LEARN / flash override.
+
+**Guided Student Learn v1:** `/lesson/[slug]` hides teacher/planning tabs, the lesson timer, teacher tips, ActivityGrid, and the Lesson Entry journey CTA so the footer is the only primary path. The 8-section sidebar stays for review. `?from=teacher` keeps classroom chrome. Activity routes stay directly reachable (no route locking). Footer labels come from `buildGuidedLearnFooterState`.
 
 **Short Practice Quiz v1:** Default Quiz attempt length is 10 questions (`ACTIVITY_DEFAULTS.quiz.questionCount`). Scoring stays percentage-based (`correct / total`). A 10-question bank slice is near-balanced A/B/C/D (3/3/2/2). Historical events store `scorePercentage` only, so older 20-question attempts remain readable without migration. Millionaire stays 10 questions; Flash Cards stay 20.
 

@@ -22,7 +22,7 @@ export function LessonNavigator({
           <button
             type="button"
             key={step.title}
-            className={`${isActive ? "active " : ""}${isDone ? "done" : ""}`}
+            className={`${isActive ? "active " : "companionNavSecondary "}${isDone ? "done" : ""}`}
             onClick={() => onStepSelect(index)}
             aria-current={isActive ? "step" : undefined}
           >

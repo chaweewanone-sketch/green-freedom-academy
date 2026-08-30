@@ -89,7 +89,7 @@ export const presentSimpleLesson: LessonData = {
     {
       title: "ความถี่และเวลา",
       description:
-        "ความถี่: always usually often sometimes rarely never วางหน้ากริยาหลัก ✓ I usually finish my homework. ✗ I finish usually my homework. How often + do/does + Subject + Verb 1? ใช้กับ every day, once a week, twice a day เวลา: at + นาฬิกาหรือ at night · on + วัน · in + ช่วงวัน จำไว้: คำความถี่อยู่หน้ากริยา · at นาฬิกา · on วัน · in ช่วงวัน",
+        "A. คำบอกความถี่\nalways usually often sometimes rarely never วางหน้ากริยาหลัก\n✓ I usually finish my homework.\n✗ I finish usually my homework.\n\nB. How often / บ่อยแค่ไหน\nHow often + do/does + Subject + Verb 1?\nใช้กับ every day, once a week, twice a day\n\nC. การบอกเวลา at / on / in\nat + นาฬิกาหรือ at night · on + วัน · in + ช่วงวัน\n\nจำไว้: คำความถี่อยู่หน้ากริยา · at นาฬิกา · on วัน · in ช่วงวัน",
       formula:
         "Subject + adverb + Verb · How often + do/does + Subject + Verb 1? · at + clock/night · on + day · in + part of day",
       examples: [
