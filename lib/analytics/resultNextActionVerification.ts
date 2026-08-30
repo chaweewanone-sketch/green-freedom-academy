@@ -112,7 +112,7 @@ function persistThenResolve(
   });
 }
 
-export function verifyQuiz60KeepsGenericResult(): void {
+export function verifyQuiz60GuidesRetry(): void {
   const events = [
     makeEvent({
       activity: "quiz",
@@ -120,36 +120,56 @@ export function verifyQuiz60KeepsGenericResult(): void {
       scorePercentage: 60,
     }),
   ];
+  const recommendation = buildLearningRecommendation(emptySummary(), events);
   const nextAction = nextActionFromEvents("quiz", "present-simple", events);
   const journey = evaluateLessonJourney(
     buildLearningSummary(events),
     "present-simple",
   );
 
-  assert(nextAction === null, "A: no Result nextAction");
-  assert(journey.stage === "PRACTICE", "A: journey stays PRACTICE");
+  assert(nextAction !== null, "A: Result nextAction present");
+  assert(nextAction?.label === "ทำ Quiz อีกครั้ง", "A: ทำ Quiz อีกครั้ง");
   assert(
-    journey.nextAction.href === getActivityPath("present-simple", "quiz"),
-    "A: journey stays Quiz",
+    nextAction?.href === getActivityPath("present-simple", "quiz"),
+    "A: same Quiz href",
   );
+  assert(nextAction?.sameActivity === true, "A: same-activity restart");
+  assert(recommendation.ctaLabel === nextAction?.label, "A: label from engine");
+  assert(journey.stage === "PRACTICE", "A: journey stays PRACTICE");
 }
 
-export function verifyQuiz75KeepsGenericResult(): void {
+export function verifyQuiz80GuidesPractice(): void {
   const events = [
     makeEvent({
       activity: "quiz",
       lessonSlug: "present-simple",
-      scorePercentage: 75,
+      scorePercentage: 80,
     }),
   ];
-  const nextAction = nextActionFromEvents("quiz", "present-simple", events);
-
-  assert(nextAction === null, "B: no Result nextAction");
-  assert(
-    evaluateLessonJourney(buildLearningSummary(events), "present-simple")
-      .stage === "PRACTICE",
-    "B: journey stays PRACTICE",
+  const recommendation = buildLearningRecommendation(emptySummary(), events);
+  const nextAction = persistThenResolve("quiz", "present-simple", [
+    assessmentResult({
+      activity: "quiz",
+      percentage: 80,
+      score: 8,
+      correct: 8,
+      incorrect: 2,
+    }),
+  ]);
+  const journey = evaluateLessonJourney(
+    buildLearningSummary(events),
+    "present-simple",
   );
+
+  assert(nextAction !== null, "B: Result nextAction present");
+  assert(nextAction?.label === "ฝึก Quiz", "B: ฝึก Quiz");
+  assert(
+    nextAction?.href === getActivityPath("present-simple", "quiz"),
+    "B: same Quiz href",
+  );
+  assert(nextAction?.sameActivity === true, "B: same-activity restart");
+  assert(recommendation.ctaLabel === "ฝึก Quiz", "B: engine developing label");
+  assert(journey.stage === "PRACTICE", "B: journey stays PRACTICE");
 }
 
 export function verifyQuiz90GuidesMillionaire(): void {
@@ -177,6 +197,7 @@ export function verifyQuiz90GuidesMillionaire(): void {
     nextAction?.href === getActivityPath("present-simple", "millionaire"),
     "C: Millionaire href",
   );
+  assert(nextAction?.sameActivity !== true, "C: routed, not restart");
   assert(resume.action.label === "เล่น Millionaire", "C: Resume label");
   assert(
     resume.action.href === getActivityPath("present-simple", "millionaire"),
@@ -447,9 +468,31 @@ export function verifyResultUiDoesNotEncodeScorePolicy(): void {
   );
 }
 
+export function verifyQuizGuidedResultUi(): void {
+  const actions = readFileSync(
+    resolve(process.cwd(), "components/activities/ActivityResultActions.tsx"),
+    "utf8",
+  );
+  const quiz = readFileSync(
+    resolve(process.cwd(), "components/quiz/QuizGame.tsx"),
+    "utf8",
+  );
+  const millionaire = readFileSync(
+    resolve(process.cwd(), "components/millionaire/ResultPanel.tsx"),
+    "utf8",
+  );
+
+  assert(quiz.includes("guided"), "ui: Quiz uses guided Result actions");
+  assert(!millionaire.includes("guided"), "ui: Millionaire Result not guided");
+  assert(actions.includes("sameActivity"), "ui: restart uses engine sameActivity");
+  assert(actions.includes("onRestart"), "ui: same-activity binds onRestart");
+  assert(actions.includes("กลับไปบทเรียน"), "ui: lesson secondary remains");
+  assert(actions.includes("กลับหน้าหลักนักเรียน"), "ui: home secondary remains");
+}
+
 export function runResultNextActionVerification(): void {
-  verifyQuiz60KeepsGenericResult();
-  verifyQuiz75KeepsGenericResult();
+  verifyQuiz60GuidesRetry();
+  verifyQuiz80GuidesPractice();
   verifyQuiz90GuidesMillionaire();
   verifyQuiz100GuidesMillionaire();
   verifyStrongMillionaireGuidesNextLesson();
@@ -459,4 +502,5 @@ export function runResultNextActionVerification(): void {
   verifyFlashNeverReceivesNextAction();
   verifyHelperDoesNotDuplicateThresholds();
   verifyResultUiDoesNotEncodeScorePolicy();
+  verifyQuizGuidedResultUi();
 }

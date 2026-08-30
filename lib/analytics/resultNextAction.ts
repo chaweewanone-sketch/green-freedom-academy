@@ -8,6 +8,8 @@ import type {
 export type ResultNextAction = {
   label: string;
   href: string;
+  /** True when the engine recommends retrying the current Quiz in place. */
+  sameActivity?: boolean;
 };
 
 export type ResolveForwardResultNextActionInput = {
@@ -19,16 +21,19 @@ export type ResolveForwardResultNextActionInput = {
 
 function asForwardAction(
   recommendation: LearningRecommendation,
+  sameActivity = false,
 ): ResultNextAction {
   return {
     label: recommendation.ctaLabel,
     href: recommendation.href,
+    ...(sameActivity ? { sameActivity: true } : {}),
   };
 }
 
 /**
  * Result CTA guard.
- * Surfaces Recommendation only for a genuine forward transition.
+ * Quiz may surface the engine retry/practice CTA on the same activity.
+ * Millionaire still only surfaces genuine forward transitions.
  * Does not score activities. Flash never receives a Result nextAction.
  */
 export function toForwardResultNextAction(
@@ -45,10 +50,6 @@ export function toForwardResultNextAction(
     currentActivity,
   );
 
-  if (recommendation.href === currentActivityHref) {
-    return null;
-  }
-
   if (currentActivity === "quiz") {
     if (
       recommendation.href ===
@@ -57,6 +58,14 @@ export function toForwardResultNextAction(
       return asForwardAction(recommendation);
     }
 
+    if (recommendation.href === currentActivityHref) {
+      return asForwardAction(recommendation, true);
+    }
+
+    return null;
+  }
+
+  if (recommendation.href === currentActivityHref) {
     return null;
   }
 

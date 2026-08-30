@@ -176,6 +176,7 @@ export function QuizGame({ session, onComplete, nextAction }: QuizGameProps) {
           lessonPath={lessonPath}
           onRestart={restartQuiz}
           nextAction={nextAction}
+          guided
         />
       </section>
     );

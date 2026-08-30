@@ -6,13 +6,61 @@ type ActivityResultActionsProps = {
   lessonPath: string;
   onRestart: () => void;
   nextAction?: ResultNextAction;
+  guided?: boolean;
 };
+
+function SecondaryNav({ lessonPath }: { lessonPath: string }) {
+  return (
+    <>
+      <Link
+        className="button secondary"
+        href={lessonPath}
+        aria-label="กลับไปบทเรียน"
+      >
+        กลับไปบทเรียน
+      </Link>
+      <Link
+        className="button secondary"
+        href={getStudentPath()}
+        aria-label="กลับหน้าหลักนักเรียน"
+      >
+        กลับหน้าหลักนักเรียน
+      </Link>
+    </>
+  );
+}
 
 export function ActivityResultActions({
   lessonPath,
   onRestart,
   nextAction,
+  guided = false,
 }: ActivityResultActionsProps) {
+  if (guided && nextAction) {
+    return (
+      <div className="millionaireResultActions guidedResultActions">
+        {nextAction.sameActivity ? (
+          <button
+            type="button"
+            className="button primary"
+            onClick={onRestart}
+          >
+            {nextAction.label}
+          </button>
+        ) : (
+          <Link
+            className="button primary"
+            href={nextAction.href}
+            aria-label={nextAction.label}
+          >
+            {nextAction.label}
+          </Link>
+        )}
+        <SecondaryNav lessonPath={lessonPath} />
+      </div>
+    );
+  }
+
   if (nextAction) {
     return (
       <div className="millionaireResultActions">
