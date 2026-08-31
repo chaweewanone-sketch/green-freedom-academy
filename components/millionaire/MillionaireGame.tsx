@@ -2,6 +2,9 @@
 
 import Link from "next/link";
 import { useRef, useState } from "react";
+import { AdventureMap } from "./AdventureMap";
+import { GameHeroCharacter } from "./GameHeroCharacter";
+import { GameWorld } from "./GameWorld";
 import { QuestionCard } from "./QuestionCard";
 import { ResultPanel } from "./ResultPanel";
 import { StageLadder } from "./StageLadder";
@@ -16,6 +19,7 @@ import {
   continueAfterFeedback,
   isFinalStage,
   resolveStageStatuses,
+  type StageVisualStatus,
 } from "@/lib/millionaire/stageLadder";
 import type { AssessmentSession } from "@/lib/assessment";
 import type { AssessmentResult } from "@/types/assessment-result";
@@ -39,6 +43,10 @@ type MillionaireAttemptProps = {
 };
 
 type GamePhase = "start" | "playing" | "result";
+
+function previewStatuses(total: number): StageVisualStatus[] {
+  return Array.from({ length: total }, () => "upcoming");
+}
 
 function MillionaireAttempt({
   session,
@@ -120,57 +128,65 @@ function MillionaireAttempt({
 
   if (phase === "start") {
     return (
-      <section className="gfaGameIntro panel">
-        <span className="eyebrow">เกม</span>
-        <h1>เกมพิชิต 10 ด่าน</h1>
-        <p className="gfaGameIntroLead">
-          บทเรียน: <strong>{lessonTitle}</strong>
-        </p>
-        {totalQuestions > 0 ? (
-          <>
-            <p className="gfaGameIntroStory">
-              เรียนรู้มาแล้ว
-              <br />
-              ฝึก Quiz มาแล้ว
-              <br />
-              ตอนนี้มาพิชิต 10 ด่านกัน!
-            </p>
-            <p className="gfaGameIntroMeta">
-              เล่น {session.selectedCount} ด่านจากคลัง {session.totalAvailable} ข้อ
-            </p>
-          </>
-        ) : (
-          <p className="gfaGameIntroLead">
-            ไม่มีคำถามที่ตรงกับเงื่อนไขสำหรับบทเรียนนี้
-          </p>
-        )}
-        <div className="flashCardActions">
+      <GameWorld phase="intro">
+        <section className="gfaGameHero">
+          <div className="gfaGameHeroCopy">
+            <p className="gfaGameIntroEyebrow">เกม</p>
+            <h1>เกมพิชิต 10 ด่าน</h1>
+            <p className="gfaGameIntroLesson">{lessonTitle}</p>
+            {totalQuestions > 0 ? (
+              <aside className="gfaMissionCard">
+                <p className="gfaMissionKicker">ภารกิจของวันนี้ ⭐</p>
+                <p className="gfaMissionLine">พิชิต 10 ด่าน</p>
+                <p className="gfaMissionLine">ตอบให้ถูกเพื่อเก็บดาว</p>
+                <p className="gfaMissionLine">แล้วไปให้ถึงถ้วยรางวัล!</p>
+              </aside>
+            ) : (
+              <p className="gfaGameIntroLesson">
+                ไม่มีคำถามที่ตรงกับเงื่อนไขสำหรับบทเรียนนี้
+              </p>
+            )}
+            <div className="gfaGameIntroActions">
+              {totalQuestions > 0 ? (
+                <button
+                  type="button"
+                  className="gfaGameCta"
+                  onClick={startGame}
+                >
+                  เริ่มพิชิตด่าน! 🚀
+                </button>
+              ) : null}
+              <Link className="button secondary" href={lessonPath}>
+                กลับไปบทเรียน
+              </Link>
+            </div>
+          </div>
+          <div className="gfaGameHeroArt">
+            <GameHeroCharacter size="hero" />
+            <p className="gfaGameSpeech">มาพิชิต 10 ด่านกัน!</p>
+          </div>
           {totalQuestions > 0 ? (
-            <button
-              type="button"
-              className="button primary"
-              onClick={startGame}
-            >
-              เริ่มเกม
-            </button>
+            <div className="gfaGameHeroTrail">
+              <AdventureMap statuses={previewStatuses(totalQuestions)} />
+            </div>
           ) : null}
-          <Link className="button secondary" href={lessonPath}>
-            กลับไปบทเรียน
-          </Link>
-        </div>
-      </section>
+        </section>
+      </GameWorld>
     );
   }
 
   if (phase === "result") {
     return (
-      <ResultPanel
-        score={score}
-        total={totalQuestions}
-        lessonPath={lessonPath}
-        onRestart={onRequestRestart}
-        nextAction={nextAction}
-      />
+      <GameWorld phase="result">
+        <ResultPanel
+          score={score}
+          total={totalQuestions}
+          lessonTitle={lessonTitle}
+          lessonPath={lessonPath}
+          onRestart={onRequestRestart}
+          nextAction={nextAction}
+        />
+      </GameWorld>
     );
   }
 
@@ -178,25 +194,50 @@ function MillionaireAttempt({
     return null;
   }
 
+  const finalStage = isFinalStage(currentIndex, totalQuestions);
+  const playMood =
+    revealed && selectedChoiceId !== currentQuestion.correctChoiceId
+      ? "encourage"
+      : "cheer";
+
   return (
-    <section className="gfaGameShell">
-      <div className="gfaGamePlay">
-        <QuestionCard
-          question={currentQuestion}
-          selectedChoiceId={selectedChoiceId}
-          revealed={revealed}
-          stageNumber={currentIndex + 1}
-          totalStages={totalQuestions}
-          isFinalStage={isFinalStage(currentIndex, totalQuestions)}
-          onChoice={handleChoice}
-          onContinue={handleContinue}
-        />
-      </div>
-      <aside className="gfaGameLadderColumn">
-        <p className="gfaGameLadderTitle">10 ด่าน</p>
-        <StageLadder statuses={stageStatuses} />
-      </aside>
-    </section>
+    <GameWorld phase="playing">
+      <section className="gfaGameShell">
+        <header className="gfaGameHeader">
+          <div className="gfaGameHeaderCopy">
+            <h1 className="gfaGameTitle">เกมพิชิต 10 ด่าน</h1>
+            <p className="gfaGameLesson">{lessonTitle}</p>
+          </div>
+          <p
+            className={`gfaGameStageNow${finalStage ? " gfaGameStageNow-final" : ""}`}
+          >
+            {finalStage
+              ? "🏆 ด่านสุดท้าย"
+              : `ด่าน ${currentIndex + 1} จาก ${totalQuestions}`}
+          </p>
+          <div className="gfaGameHeaderBuddy">
+            <GameHeroCharacter size="support" mood={playMood} />
+          </div>
+        </header>
+        <div className="gfaGameBoard">
+          <div className="gfaGamePlay">
+            <QuestionCard
+              question={currentQuestion}
+              selectedChoiceId={selectedChoiceId}
+              revealed={revealed}
+              isFinalStage={finalStage}
+              onChoice={handleChoice}
+              onContinue={handleContinue}
+            />
+          </div>
+          <aside className="gfaGameLadderColumn">
+            <p className="gfaGameLadderTitle">เส้นทางผจญภัย</p>
+            <p className="gfaGameLadderGoal">ไปให้ถึงถ้วย 🏆</p>
+            <StageLadder statuses={stageStatuses} />
+          </aside>
+        </div>
+      </section>
+    </GameWorld>
   );
 }
 

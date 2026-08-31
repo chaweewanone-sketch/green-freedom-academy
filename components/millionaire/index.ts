@@ -4,3 +4,6 @@ export { ChoiceButton } from "./ChoiceButton";
 export { ProgressBar } from "./ProgressBar";
 export { ResultPanel } from "./ResultPanel";
 export { StageLadder } from "./StageLadder";
+export { AdventureMap } from "./AdventureMap";
+export { GameHeroCharacter } from "./GameHeroCharacter";
+export { GameWorld } from "./GameWorld";

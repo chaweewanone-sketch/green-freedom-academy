@@ -174,7 +174,7 @@ export function verifyMillionaireGameSourceBoundary(): void {
   const css = readFileSync(resolve(process.cwd(), "app/globals.css"), "utf8");
 
   assert(game.includes("เกมพิชิต 10 ด่าน"), "ui: original game title");
-  assert(game.includes("เริ่มเกม"), "ui: explicit start remains");
+  assert(game.includes("เริ่มพิชิตด่าน"), "ui: explicit start remains");
   assert(!game.includes("setTimeout"), "ui: auto-advance timer removed");
   assert(!game.includes(", 700)"), "ui: 700ms delay removed");
   assert(questionCard.includes("ไปด่านต่อไป"), "ui: explicit continue");
@@ -195,6 +195,8 @@ export function verifyMillionaireGameSourceBoundary(): void {
     "css: shared choice rule frozen",
   );
   assert(css.includes(".gfaGameShell"), "css: game shell scoped");
+  assert(css.includes(".gfaStageLadder"), "css: journey ladder scoped");
+  assert(css.includes(".gfaAdventureMap"), "css: intro adventure map scoped");
 }
 
 export function runStageLadderVerification(): void {

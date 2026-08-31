@@ -41,7 +41,7 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Quiz retry returns to the intro Start screen so the Result CTA click cannot also answer Question 1
 - Quiz Result primary CTA follows the current attempt percentage (60 / 80 / 90), not historical Quiz average; Home / Journey / Resume still use average
 - Millionaire Result primary CTA follows the current attempt: weak `ฝึก Quiz อีกครั้ง`, developing `เล่น Millionaire อีกครั้ง` (intro replay), strong next lesson / dashboard; Home / Journey / Resume still use historical average
-- Present Simple Millionaire play is `เกมพิชิต 10 ด่าน`: display-only 10-stage star ladder, explicit continue after explanation, and Result star/copy presentation; assessment 10/50, percentage, 70/85, and Result routing stay frozen; Quiz keeps shared `.millionaire*` styles
+- Present Simple Millionaire play is `เกมพิชิต 10 ด่าน`: colorful hero world, pilot explorer character, display-only 10-stage Adventure Map, explicit continue after explanation, and Result star/copy presentation; assessment 10/50, percentage, 70/85, and Result routing stay frozen; Quiz keeps shared `.millionaire*` styles
 
 ### Changed
 - `/dashboard` history flow is client-loaded so events survive browser refresh

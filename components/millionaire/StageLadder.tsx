@@ -2,6 +2,7 @@ import type { StageVisualStatus } from "@/lib/millionaire/stageLadder";
 
 type StageLadderProps = {
   statuses: StageVisualStatus[];
+  variant?: "journey" | "preview";
 };
 
 const statusLabels: Record<StageVisualStatus, string> = {
@@ -11,26 +12,51 @@ const statusLabels: Record<StageVisualStatus, string> = {
   upcoming: "ยังไม่ถึง",
 };
 
-export function StageLadder({ statuses }: StageLadderProps) {
+function stageMark(
+  status: StageVisualStatus,
+  isDestination: boolean,
+  stageNumber: number,
+): string {
+  if (status === "correct") return "⭐";
+  if (status === "missed") return "○";
+  if (isDestination) return "🏆";
+  return String(stageNumber);
+}
+
+export function StageLadder({
+  statuses,
+  variant = "journey",
+}: StageLadderProps) {
   return (
-    <ol className="gfaStageLadder" aria-label="ด่านทั้ง 10">
+    <ol
+      className={`gfaStageLadder gfaStageLadder-${variant}`}
+      aria-label="เส้นทาง 10 ด่าน"
+    >
       {statuses.map((status, index) => {
         const stageNumber = index + 1;
         const isCurrent = status === "current";
-        const mark =
-          status === "correct" ? "⭐" : status === "missed" ? "○" : String(stageNumber);
+        const isDestination = index === statuses.length - 1;
+        const mark = stageMark(status, isDestination, stageNumber);
 
         return (
           <li
             key={stageNumber}
-            className={`gfaStage gfaStage${status.charAt(0).toUpperCase()}${status.slice(1)}`}
+            className={[
+              "gfaStage",
+              `gfaStage${status.charAt(0).toUpperCase()}${status.slice(1)}`,
+              index === 0 ? "gfaStageStart" : "",
+              isDestination ? "gfaStageDestination" : "",
+            ]
+              .filter(Boolean)
+              .join(" ")}
             aria-current={isCurrent ? "step" : undefined}
-            aria-label={`ด่าน ${stageNumber} ${statusLabels[status]}`}
+            aria-label={`ด่าน ${stageNumber} ${statusLabels[status]}${
+              isDestination ? " จุดหมาย" : ""
+            }`}
           >
             <span className="gfaStageMark" aria-hidden="true">
               {mark}
             </span>
-            <span className="gfaStageName">ด่าน {stageNumber}</span>
           </li>
         );
       })}

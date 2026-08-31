@@ -47,7 +47,8 @@ export function verifyMillionaireReplaySourceBoundary(): void {
     source.includes('createMillionaireAttemptSnapshot("start")'),
     "ui: remount starts at intro",
   );
-  assert(source.includes("เริ่มเกม"), "ui: explicit Start remains");
+  assert(source.includes("เริ่มพิชิตด่าน"), "ui: explicit Start remains");
+  assert(source.includes("onClick={startGame}"), "ui: Start still begins attempt");
   assert(
     !source.includes("function restartGame"),
     "ui: replay no longer jumps to playing",

@@ -26,18 +26,20 @@ function resultBand(percentage: number): GameResultBand {
 export function buildGameResultPresentation(
   score: number,
   total: number,
+  lessonTitle?: string,
 ): GameResultPresentation {
   const percentage = total > 0 ? Math.round((score / total) * 100) : 0;
   const band = resultBand(percentage);
-  const kicker = `เล่นครบ ${total} ด่านแล้ว`;
+  const kicker = `เล่นครบ ${total} ด่านแล้ว!`;
   const starsLabel = `ดาว ${score}/${total}`;
+  const lesson = lessonTitle?.trim() || "เกมนี้";
 
   if (band === "weak") {
     return {
       band,
       kicker,
-      title: "เกมพิชิต 10 ด่าน",
-      message: "สู้ต่อไปนะ กลับไปฝึก Quiz แล้วจะพิชิตด่านได้มากขึ้น",
+      title: "สู้ต่อไปนะ เราไปด้วยกัน",
+      message: "กลับไปฝึก Quiz แล้วจะเก็บดาวได้มากขึ้น",
       starsLabel,
       percentage,
     };
@@ -47,8 +49,8 @@ export function buildGameResultPresentation(
     return {
       band,
       kicker,
-      title: "ใกล้ผ่านแล้ว",
-      message: "เก็บดาวเพิ่มอีกนิด แล้วจะผ่านเกมนี้",
+      title: "อีกนิดเดียว!",
+      message: "เก็บดาวเพิ่มอีกนิด แล้วจะพิชิตเกมนี้",
       starsLabel,
       percentage,
     };
@@ -57,8 +59,8 @@ export function buildGameResultPresentation(
   return {
     band,
     kicker,
-    title: "เยี่ยม! ผ่านเกมพิชิต 10 ด่านแล้ว ⭐",
-    message: "เก็บครบเกือบทุกด่านแล้ว เก่งมาก",
+    title: "🏆 เยี่ยมมาก!",
+    message: `พิชิตเกม ${lesson} สำเร็จแล้ว`,
     starsLabel,
     percentage,
   };

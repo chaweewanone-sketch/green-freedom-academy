@@ -5,8 +5,6 @@ type QuestionCardProps = {
   question: Question;
   selectedChoiceId: string | null;
   revealed: boolean;
-  stageNumber: number;
-  totalStages: number;
   isFinalStage: boolean;
   onChoice: (choiceId: string) => void;
   onContinue: () => void;
@@ -16,8 +14,6 @@ export function QuestionCard({
   question,
   selectedChoiceId,
   revealed,
-  stageNumber,
-  totalStages,
   isFinalStage,
   onChoice,
   onContinue,
@@ -27,17 +23,10 @@ export function QuestionCard({
 
   return (
     <article className="gfaGameQuestion">
-      <header className="gfaGameQuestionHeader">
-        <span className="eyebrow">
-          ด่าน {stageNumber} จาก {totalStages}
-        </span>
-        {isFinalStage ? (
-          <span className="gfaGameFinalBadge">ด่านสุดท้าย</span>
-        ) : null}
-      </header>
       <h2>{question.prompt}</h2>
+      <p className="gfaGameChoiceHint">เลือกคำตอบ</p>
       <div className="gfaGameChoices">
-        {question.choices.map((choice) => {
+        {question.choices.map((choice, index) => {
           let state: "default" | "correct" | "incorrect" = "default";
 
           if (revealed && choice.id === question.correctChoiceId) {
@@ -50,8 +39,13 @@ export function QuestionCard({
             state = "incorrect";
           }
 
+          const letter = String.fromCharCode(65 + index);
+
           return (
             <div key={choice.id} className={`gfaGameChoice gfaGameChoice-${state}`}>
+              <span className="gfaGameChoiceLetter" aria-hidden="true">
+                {letter}
+              </span>
               <ChoiceButton
                 label={choice.text}
                 onClick={() => onChoice(choice.id)}
@@ -59,7 +53,7 @@ export function QuestionCard({
                 state={state}
               />
               {state === "correct" ? (
-                <span className="gfaGameChoiceNote">คำตอบที่ถูก</span>
+                <span className="gfaGameChoiceNote">⭐ คำตอบที่ถูก</span>
               ) : null}
               {state === "incorrect" ? (
                 <span className="gfaGameChoiceNote">คำตอบที่เลือก</span>
@@ -70,22 +64,30 @@ export function QuestionCard({
       </div>
       {revealed ? (
         <div
-          className={`gfaGameFeedback ${
-            selectedIsCorrect ? "gfaGameFeedbackCorrect" : "gfaGameFeedbackMissed"
+          className={`gfaGameFeedbackPanel ${
+            selectedIsCorrect
+              ? "gfaGameFeedbackPanel-correct"
+              : "gfaGameFeedbackPanel-missed"
           }`}
           role="status"
         >
-          {selectedIsCorrect ? "ถูกต้อง! ⭐" : "ยังไม่ถูก ลองดูเหตุผลข้อนี้นะ"}
-        </div>
-      ) : null}
-      {revealed ? (
-        <div className="gfaGameExplanation">{question.explanation}</div>
-      ) : null}
-      {revealed ? (
-        <div className="gfaGameContinue">
-          <button type="button" className="button primary" onClick={onContinue}>
-            {isFinalStage ? "ดูผลเกม" : "ไปด่านต่อไป →"}
-          </button>
+          {selectedIsCorrect ? (
+            <>
+              <p className="gfaGameFeedbackTitle">⭐ เยี่ยมมาก!</p>
+              <p className="gfaGameFeedbackHint">ผ่านด่านนี้แล้ว</p>
+            </>
+          ) : (
+            <>
+              <p className="gfaGameFeedbackTitle">💡 เกือบแล้ว!</p>
+              <p className="gfaGameFeedbackHint">มาดูเหตุผลข้อนี้กัน</p>
+            </>
+          )}
+          <div className="gfaGameExplanation">{question.explanation}</div>
+          <div className="gfaGameContinue">
+            <button type="button" className="button primary" onClick={onContinue}>
+              {isFinalStage ? "ดูผลเกม" : "ไปด่านต่อไป →"}
+            </button>
+          </div>
         </div>
       ) : null}
     </article>
