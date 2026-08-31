@@ -2,15 +2,21 @@
 
 import Link from "next/link";
 import { useRef, useState } from "react";
-import { ProgressBar } from "./ProgressBar";
 import { QuestionCard } from "./QuestionCard";
 import { ResultPanel } from "./ResultPanel";
+import { StageLadder } from "./StageLadder";
 import type { ResultNextAction } from "@/lib/analytics/resultNextAction";
 import { buildAssessmentResult } from "@/lib/assessment";
 import {
   createMillionaireAttemptSnapshot,
   nextMillionaireAttemptKey,
 } from "@/lib/millionaire/millionaireAttemptState";
+import {
+  applyStageAnswer,
+  continueAfterFeedback,
+  isFinalStage,
+  resolveStageStatuses,
+} from "@/lib/millionaire/stageLadder";
 import type { AssessmentSession } from "@/lib/assessment";
 import type { AssessmentResult } from "@/types/assessment-result";
 
@@ -54,8 +60,15 @@ function MillionaireAttempt({
     initial.selectedChoiceId,
   );
   const [revealed, setRevealed] = useState(initial.revealed);
+  const [stageOutcomes, setStageOutcomes] = useState(initial.stageOutcomes);
 
   const currentQuestion = gameQuestions[currentIndex];
+  const stageStatuses = resolveStageStatuses(
+    totalQuestions,
+    currentIndex,
+    stageOutcomes,
+    revealed,
+  );
 
   function startGame() {
     const started = createMillionaireAttemptSnapshot("playing");
@@ -64,6 +77,7 @@ function MillionaireAttempt({
     setScore(started.score);
     setSelectedChoiceId(started.selectedChoiceId);
     setRevealed(started.revealed);
+    setStageOutcomes(started.stageOutcomes);
     hasRecordedCompletionRef.current = started.hasRecordedCompletion;
   }
 
@@ -75,46 +89,58 @@ function MillionaireAttempt({
     );
     if (!isValidChoice) return;
 
+    const isCorrect = choiceId === currentQuestion.correctChoiceId;
+    const answered = applyStageAnswer(score, stageOutcomes, isCorrect);
+
     setSelectedChoiceId(choiceId);
     setRevealed(true);
+    setScore(answered.score);
+    setStageOutcomes(answered.outcomes);
+  }
 
-    const nextScore =
-      choiceId === currentQuestion.correctChoiceId ? score + 1 : score;
+  function handleContinue() {
+    if (!revealed) return;
 
-    window.setTimeout(() => {
-      if (currentIndex >= totalQuestions - 1) {
-        setScore(nextScore);
-        if (!hasRecordedCompletionRef.current) {
-          hasRecordedCompletionRef.current = true;
-          const incorrect = totalQuestions - nextScore;
-          onComplete?.(buildAssessmentResult(session, nextScore, incorrect));
-        }
-        setPhase("result");
-        return;
+    const next = continueAfterFeedback(currentIndex, totalQuestions);
+
+    if (next.kind === "result") {
+      if (!hasRecordedCompletionRef.current) {
+        hasRecordedCompletionRef.current = true;
+        const incorrect = totalQuestions - score;
+        onComplete?.(buildAssessmentResult(session, score, incorrect));
       }
+      setPhase("result");
+      return;
+    }
 
-      setScore(nextScore);
-      setCurrentIndex((prev) => prev + 1);
-      setSelectedChoiceId(null);
-      setRevealed(false);
-    }, 700);
+    setCurrentIndex(next.index);
+    setSelectedChoiceId(null);
+    setRevealed(false);
   }
 
   if (phase === "start") {
     return (
-      <section className="millionaireGame panel">
-        <span className="eyebrow">MILLIONAIRE CHALLENGE</span>
-        <h1>Millionaire Challenge</h1>
-        <p className="millionaireIntro">
+      <section className="gfaGameIntro panel">
+        <span className="eyebrow">เกม</span>
+        <h1>เกมพิชิต 10 ด่าน</h1>
+        <p className="gfaGameIntroLead">
           บทเรียน: <strong>{lessonTitle}</strong>
         </p>
         {totalQuestions > 0 ? (
-          <p className="millionaireIntro">
-            เล่น {session.selectedCount} คำถามจากคลัง {session.totalAvailable}{" "}
-            ข้อ
-          </p>
+          <>
+            <p className="gfaGameIntroStory">
+              เรียนรู้มาแล้ว
+              <br />
+              ฝึก Quiz มาแล้ว
+              <br />
+              ตอนนี้มาพิชิต 10 ด่านกัน!
+            </p>
+            <p className="gfaGameIntroMeta">
+              เล่น {session.selectedCount} ด่านจากคลัง {session.totalAvailable} ข้อ
+            </p>
+          </>
         ) : (
-          <p className="millionaireIntro">
+          <p className="gfaGameIntroLead">
             ไม่มีคำถามที่ตรงกับเงื่อนไขสำหรับบทเรียนนี้
           </p>
         )}
@@ -153,18 +179,23 @@ function MillionaireAttempt({
   }
 
   return (
-    <section className="millionaireGame">
-      <ProgressBar
-        current={currentIndex + 1}
-        total={totalQuestions}
-        score={score}
-      />
-      <QuestionCard
-        question={currentQuestion}
-        selectedChoiceId={selectedChoiceId}
-        revealed={revealed}
-        onChoice={handleChoice}
-      />
+    <section className="gfaGameShell">
+      <div className="gfaGamePlay">
+        <QuestionCard
+          question={currentQuestion}
+          selectedChoiceId={selectedChoiceId}
+          revealed={revealed}
+          stageNumber={currentIndex + 1}
+          totalStages={totalQuestions}
+          isFinalStage={isFinalStage(currentIndex, totalQuestions)}
+          onChoice={handleChoice}
+          onContinue={handleContinue}
+        />
+      </div>
+      <aside className="gfaGameLadderColumn">
+        <p className="gfaGameLadderTitle">10 ด่าน</p>
+        <StageLadder statuses={stageStatuses} />
+      </aside>
     </section>
   );
 }

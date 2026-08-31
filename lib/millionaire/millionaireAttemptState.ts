@@ -1,3 +1,8 @@
+import {
+  createEmptyStageOutcomes,
+  type StageOutcome,
+} from "@/lib/millionaire/stageLadder";
+
 export type MillionaireAttemptPhase = "start" | "playing" | "result";
 
 export type MillionaireAttemptSnapshot = {
@@ -7,6 +12,7 @@ export type MillionaireAttemptSnapshot = {
   selectedChoiceId: string | null;
   revealed: boolean;
   hasRecordedCompletion: boolean;
+  stageOutcomes: StageOutcome[];
 };
 
 export function createMillionaireAttemptSnapshot(
@@ -19,6 +25,7 @@ export function createMillionaireAttemptSnapshot(
     selectedChoiceId: null,
     revealed: false,
     hasRecordedCompletion: false,
+    stageOutcomes: createEmptyStageOutcomes(),
   };
 }
 

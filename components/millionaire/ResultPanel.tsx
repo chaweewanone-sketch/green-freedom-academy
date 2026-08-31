@@ -1,4 +1,5 @@
 import { ActivityResultActions } from "@/components/activities/ActivityResultActions";
+import { buildGameResultPresentation } from "@/lib/millionaire/gameResultPresentation";
 import type { ResultNextAction } from "@/lib/analytics/resultNextAction";
 
 type ResultPanelProps = {
@@ -16,13 +17,15 @@ export function ResultPanel({
   onRestart,
   nextAction,
 }: ResultPanelProps) {
+  const presentation = buildGameResultPresentation(score, total);
+
   return (
-    <section className="millionaireResult panel">
+    <section className="gfaGameResult panel">
       <span className="eyebrow">RESULT</span>
-      <h1>จบเกม Millionaire Challenge</h1>
-      <p className="millionaireResultScore">
-        คะแนน <strong>{score}</strong> / {total}
-      </p>
+      <p className="gfaGameResultKicker">{presentation.kicker}</p>
+      <h1>{presentation.title}</h1>
+      <p className="gfaGameResultStars">{presentation.starsLabel}</p>
+      <p className="gfaGameResultMessage">{presentation.message}</p>
       <ActivityResultActions
         lessonPath={lessonPath}
         onRestart={onRestart}

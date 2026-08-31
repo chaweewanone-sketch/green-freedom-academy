@@ -18,6 +18,7 @@ export function verifyMillionaireReplayReturnsToIntro(): void {
   assert(replay.score === 0, "replay: score reset");
   assert(replay.selectedChoiceId === null, "replay: no selected answer");
   assert(replay.revealed === false, "replay: feedback not revealed");
+  assert(replay.stageOutcomes.length === 0, "replay: no stage marked completed");
   assert(replay.hasRecordedCompletion === false, "replay: completion flag reset");
   assert(nextMillionaireAttemptKey(0) === 1, "replay: remount key increments");
 }
@@ -29,6 +30,7 @@ export function verifyMillionaireStartOpensCleanQuestionOne(): void {
   assert(started.score === 0, "start: score 0");
   assert(started.selectedChoiceId === null, "start: no choice");
   assert(started.revealed === false, "start: no feedback");
+  assert(started.stageOutcomes.length === 0, "start: stages 2–10 upcoming");
   assert(started.hasRecordedCompletion === false, "start: no completion");
 }
 

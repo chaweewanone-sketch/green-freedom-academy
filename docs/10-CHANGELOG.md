@@ -41,6 +41,7 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Quiz retry returns to the intro Start screen so the Result CTA click cannot also answer Question 1
 - Quiz Result primary CTA follows the current attempt percentage (60 / 80 / 90), not historical Quiz average; Home / Journey / Resume still use average
 - Millionaire Result primary CTA follows the current attempt: weak `ฝึก Quiz อีกครั้ง`, developing `เล่น Millionaire อีกครั้ง` (intro replay), strong next lesson / dashboard; Home / Journey / Resume still use historical average
+- Present Simple Millionaire play is `เกมพิชิต 10 ด่าน`: display-only 10-stage star ladder, explicit continue after explanation, and Result star/copy presentation; assessment 10/50, percentage, 70/85, and Result routing stay frozen; Quiz keeps shared `.millionaire*` styles
 
 ### Changed
 - `/dashboard` history flow is client-loaded so events survive browser refresh
@@ -58,6 +59,7 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Last-slide Learn completion survives refresh; the companion restores completed slides from history after mount
 - Resume Learning after a strong Quiz uses `เล่น Millionaire` instead of generic `เรียนต่อ` (href was already Millionaire)
 - Shared `ActivityResultActions` can show one guided next-learning CTA when a forward Recommendation exists; Quiz Result uses `guided` layout so weak/developing restart labels come from the engine and do not duplicate `เริ่มใหม่`
+- Millionaire play uses a game-scoped shell and explicit educational continue instead of a 700ms auto-advance; it no longer presents as a second Quiz screen
 - Present Simple Learn is a complete 8-card curriculum; Quiz and Millionaire still use the existing 50-item bank (10 questions each) instead of shrinking Practice to the old 4-card scope
 - Student `/lesson/[slug]` is a guided sequence; teacher/classroom `?from=teacher` still shows modes, timer, planning, tips, and ActivityGrid. Existing Learn history no longer jumps the learner to the last section on refresh
 - `recordLearnCompletion` is idempotent per lesson version, not per slug forever; companion `learnSaved` means current-version completion only
