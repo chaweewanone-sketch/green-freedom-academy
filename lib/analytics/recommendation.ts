@@ -231,6 +231,41 @@ function quizRecommendation(
   });
 }
 
+export function buildMillionaireResultRecommendation(
+  score: number,
+  lessonSlug: string,
+): LearningRecommendation {
+  const band = scoreBand(score);
+
+  if (band === "weak") {
+    return recommendation({
+      kind: "PRACTICE",
+      title: "ฝึก Quiz ก่อนเล่นใหม่",
+      message: `คะแนน Millionaire ยังต่ำกว่า ${RECOMMENDATION_THRESHOLDS.developingMin}% กลับไปฝึก Quiz`,
+      lessonSlug,
+      activity: "quiz",
+      href: getActivityPath(lessonSlug, "quiz"),
+      ctaLabel: "ฝึก Quiz อีกครั้ง",
+      reasonCode: "MILLIONAIRE_WEAK",
+    });
+  }
+
+  if (band === "developing") {
+    return recommendation({
+      kind: "RETRY",
+      title: "ลอง Millionaire อีกรอบ",
+      message: "กำลังพัฒนาแล้ว เล่น Millionaire อีกครั้งเพื่อเก็บความชำนาญ",
+      lessonSlug,
+      activity: "millionaire",
+      href: getActivityPath(lessonSlug, "millionaire"),
+      ctaLabel: "เล่น Millionaire อีกครั้ง",
+      reasonCode: "MILLIONAIRE_DEVELOPING",
+    });
+  }
+
+  return continueAfterStrongMillionaire(lessonSlug);
+}
+
 function millionaireRecommendation(
   score: number,
   lessonSlug: string,

@@ -40,6 +40,7 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Quiz same-session retry remounts a fresh attempt so Question 1 starts unanswered and Attempt 2 cannot reuse the previous Result object
 - Quiz retry returns to the intro Start screen so the Result CTA click cannot also answer Question 1
 - Quiz Result primary CTA follows the current attempt percentage (60 / 80 / 90), not historical Quiz average; Home / Journey / Resume still use average
+- Millionaire Result primary CTA follows the current attempt: weak `ฝึก Quiz อีกครั้ง`, developing `เล่น Millionaire อีกครั้ง` (intro replay), strong next lesson / dashboard; Home / Journey / Resume still use historical average
 
 ### Changed
 - `/dashboard` history flow is client-loaded so events survive browser refresh

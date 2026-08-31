@@ -47,7 +47,7 @@ export function StudentActivityPlayer({
           summary,
           events,
           currentResult:
-            result.activity === "quiz"
+            result.activity === "quiz" || result.activity === "millionaire"
               ? {
                   activity: result.activity,
                   percentage: result.percentage,
@@ -59,7 +59,7 @@ export function StudentActivityPlayer({
     [session.activity, session.lessonSlug],
   );
 
-  const handleQuizRestart = useCallback(() => {
+  const handleRestartAttempt = useCallback(() => {
     setResultNextAction(null);
   }, []);
 
@@ -71,6 +71,7 @@ export function StudentActivityPlayer({
         lessonPath={lessonPath}
         onComplete={handleComplete}
         nextAction={resultNextAction ?? undefined}
+        onRestartAttempt={handleRestartAttempt}
       />
     );
   }
@@ -81,7 +82,7 @@ export function StudentActivityPlayer({
         session={session}
         onComplete={handleComplete}
         nextAction={resultNextAction ?? undefined}
-        onRestartAttempt={handleQuizRestart}
+        onRestartAttempt={handleRestartAttempt}
       />
     );
   }

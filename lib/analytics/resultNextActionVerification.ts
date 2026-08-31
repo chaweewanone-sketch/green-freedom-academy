@@ -111,7 +111,8 @@ function persistThenResolve(
     summary: state.summary,
     events: state.events,
     currentResult:
-      currentResult?.activity === "quiz"
+      currentResult?.activity === "quiz" ||
+      currentResult?.activity === "millionaire"
         ? {
             activity: currentResult.activity,
             percentage: currentResult.percentage,
@@ -467,8 +468,12 @@ export function verifyHelperDoesNotDuplicateThresholds(): void {
     "policy: quiz Result reuses score-band helper",
   );
   assert(
+    source.includes("buildMillionaireResultRecommendation"),
+    "policy: Millionaire Result reuses score-band helper",
+  );
+  assert(
     source.includes("buildLearningRecommendation"),
-    "policy: Millionaire still reuses recommendation",
+    "policy: history path still reuses recommendation",
   );
 }
 
@@ -531,7 +536,7 @@ export function verifyQuizGuidedResultUi(): void {
   );
 
   assert(quiz.includes("guided"), "ui: Quiz uses guided Result actions");
-  assert(!millionaire.includes("guided"), "ui: Millionaire Result not guided");
+  assert(millionaire.includes("guided"), "ui: Millionaire Result is guided");
   assert(actions.includes("sameActivity"), "ui: restart uses engine sameActivity");
   assert(actions.includes("onRestart"), "ui: same-activity binds onRestart");
   assert(actions.includes("กลับไปบทเรียน"), "ui: lesson secondary remains");
@@ -637,11 +642,84 @@ export function verifyQuizRetryClearsParentNextAction(): void {
     resolve(process.cwd(), "components/quiz/QuizGame.tsx"),
     "utf8",
   );
+  const millionaire = readFileSync(
+    resolve(process.cwd(), "components/millionaire/MillionaireGame.tsx"),
+    "utf8",
+  );
 
-  assert(player.includes("onRestartAttempt={handleQuizRestart}"), "H: player binds restart");
+  assert(player.includes("onRestartAttempt={handleRestartAttempt}"), "H: player binds restart");
   assert(player.includes("setResultNextAction(null)"), "H: restart clears nextAction");
   assert(quiz.includes("onRestartAttempt"), "H: QuizGame notifies parent");
-  assert(quiz.includes('initialPhase="intro"'), "J: intro retry boundary remains");
+  assert(quiz.includes('initialPhase="intro"'), "J: Quiz intro retry boundary remains");
+  assert(millionaire.includes("onRestartAttempt"), "41: Millionaire notifies parent");
+  assert(millionaire.includes('createMillionaireAttemptSnapshot("start")'), "41: replay remounts intro");
+}
+
+function nextActionFromCurrentMillionaire(
+  currentPercentage: number,
+  historyPercentages: number[] = [],
+  lessonSlug = "present-simple",
+) {
+  const events = historyPercentages.map((scorePercentage, index) =>
+    makeEvent({
+      activity: "millionaire",
+      lessonSlug,
+      scorePercentage,
+      completedAt: index + 1,
+    }),
+  );
+
+  return resolveForwardResultNextAction({
+    currentActivity: "millionaire",
+    currentLessonSlug: lessonSlug,
+    summary: emptySummary(),
+    events,
+    currentResult: {
+      activity: "millionaire",
+      percentage: currentPercentage,
+    },
+  });
+}
+
+export function verifyMillionaireCurrentResultBands(): void {
+  const quizHref = getActivityPath("present-simple", "quiz");
+  const millionaireHref = getActivityPath("present-simple", "millionaire");
+  const pastLesson = getLessonPath("past-simple");
+
+  for (const percentage of [0, 59, 69]) {
+    const action = nextActionFromCurrentMillionaire(percentage);
+    assert(action?.label === "ฝึก Quiz อีกครั้ง", `${percentage}: weak label`);
+    assert(action?.href === quizHref, `${percentage}: Quiz href`);
+    assert(action?.sameActivity !== true, `${percentage}: weak is a route`);
+  }
+
+  for (const percentage of [70, 80, 84]) {
+    const action = nextActionFromCurrentMillionaire(percentage);
+    assert(action?.label === "เล่น Millionaire อีกครั้ง", `${percentage}: developing label`);
+    assert(action?.href === millionaireHref, `${percentage}: Millionaire href`);
+    assert(action?.sameActivity === true, `${percentage}: developing replays`);
+  }
+
+  for (const percentage of [85, 90, 100]) {
+    const action = nextActionFromCurrentMillionaire(percentage);
+    assert(action?.label === JOURNEY_ACTION_LABELS.nextLesson, `${percentage}: next lesson`);
+    assert(action?.href === pastLesson, `${percentage}: Past Simple`);
+    assert(action?.sameActivity !== true, `${percentage}: strong is a route`);
+  }
+
+  const complete = nextActionFromCurrentMillionaire(90, [], "past-simple");
+  assert(complete?.label === JOURNEY_ACTION_LABELS.complete, "past 90: dashboard label");
+  assert(complete?.href === getDashboardPath(), "past 90: /dashboard");
+}
+
+export function verifyMillionaireCurrentResultIgnoresHistory(): void {
+  const history90Current60 = nextActionFromCurrentMillionaire(60, [90]);
+  const history50Current90 = nextActionFromCurrentMillionaire(90, [50]);
+  const history90Current80 = nextActionFromCurrentMillionaire(80, [90]);
+
+  assert(history90Current60?.label === "ฝึก Quiz อีกครั้ง", "A: current 60 beats avg 90");
+  assert(history50Current90?.label === JOURNEY_ACTION_LABELS.nextLesson, "B: current 90 beats avg 50");
+  assert(history90Current80?.label === "เล่น Millionaire อีกครั้ง", "C: current 80 beats avg 90");
 }
 
 export function runResultNextActionVerification(): void {
@@ -660,4 +738,6 @@ export function runResultNextActionVerification(): void {
   verifyCurrentQuizResultIgnoresHistoryAverage();
   verifyHomeJourneyResumeKeepQuizAverage();
   verifyQuizRetryClearsParentNextAction();
+  verifyMillionaireCurrentResultBands();
+  verifyMillionaireCurrentResultIgnoresHistory();
 }

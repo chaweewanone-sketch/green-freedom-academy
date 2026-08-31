@@ -27,6 +27,7 @@ export function ResultPanel({
         lessonPath={lessonPath}
         onRestart={onRestart}
         nextAction={nextAction}
+        guided
       />
     </section>
   );

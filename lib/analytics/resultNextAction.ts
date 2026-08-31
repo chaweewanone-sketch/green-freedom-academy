@@ -1,5 +1,6 @@
 import {
   buildLearningRecommendation,
+  buildMillionaireResultRecommendation,
   buildQuizScoreRecommendation,
 } from "@/lib/analytics/recommendation";
 import { getActivityPath, getDashboardPath, getLessonPath } from "@/lib/routes";
@@ -12,7 +13,7 @@ import type { AssessmentResult } from "@/types/assessment-result";
 export type ResultNextAction = {
   label: string;
   href: string;
-  /** True when the engine recommends retrying the current Quiz in place. */
+  /** True when the Result CTA retries the current activity in place. */
   sameActivity?: boolean;
 };
 
@@ -34,6 +35,45 @@ function isCurrentQuizResult(
   );
 }
 
+function isCurrentMillionaireResult(
+  result: ResolveForwardResultNextActionInput["currentResult"],
+): result is Pick<AssessmentResult, "activity" | "percentage"> {
+  return (
+    result !== undefined &&
+    result.activity === "millionaire" &&
+    Number.isFinite(result.percentage)
+  );
+}
+
+function toMillionaireCurrentResultNextAction(
+  currentLessonSlug: string,
+  recommendation: LearningRecommendation,
+): ResultNextAction | null {
+  const quizHref = getActivityPath(currentLessonSlug, "quiz");
+  const millionaireHref = getActivityPath(currentLessonSlug, "millionaire");
+
+  if (recommendation.href === quizHref) {
+    return asForwardAction(recommendation);
+  }
+
+  if (recommendation.href === millionaireHref) {
+    return asForwardAction(recommendation, true);
+  }
+
+  if (recommendation.href === getDashboardPath()) {
+    return asForwardAction(recommendation);
+  }
+
+  if (
+    recommendation.href === getLessonPath(recommendation.lessonSlug) &&
+    recommendation.lessonSlug !== currentLessonSlug
+  ) {
+    return asForwardAction(recommendation);
+  }
+
+  return null;
+}
+
 function asForwardAction(
   recommendation: LearningRecommendation,
   sameActivity = false,
@@ -46,10 +86,11 @@ function asForwardAction(
 }
 
 /**
- * Result CTA guard.
- * Quiz may surface the engine retry/practice CTA on the same activity.
- * Millionaire still only surfaces genuine forward transitions.
- * Does not score activities. Flash never receives a Result nextAction.
+ * Result CTA guard for history-composed recommendations.
+ * Quiz may surface same-activity retry. Millionaire history composition
+ * still only surfaces genuine forward transitions. Current-attempt
+ * Millionaire Result uses toMillionaireCurrentResultNextAction instead.
+ * Flash never receives a Result nextAction.
  */
 export function toForwardResultNextAction(
   currentActivity: string,
@@ -110,9 +151,8 @@ export function toForwardResultNextAction(
 
 /**
  * Compose Result nextAction after persist.
- * Quiz Result uses the current attempt percentage via the shared
- * score-band helper. Home/Journey/Resume keep historical average.
- * Millionaire Result still uses the canonical history recommendation.
+ * Quiz and Millionaire Result use the current attempt percentage via
+ * shared score-band helpers. Home/Journey/Resume keep historical average.
  */
 export function resolveForwardResultNextAction(
   input: ResolveForwardResultNextActionInput,
@@ -126,6 +166,19 @@ export function resolveForwardResultNextAction(
       input.currentActivity,
       input.currentLessonSlug,
       buildQuizScoreRecommendation(
+        input.currentResult.percentage,
+        input.currentLessonSlug,
+      ),
+    );
+  }
+
+  if (
+    input.currentActivity === "millionaire" &&
+    isCurrentMillionaireResult(input.currentResult)
+  ) {
+    return toMillionaireCurrentResultNextAction(
+      input.currentLessonSlug,
+      buildMillionaireResultRecommendation(
         input.currentResult.percentage,
         input.currentLessonSlug,
       ),

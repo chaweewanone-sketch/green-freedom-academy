@@ -19,6 +19,7 @@ import { runGuidedLearnVerification } from "@/lib/lessons/guidedLearnVerificatio
 import { runLearnVersionVerification } from "@/lib/history/learnVersionVerification";
 import { runResultNextActionVerification } from "@/lib/analytics/resultNextActionVerification";
 import { runQuizAttemptResetVerification } from "@/lib/quiz/quizAttemptResetVerification";
+import { runMillionaireAttemptResetVerification } from "@/lib/millionaire/millionaireAttemptResetVerification";
 import { runHistoryVerification } from "./verification";
 
 runHistoryVerification();
@@ -89,3 +90,6 @@ console.log("result next action verification passed");
 
 runQuizAttemptResetVerification();
 console.log("quiz attempt reset verification passed");
+
+runMillionaireAttemptResetVerification();
+console.log("millionaire attempt reset verification passed");

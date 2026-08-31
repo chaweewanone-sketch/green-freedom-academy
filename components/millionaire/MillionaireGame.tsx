@@ -7,6 +7,10 @@ import { QuestionCard } from "./QuestionCard";
 import { ResultPanel } from "./ResultPanel";
 import type { ResultNextAction } from "@/lib/analytics/resultNextAction";
 import { buildAssessmentResult } from "@/lib/assessment";
+import {
+  createMillionaireAttemptSnapshot,
+  nextMillionaireAttemptKey,
+} from "@/lib/millionaire/millionaireAttemptState";
 import type { AssessmentSession } from "@/lib/assessment";
 import type { AssessmentResult } from "@/types/assessment-result";
 
@@ -16,40 +20,51 @@ type MillionaireGameProps = {
   lessonPath: string;
   onComplete?: (result: AssessmentResult) => void;
   nextAction?: ResultNextAction;
+  onRestartAttempt?: () => void;
+};
+
+type MillionaireAttemptProps = {
+  session: AssessmentSession;
+  lessonTitle: string;
+  lessonPath: string;
+  onComplete?: (result: AssessmentResult) => void;
+  nextAction?: ResultNextAction;
+  onRequestRestart: () => void;
 };
 
 type GamePhase = "start" | "playing" | "result";
 
-export function MillionaireGame({
+function MillionaireAttempt({
   session,
   lessonTitle,
   lessonPath,
   onComplete,
   nextAction,
-}: MillionaireGameProps) {
+  onRequestRestart,
+}: MillionaireAttemptProps) {
   const gameQuestions = session.questions;
   const totalQuestions = gameQuestions.length;
-  const hasRecordedCompletionRef = useRef(false);
+  const initial = createMillionaireAttemptSnapshot("start");
+  const hasRecordedCompletionRef = useRef(initial.hasRecordedCompletion);
 
-  const [phase, setPhase] = useState<GamePhase>("start");
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [score, setScore] = useState(0);
-  const [selectedChoiceId, setSelectedChoiceId] = useState<string | null>(null);
-  const [revealed, setRevealed] = useState(false);
+  const [phase, setPhase] = useState<GamePhase>(initial.phase);
+  const [currentIndex, setCurrentIndex] = useState(initial.currentIndex);
+  const [score, setScore] = useState(initial.score);
+  const [selectedChoiceId, setSelectedChoiceId] = useState<string | null>(
+    initial.selectedChoiceId,
+  );
+  const [revealed, setRevealed] = useState(initial.revealed);
 
   const currentQuestion = gameQuestions[currentIndex];
 
   function startGame() {
-    setPhase("playing");
-    setCurrentIndex(0);
-    setScore(0);
-    setSelectedChoiceId(null);
-    setRevealed(false);
-    hasRecordedCompletionRef.current = false;
-  }
-
-  function restartGame() {
-    startGame();
+    const started = createMillionaireAttemptSnapshot("playing");
+    setPhase(started.phase);
+    setCurrentIndex(started.currentIndex);
+    setScore(started.score);
+    setSelectedChoiceId(started.selectedChoiceId);
+    setRevealed(started.revealed);
+    hasRecordedCompletionRef.current = started.hasRecordedCompletion;
   }
 
   function handleChoice(choiceId: string) {
@@ -127,7 +142,7 @@ export function MillionaireGame({
         score={score}
         total={totalQuestions}
         lessonPath={lessonPath}
-        onRestart={restartGame}
+        onRestart={onRequestRestart}
         nextAction={nextAction}
       />
     );
@@ -151,5 +166,31 @@ export function MillionaireGame({
         onChoice={handleChoice}
       />
     </section>
+  );
+}
+
+export function MillionaireGame({
+  session,
+  lessonTitle,
+  lessonPath,
+  onComplete,
+  nextAction,
+  onRestartAttempt,
+}: MillionaireGameProps) {
+  const [attemptKey, setAttemptKey] = useState(0);
+
+  return (
+    <MillionaireAttempt
+      key={attemptKey}
+      session={session}
+      lessonTitle={lessonTitle}
+      lessonPath={lessonPath}
+      onComplete={onComplete}
+      nextAction={nextAction}
+      onRequestRestart={() => {
+        onRestartAttempt?.();
+        setAttemptKey((current) => nextMillionaireAttemptKey(current));
+      }}
+    />
   );
 }

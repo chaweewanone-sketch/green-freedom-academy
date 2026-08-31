@@ -52,6 +52,7 @@ export {
   RECOMMENDATION_THRESHOLDS,
   buildLearningRecommendation,
   buildQuizScoreRecommendation,
+  buildMillionaireResultRecommendation,
 } from "./recommendation";
 export {
   resolveForwardResultNextAction,
