@@ -28,6 +28,27 @@ Defined in `:root` in `app/globals.css`:
 | `--line` | `#d8e7df` | Borders, dividers |
 | `--bg` | `#f5fbf7` | Page background |
 
+**Student visual tokens** (`--gfa-*`, additive — do not replace `--g` / `--m` / `--t`):
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--gfa-primary` | `#176b4d` | Student primary green |
+| `--gfa-primary-soft` | `#e7f5ed` | Soft mint field |
+| `--gfa-cream` | `#fff8e8` | Warm cream boards |
+| `--gfa-sky` | `#7ec8ff` | Sky accent |
+| `--gfa-sky-ink` | `#1d6fa3` | Sky text |
+| `--gfa-honey` | `#f4c44a` | Honey accent |
+| `--gfa-coral` | `#ff8a73` | Coral accent |
+| `--gfa-lilac` | `#c9b6ff` | Lilac accent |
+| `--gfa-ink` | `#17352a` | Student body text |
+| `--gfa-muted` | `#4d6a5c` | Student secondary text |
+| `--gfa-success` | `#176b4d` | Semantic success |
+| `--gfa-warning` | `#f4c44a` | Semantic warning |
+| `--gfa-error` | `#c45b3a` | Semantic error |
+| `--gfa-info` | `#1d6fa3` | Semantic info |
+
+**Rule:** one meaningful accent zone per student screen. Scope student world styles under `.gfaStudentWorld` so teacher UI stays on `--g` tokens.
+
 **Gradient accent:** Progress bars use `linear-gradient(90deg, var(--g), #56bd8a)`.
 
 **Theme color (PWA):** `#176b4d` — set in `app/layout.tsx` and `manifest.webmanifest`.
@@ -71,6 +92,19 @@ Defined in `:root` in `app/globals.css`:
 | `.navLogin` | Primary-styled login link |
 
 **React component:** `components/BrandHeader.tsx`
+
+### Student visual foundation
+
+| Piece | Usage |
+|-------|-------|
+| `.gfaLearningWorld` | ลานเขียวอิสระ — student Learn scene host |
+| `.gfaStudentWorld-quiz` | Medium sky/green field (foundation only; Quiz not wrapped yet) |
+| `GfaCharacter` | Named Bai Tong API retained; not Section 1 production art |
+| `GfaArtSlot` | Next/Image slot for original raster/SVG art with labeled empty fallback |
+| `GfaLessonProgress` | 8 path stones from in-session Learn state (UI chrome, not world art). Desktop stays a flex row; phone widths use one compact 8-column row so no step wraps away |
+| `EverydayGardenSection1` | Present Simple Section 1 Visual Master v1 (owner-approved): world art + HTML teaching text + interaction. Sections 2–8 are not this composition yet |
+
+**React:** `components/student-ui/`. Teacher UI stays on `--g` tokens. Millionaire keeps `.gfaGame*` from Sprint 42.
 
 ### Buttons
 

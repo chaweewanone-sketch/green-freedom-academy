@@ -3,6 +3,7 @@ type LessonNavigatorProps = {
   currentStep: number;
   completedSteps: number[];
   onStepSelect: (index: number) => void;
+  label?: string;
 };
 
 export function LessonNavigator({
@@ -10,10 +11,11 @@ export function LessonNavigator({
   currentStep,
   completedSteps,
   onStepSelect,
+  label = "ขั้นตอนบทเรียน",
 }: LessonNavigatorProps) {
   return (
     <aside className="lessonNav companionNav">
-      <p className="companionNavLabel">ขั้นตอนบทเรียน</p>
+      <p className="companionNavLabel">{label}</p>
       {steps.map((step, index) => {
         const isActive = index === currentStep;
         const isDone = completedSteps.includes(index);
@@ -27,7 +29,7 @@ export function LessonNavigator({
             aria-current={isActive ? "step" : undefined}
           >
             <span>{isDone ? "✓" : index + 1}</span>
-            {step.title}
+            <span className="companionNavTitle">{step.title}</span>
           </button>
         );
       })}

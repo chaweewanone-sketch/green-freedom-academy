@@ -71,7 +71,8 @@ green-freedom-academy-v1/
 │       └── present-simple/
 │           └── page.tsx    # Interactive lesson (client component)
 ├── components/
-│   └── BrandHeader.tsx     # Shared header and navigation
+│   ├── BrandHeader.tsx     # Shared header and navigation
+│   └── student-ui/         # GFA Learning World (grounds, scene, character)
 ├── lib/
 │   └── supabase-browser.ts # Browser Supabase client factory
 ├── public/
@@ -257,6 +258,8 @@ Resume Learning is a deterministic action-oriented projection of existing Recomm
 **Short Practice Quiz v1:** Default Quiz attempt length is 10 questions (`ACTIVITY_DEFAULTS.quiz.questionCount`). Scoring stays percentage-based (`correct / total`). A 10-question bank slice is near-balanced A/B/C/D (3/3/2/2). Historical events store `scorePercentage` only, so older 20-question attempts remain readable without migration. Millionaire stays 10 questions; Flash Cards stay 20.
 
 **10-stage game v1:** The Millionaire activity keeps internal id `millionaire` and the same 10-question assessment session. Student-facing play is `เกมพิชิต 10 ด่าน`: a colorful game world, a Sprint 42 pilot explorer character, a display-only 10-stage Adventure Map, game-scoped `.gfaGame*` / `.gfaStage*` layout, text+color feedback, and an explicit continue (`ไปด่านต่อไป →` / `ดูผลเกม`) instead of 700ms auto-advance. Result copy shows stars for the correct count; Sprint 41 current-attempt CTAs are unchanged. Shared `.millionaire*` CSS used by Quiz is not mutated.
+
+**Student visual foundation v1 / Section 1 Visual Master v1:** Additive `--gfa-*` tokens live next to existing `--g` / `--m` / `--t` tokens and do not restyle teacher UI. Student Learn uses `GfaLearningWorld` (ลานเขียวอิสระ / Everyday Garden). React/CSS owns layout, type, progress, CTA, and HTML teaching text. Original local illustrations live under `public/gfa/` (`characters/`, `scenes/`, `props/`) and are consumed through `GfaArtSlot` + `GFA_SECTION1_ART`. Present Simple Section 1 is the owner-approved Visual Master v1: five production WebPs, desktop ~38/62 Habit vs General Truth pair, mobile stack with all 8 path stones in one compact row, lunch as a supporting example, and frozen grammar/summary copy (`Subject + Verb 1`, no `ป้ายสวน`, `จำไว้ : Present Simple = ทำประจำ หรือ เป็นจริงเสมอ`). Missing files show labeled slots, not geometric scene drawings. Sections 2–8 stay on a readable fallback and are not yet visually expanded from this master. Quiz does not consume the world yet. Millionaire keeps Sprint 42 `GameWorld` / `GameHeroCharacter` / `AdventureMap`. Contract: `public/gfa/ASSET-CONTRACT.md`.
 
 **Recommendation v1:** `/dashboard` shows one "แนะนำขั้นต่อไป" card for the **active curriculum lesson**. Journey = current stage. Recommendation = next best action in that lesson. They stay separate. Completing Present Simple recommends `เรียนบทถัดไป` to `/lesson/past-simple`. Completing the final lesson recommends `/dashboard`. Out-of-order later-lesson history is ignored until that lesson becomes active. No AI/LLM, no Supabase.
 

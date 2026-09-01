@@ -9,6 +9,13 @@ import { LessonProgress } from "./LessonProgress";
 import { LessonTimer } from "./LessonTimer";
 import { PlanningPanel } from "./PlanningPanel";
 import { TeachingPanel } from "./TeachingPanel";
+import {
+  EverydayGardenSection1,
+  GfaContinueAction,
+  GfaLearningWorld,
+  GfaLessonProgress,
+  GfaScene,
+} from "@/components/student-ui";
 import { useLessonTimer } from "@/lib/hooks/useLessonTimer";
 import { shouldPersistLearnCompletion } from "@/lib/lessons/guidedLearnFooter";
 import {
@@ -114,6 +121,117 @@ export function ClassroomCompanion({
     setLearnSaved(true);
   }
 
+  const teacherLessonBody = (
+    <section className="lessonShell companionShell">
+      <div className="companionSidebar">
+        <LessonNavigator
+          steps={steps}
+          currentStep={currentStep}
+          completedSteps={completedSteps}
+          onStepSelect={setCurrentStep}
+        />
+        <LessonTimer
+          seconds={timer.seconds}
+          isRunning={timer.isRunning}
+          onStart={timer.start}
+          onPause={timer.pause}
+          onReset={timer.reset}
+        />
+      </div>
+
+      <div className="companionMain">
+        {mode === "teaching" ? (
+          <TeachingPanel
+            stepIndex={currentStep}
+            totalSteps={steps.length}
+            step={activeStep}
+            lessonSlug={lesson.slug}
+          />
+        ) : (
+          <PlanningPanel
+            lessonTitle={title}
+            steps={steps}
+            currentStep={currentStep}
+            completedSteps={completedSteps}
+          />
+        )}
+
+        <LessonFooter
+          currentStep={currentStep}
+          totalSteps={steps.length}
+          onPrevious={goToPrevious}
+          onNext={goToNext}
+          onMarkComplete={markComplete}
+          isLearnRecorded={learnSaved}
+        />
+      </div>
+    </section>
+  );
+
+  const isSection1Prototype =
+    lesson.slug === "present-simple" && currentStep === 0;
+
+  if (isStudentLearn) {
+    return (
+      <GfaLearningWorld plot="everyday-garden">
+        <main className="gfaLearnPage">
+          <LessonHeader
+            backHref={backHref}
+            backLabel={backLabel}
+            title={title}
+            currentStep={currentStep}
+            totalSteps={steps.length}
+            progressPercent={progressPercent}
+            mode={mode}
+            onModeChange={setMode}
+            showClassroomControls={!isStudentLearn}
+          />
+
+          <GfaScene
+            name={
+              isSection1Prototype ? "everyday-garden-gate" : "fallback"
+            }
+          >
+            <GfaLessonProgress
+              total={steps.length}
+              currentStep={currentStep}
+              completedSteps={completedSteps}
+              onStepSelect={setCurrentStep}
+            />
+
+            {isSection1Prototype ? (
+              <EverydayGardenSection1
+                step={activeStep}
+                lessonTitle={title}
+              />
+            ) : (
+              <TeachingPanel
+                stepIndex={currentStep}
+                totalSteps={steps.length}
+                step={activeStep}
+                lessonSlug={lesson.slug}
+                showActivityGrid={!isStudentLearn}
+                showTeacherTip={!isStudentLearn}
+              />
+            )}
+
+            <GfaContinueAction>
+              <LessonFooter
+                currentStep={currentStep}
+                totalSteps={steps.length}
+                onPrevious={goToPrevious}
+                onNext={goToNext}
+                onMarkComplete={finishLearnAndGoToQuiz}
+                isLearnRecorded={learnSaved}
+                guided={isStudentLearn}
+              />
+            </GfaContinueAction>
+          </GfaScene>
+        </main>
+      </GfaLearningWorld>
+    );
+  }
+
   return (
     <main className="companionPage">
       <LessonHeader
@@ -125,68 +243,10 @@ export function ClassroomCompanion({
         progressPercent={progressPercent}
         mode={mode}
         onModeChange={setMode}
-        showClassroomControls={!isStudentLearn}
+        showClassroomControls
       />
-
       <LessonProgress percent={progressPercent} />
-
-      <section className="lessonShell companionShell">
-        <div
-          className={
-            isStudentLearn
-              ? "companionSidebar guidedLearnSidebar"
-              : "companionSidebar"
-          }
-        >
-          <LessonNavigator
-            steps={steps}
-            currentStep={currentStep}
-            completedSteps={completedSteps}
-            onStepSelect={setCurrentStep}
-          />
-          {!isStudentLearn ? (
-            <LessonTimer
-              seconds={timer.seconds}
-              isRunning={timer.isRunning}
-              onStart={timer.start}
-              onPause={timer.pause}
-              onReset={timer.reset}
-            />
-          ) : null}
-        </div>
-
-        <div className="companionMain">
-          {mode === "teaching" ? (
-            <TeachingPanel
-              stepIndex={currentStep}
-              totalSteps={steps.length}
-              step={activeStep}
-              lessonSlug={lesson.slug}
-              showActivityGrid={!isStudentLearn}
-              showTeacherTip={!isStudentLearn}
-            />
-          ) : (
-            <PlanningPanel
-              lessonTitle={title}
-              steps={steps}
-              currentStep={currentStep}
-              completedSteps={completedSteps}
-            />
-          )}
-
-          <LessonFooter
-            currentStep={currentStep}
-            totalSteps={steps.length}
-            onPrevious={goToPrevious}
-            onNext={goToNext}
-            onMarkComplete={
-              isStudentLearn ? finishLearnAndGoToQuiz : markComplete
-            }
-            isLearnRecorded={learnSaved}
-            guided={isStudentLearn}
-          />
-        </div>
-      </section>
+      {teacherLessonBody}
     </main>
   );
 }

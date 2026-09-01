@@ -7,8 +7,8 @@ export const presentSimpleLesson: LessonData = {
   steps: [
     {
       title: "Present Simple คืออะไร",
-      description:
-        "ใช้พูดถึงสิ่งที่ทำเป็นประจำ สิ่งที่เกิดขึ้นเป็นปกติ หรือสิ่งที่เป็นจริงทั่วไป ไม่ใช้กับสิ่งที่กำลังทำอยู่ตอนนี้ จำไว้: Present Simple = ทำประจำ หรือ เป็นจริงเสมอ",
+      description: `ใช้พูดถึงสิ่งที่ทำเป็นประจำ สิ่งที่เกิดขึ้นเป็นปกติ หรือสิ่งที่เป็นจริงทั่วไป ไม่ใช้กับสิ่งที่กำลังทำอยู่ตอนนี้
+จำไว้ : Present Simple = ทำประจำ หรือ เป็นจริงเสมอ`,
       formula: "Subject + Verb 1",
       examples: [
         "I walk to school every day.",

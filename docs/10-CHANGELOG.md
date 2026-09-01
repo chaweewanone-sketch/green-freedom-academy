@@ -42,8 +42,16 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Quiz Result primary CTA follows the current attempt percentage (60 / 80 / 90), not historical Quiz average; Home / Journey / Resume still use average
 - Millionaire Result primary CTA follows the current attempt: weak `ฝึก Quiz อีกครั้ง`, developing `เล่น Millionaire อีกครั้ง` (intro replay), strong next lesson / dashboard; Home / Journey / Resume still use historical average
 - Present Simple Millionaire play is `เกมพิชิต 10 ด่าน`: colorful hero world, pilot explorer character, display-only 10-stage Adventure Map, explicit continue after explanation, and Result star/copy presentation; assessment 10/50, percentage, 70/85, and Result routing stay frozen; Quiz keeps shared `.millionaire*` styles
+- Student visual foundation — additive `--gfa-*` tokens, `GfaLearningWorld` (ลานเขียวอิสระ), Bai Tong, and a Present Simple Section 1 Everyday Garden prototype; later Learn sections stay on a readable fallback; Quiz and Millionaire surfaces unchanged
+- Asset-first Learn art slots — Section 1 consumes `GfaArtSlot` / `GFA_SECTION1_ART` under `public/gfa/` (`characters/`, `scenes/`, `props/`); educational text stays HTML; original illustrations are not shipped yet; Quiz and Millionaire surfaces unchanged
+- Section 1 production composition — desktop 38/62 Learn layout with HTML title, mission, grammar, sentences, progress, and Continue; illustration slots wait on original GFA files; geometric Bai Tong is not production art
+- Section 1 desktop-first composition — first-viewport Habit vs General Truth pair, reduced Present Simple identity scale, supporting Bai Tong, localized readability veil; production WebP files unchanged
+- Section 1 compact balance — first viewport tightened ~15–20%; lunch art ~2× with stronger third-example sentence; Continue and production assets unchanged
+- Section 1 mobile micro polish — 8 path stones stay in one compact row at phone widths; lunch support art is slightly larger on mobile only; desktop composition and production assets unchanged
 
 ### Changed
+- Section 1 student copy: grammar board no longer shows ป้ายสวน; จำไว้ : sits on the Present Simple summary line
+- Section 1 Visual Master v1 — owner-approved Everyday Garden Learn (five frozen production WebPs, HTML educational text, desktop 38/62, mobile 8-stone row); Sections 2–8 remain a readable fallback
 - `/dashboard` history flow is client-loaded so events survive browser refresh
 - `/dashboard` no longer auto-seeds sample learning events; it shows only real completions or the empty state
 - Completed student activities write learning history through `StudentActivityPlayer` without changing scoring rules
