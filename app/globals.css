@@ -1113,6 +1113,159 @@
   outline: 3px solid var(--gfa-sky);
   outline-offset: 3px;
 }
+.gfaPlayground,
+.gfaWorkshop {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+.gfaLearnLead,
+.gfaLearnSurface,
+.gfaWorldStage {
+  min-width: 0;
+  border-radius: 24px;
+  background: rgba(255, 252, 244, 0.94);
+  box-shadow: 0 12px 28px rgba(23, 107, 77, 0.1);
+}
+.gfaLearnLead {
+  padding: 12px 16px 14px;
+}
+.gfaLearnLead .gfaMission {
+  max-width: none;
+}
+.gfaWorldStage {
+  margin: 0;
+  padding: 10px 10px 8px;
+}
+.gfaWorldStageArt {
+  width: 100%;
+  border: 0;
+  border-radius: 18px;
+  background: #e7f5ed;
+}
+.gfaWorldStageArt img {
+  object-fit: contain;
+}
+.gfaWorldStageCaption {
+  margin: 8px 6px 2px;
+  color: var(--gfa-primary);
+  font-size: clamp(1.05rem, 2.2vw, 1.25rem);
+  font-weight: 800;
+}
+.gfaLearnSurface {
+  display: grid;
+  gap: 12px;
+  padding: 16px 18px 18px;
+}
+.gfaLearnBeat {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 16px;
+  background: rgba(231, 245, 237, 0.92);
+  color: var(--gfa-ink);
+  font-size: clamp(1.25rem, 2.7vw, 1.6rem);
+  font-weight: 800;
+  line-height: 1.35;
+}
+.gfaLearnBeat strong {
+  color: var(--gfa-primary);
+}
+.gfaLearnFormula {
+  margin: 0;
+  color: var(--gfa-ink);
+  font-size: clamp(1.35rem, 2.6vw, 1.8rem);
+  font-weight: 900;
+  line-height: 1.3;
+}
+.gfaLearnRule,
+.gfaMemoryLine {
+  margin: 0;
+  color: var(--gfa-ink);
+  font-size: clamp(1.08rem, 2.3vw, 1.28rem);
+  font-weight: 800;
+  line-height: 1.55;
+}
+.gfaExampleList {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.gfaExampleLine {
+  margin: 0;
+  color: var(--gfa-ink);
+  font-size: clamp(1.25rem, 2.8vw, 1.6rem);
+  font-weight: 800;
+  line-height: 1.45;
+}
+.gfaExampleLine em {
+  color: var(--gfa-primary);
+  font-style: normal;
+  font-weight: 900;
+  border-bottom: 4px solid var(--gfa-honey);
+}
+.gfaEndingMark {
+  color: var(--gfa-primary);
+  font-weight: 900;
+}
+.gfaLearnPair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.gfaLearnPair p {
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 18px;
+  font-size: clamp(1.15rem, 2.5vw, 1.45rem);
+  font-weight: 900;
+  line-height: 1.4;
+}
+.gfaContrastOk {
+  color: #145c3a;
+  background: rgba(231, 245, 237, 0.98);
+}
+.gfaContrastBad {
+  color: #8a1f16;
+  background: rgba(255, 236, 232, 0.98);
+}
+.gfaWorkshop .gfaEndingRule {
+  display: grid;
+  gap: 10px;
+}
+.gfaWorkshop .gfaEndingRuleGroup {
+  padding: 10px 14px;
+  border-radius: 16px;
+  background: rgba(231, 245, 237, 0.78);
+}
+.gfaWorkshop .gfaEndingRuleTitle {
+  margin: 0 0 6px;
+  color: var(--gfa-primary);
+  font-size: clamp(1.15rem, 2.5vw, 1.4rem);
+  font-weight: 900;
+  line-height: 1.35;
+}
+.gfaWorkshop .gfaEndingRulePairs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.gfaWorkshop .gfaEndingRulePairs li {
+  color: var(--gfa-ink);
+  font-size: clamp(1.18rem, 2.6vw, 1.42rem);
+  font-weight: 800;
+  line-height: 1.4;
+}
+.gfaWorkshop .gfaEndingRulePairs em {
+  color: var(--gfa-primary);
+  font-style: normal;
+  font-weight: 900;
+  border-bottom: 4px solid var(--gfa-honey);
+}
 @media (max-width: 900px) {
   .gfaLearnPage {
     width: min(1360px, 96vw);
@@ -1239,6 +1392,18 @@
   .gfaLearningWorld .guidedLearnFooter .primary,
   .gfaLearningWorld .guidedLearnFooter .secondary {
     width: 100%;
+  }
+  .gfaLearnPair {
+    grid-template-columns: 1fr;
+  }
+  .gfaLearnBeat,
+  .gfaExampleLine,
+  .gfaLearnPair p {
+    font-size: 1.2rem;
+  }
+  .gfaWorkshop .gfaEndingRuleTitle,
+  .gfaWorkshop .gfaEndingRulePairs li {
+    font-size: 1.2rem;
   }
 }
 @media (prefers-reduced-motion: reduce) {

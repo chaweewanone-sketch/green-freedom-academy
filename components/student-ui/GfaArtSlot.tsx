@@ -12,6 +12,7 @@ type GfaArtSlotProps = {
   decorative?: boolean;
   sizes?: string;
   fit?: "cover" | "contain";
+  objectPosition?: string;
   priority?: boolean;
 };
 
@@ -24,6 +25,7 @@ export function GfaArtSlot({
   decorative = false,
   sizes = "(max-width: 820px) 100vw, 50vw",
   fit = "cover",
+  objectPosition,
   priority = false,
 }: GfaArtSlotProps) {
   const [failed, setFailed] = useState(false);
@@ -31,6 +33,10 @@ export function GfaArtSlot({
   const showWait = fallback === undefined;
 
   if (failed) {
+    if (fallback === null) {
+      return null;
+    }
+
     return (
       <div
         className={`${slotClass} gfaArtSlot-empty`}
@@ -57,7 +63,7 @@ export function GfaArtSlot({
         sizes={sizes}
         unoptimized
         priority={priority}
-        style={{ objectFit: fit }}
+        style={{ objectFit: fit, objectPosition }}
         onError={() => setFailed(true)}
       />
     </div>

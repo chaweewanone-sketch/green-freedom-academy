@@ -86,3 +86,9 @@ QUALITY=lunch / noon concept; no instructional text; transparent preferred
 - Geometric `GfaCharacter` SVG is not Section 1 production art
 
 Do not bake progress, titles, English sentences, Thai teaching copy, or fake buttons into illustrations.
+
+ART = visual meaning. HTML = grammar authority.
+
+The current `workshop-he-she-it` scene is an approved prototype-era exception with baked labels. Do not regenerate it in this freeze.
+
+Future Sections 4–8 production art must avoid baked instructional grammar text. HTML remains grammar authority; art shows people, places, and actions.

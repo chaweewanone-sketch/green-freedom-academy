@@ -32,6 +32,20 @@ export function runStudentVisualFoundationVerification(): void {
     resolve(process.cwd(), "components/student-ui/EverydayGardenSection1.tsx"),
     "utf8",
   );
+  const section2 = readFileSync(
+    resolve(
+      process.cwd(),
+      "components/student-ui/EverydayGardenPlaygroundSection2.tsx",
+    ),
+    "utf8",
+  );
+  const section3 = readFileSync(
+    resolve(
+      process.cwd(),
+      "components/student-ui/EverydayGardenWorkshopSection3.tsx",
+    ),
+    "utf8",
+  );
   const quiz = readFileSync(
     resolve(process.cwd(), "components/quiz/QuizGame.tsx"),
     "utf8",
@@ -102,6 +116,31 @@ export function runStudentVisualFoundationVerification(): void {
     companion.includes('lesson.slug === "present-simple" && currentStep === 0'),
     "learn: section 1 only",
   );
+  assert(
+    companion.includes("EverydayGardenPlaygroundSection2"),
+    "learn: section 2 prototype",
+  );
+  assert(
+    companion.includes("EverydayGardenWorkshopSection3"),
+    "learn: section 3 prototype",
+  );
+  assert(
+    companion.includes('lesson.slug === "present-simple" && currentStep === 1'),
+    "learn: section 2 step",
+  );
+  assert(
+    companion.includes('lesson.slug === "present-simple" && currentStep === 2'),
+    "learn: section 3 step",
+  );
+  assert(
+    companion.includes("everyday-garden-playground"),
+    "learn: playground scene",
+  );
+  assert(
+    companion.includes("everyday-garden-workshop"),
+    "learn: workshop scene",
+  );
+  assert(companion.includes("TeachingPanel"), "learn: sections 4-8 fallback");
   assert(companion.includes("showActivityGrid={!isStudentLearn}"), "learn: grid gated");
   assert(css.includes(".gfaLearningWorld .guidedLearnFooter .primary"), "css: student CTA");
 
@@ -136,6 +175,53 @@ export function runStudentVisualFoundationVerification(): void {
   assert(css.includes("clamp(116px, 30vw, 128px)"), "css: mobile lunch art scale");
   assert(css.includes("object-position: 78% 32%"), "css: background focal control");
   assert(css.includes("min(180px, 46vw)"), "css: mobile Bai Tong readable");
+  assert(!section2.includes("gfaGardenGate"), "s2: not section 1 composition");
+  assert(section2.includes("GFA_SECTION2_ART"), "s2: asset map");
+  assert(!section2.includes("baiTongGroupCoach"), "s2 r1: no competing coach");
+  assert(section2.includes("playgroundIYouWeThey"), "s2: playground slot");
+  assert(section2.includes('fit="contain"'), "s2: scene contain");
+  assert(section2.includes("{step.formula}"), "s2: formula from content");
+  assert(section2.includes("{step.examples.map"), "s2: examples from content");
+  assert(section2.includes("<em>{verb}</em>"), "s2: verb 1 emphasis");
+  assert(!section2.includes("ป้ายสวน"), "s2: no garden-sign UI label");
+  assert(!section3.includes("gfaGardenGate"), "s3: not section 1 composition");
+  assert(section3.includes("GFA_SECTION3_ART"), "s3: asset map");
+  assert(!section3.includes("baiTongSingularStamp"), "s3 r1: stamp retained unused");
+  assert(section3.includes("workshopHeSheIt"), "s3: workshop slot");
+  assert(!section3.includes("verbLeafS"), "s3 r1: leaf hidden");
+  assert(section3.includes("{step.formula}"), "s3: formula from content");
+  assert(section3.includes("{step.examples.map"), "s3: examples from content");
+  assert(section3.includes("gfaEndingMark"), "s3: ending stays HTML");
+  assert(section3.includes("gfaEndingRule"), "s3 r2: scannable s/es rule");
+  assert(section3.includes("play →"), "s3 r2: play to plays");
+  assert(section3.includes("watch →"), "s3 r2: watch to watches");
+  assert(section3.includes("ch / sh / x / s"), "s3 r2: es endings visible");
+  assert(!section3.includes("hissy"), "s3: no hissy-sound grammar rule");
+  assert(!section3.includes("ป้ายสวน"), "s3: no garden-sign UI label");
+  assert(css.includes(".gfaPlayground"), "css: playground section");
+  assert(css.includes(".gfaWorkshop"), "css: workshop section");
+  assert(css.includes(".gfaWorldStage"), "css: framed world stage");
+  assert(css.includes(".gfaLearnSurface"), "css: cream learning surface");
+  assert(
+    artAssets.includes("/gfa/characters/bai-tong-group-coach.webp"),
+    "assets: group coach path",
+  );
+  assert(
+    artAssets.includes("/gfa/scenes/playground-i-you-we-they.webp"),
+    "assets: playground path",
+  );
+  assert(
+    artAssets.includes("/gfa/characters/bai-tong-singular-stamp.webp"),
+    "assets: singular stamp path",
+  );
+  assert(
+    artAssets.includes("/gfa/scenes/workshop-he-she-it.webp"),
+    "assets: workshop path",
+  );
+  assert(
+    artAssets.includes("/gfa/props/verb-leaf-s.webp"),
+    "assets: verb leaf path",
+  );
 
   assert(existsSync(resolve(process.cwd(), "public/gfa/characters")), "assets: characters dir");
   assert(existsSync(resolve(process.cwd(), "public/gfa/scenes")), "assets: scenes dir");

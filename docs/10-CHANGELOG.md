@@ -48,10 +48,15 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Section 1 desktop-first composition — first-viewport Habit vs General Truth pair, reduced Present Simple identity scale, supporting Bai Tong, localized readability veil; production WebP files unchanged
 - Section 1 compact balance — first viewport tightened ~15–20%; lunch art ~2× with stronger third-example sentence; Continue and production assets unchanged
 - Section 1 mobile micro polish — 8 path stones stay in one compact row at phone widths; lunch support art is slightly larger on mobile only; desktop composition and production assets unchanged
+- Sprint 45C Learn prototype — Present Simple Sections 2 (playground) and 3 (workshop) use section-specific composition with frozen curriculum HTML; Section 1 Visual Master stays frozen
+- Sprint 45C-R1 composition rescue — Sections 2–3 use a framed teaching scene plus cream HTML surfaces; competing character overlays and the leaf cue are hidden from composition but assets stay in `public/gfa/`
+- Sprint 45C-R2 — Section 3 s/es rule is a compact HTML scan block (`เติม -s` / `ch / sh / x / s` → `-es`); R1 composition otherwise unchanged. Future Sections 4–8 production art must not bake instructional grammar text.
+- Sprint 45C freeze — Present Simple Sections 2–3 are owner-approved Learn compositions (playground / workshop). Art is visual meaning; HTML is grammar authority. Unused group-coach, singular-stamp, and verb-leaf files stay in `public/gfa/`.
 
 ### Changed
 - Section 1 student copy: grammar board no longer shows ป้ายสวน; จำไว้ : sits on the Present Simple summary line
-- Section 1 Visual Master v1 — owner-approved Everyday Garden Learn (five frozen production WebPs, HTML educational text, desktop 38/62, mobile 8-stone row); Sections 2–8 remain a readable fallback
+- Section 1 Visual Master v1 — owner-approved Everyday Garden Learn (five frozen production WebPs, HTML educational text, desktop 38/62, mobile 8-stone row); Sections 2–3 are frozen Learn compositions; Sections 4–8 remain a readable fallback
+- Sprint 45C owner-approved freeze — Present Simple Sections 2–3 use playground / workshop compositions; Section 1 Visual Master and functional freeze stay unchanged
 - `/dashboard` history flow is client-loaded so events survive browser refresh
 - `/dashboard` no longer auto-seeds sample learning events; it shows only real completions or the empty state
 - Completed student activities write learning history through `StudentActivityPlayer` without changing scoring rules

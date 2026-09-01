@@ -8,6 +8,8 @@ export { GfaMission } from "./GfaMission";
 export { GfaLessonProgress } from "./GfaLessonProgress";
 export { GfaContinueAction } from "./GfaContinueAction";
 export { EverydayGardenSection1 } from "./EverydayGardenSection1";
+export { EverydayGardenPlaygroundSection2 } from "./EverydayGardenPlaygroundSection2";
+export { EverydayGardenWorkshopSection3 } from "./EverydayGardenWorkshopSection3";
 export { GfaArtSlot } from "./GfaArtSlot";
 export { GfaCharacter } from "./GfaCharacter";
 export type {

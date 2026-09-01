@@ -11,6 +11,8 @@ import { PlanningPanel } from "./PlanningPanel";
 import { TeachingPanel } from "./TeachingPanel";
 import {
   EverydayGardenSection1,
+  EverydayGardenPlaygroundSection2,
+  EverydayGardenWorkshopSection3,
   GfaContinueAction,
   GfaLearningWorld,
   GfaLessonProgress,
@@ -170,6 +172,18 @@ export function ClassroomCompanion({
 
   const isSection1Prototype =
     lesson.slug === "present-simple" && currentStep === 0;
+  const isSection2Prototype =
+    lesson.slug === "present-simple" && currentStep === 1;
+  const isSection3Prototype =
+    lesson.slug === "present-simple" && currentStep === 2;
+
+  const studentSceneName = isSection1Prototype
+    ? "everyday-garden-gate"
+    : isSection2Prototype
+      ? "everyday-garden-playground"
+      : isSection3Prototype
+        ? "everyday-garden-workshop"
+        : "fallback";
 
   if (isStudentLearn) {
     return (
@@ -187,11 +201,7 @@ export function ClassroomCompanion({
             showClassroomControls={!isStudentLearn}
           />
 
-          <GfaScene
-            name={
-              isSection1Prototype ? "everyday-garden-gate" : "fallback"
-            }
-          >
+          <GfaScene name={studentSceneName}>
             <GfaLessonProgress
               total={steps.length}
               currentStep={currentStep}
@@ -201,6 +211,16 @@ export function ClassroomCompanion({
 
             {isSection1Prototype ? (
               <EverydayGardenSection1
+                step={activeStep}
+                lessonTitle={title}
+              />
+            ) : isSection2Prototype ? (
+              <EverydayGardenPlaygroundSection2
+                step={activeStep}
+                lessonTitle={title}
+              />
+            ) : isSection3Prototype ? (
+              <EverydayGardenWorkshopSection3
                 step={activeStep}
                 lessonTitle={title}
               />

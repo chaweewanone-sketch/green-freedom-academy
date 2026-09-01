@@ -10,7 +10,12 @@ export type GfaArtSlotId =
   | "habit-walk-to-school"
   | "general-truth-sunrise-east"
   | "everyday-garden-background"
-  | "lunch-support";
+  | "lunch-support"
+  | "bai-tong-group-coach"
+  | "playground-i-you-we-they"
+  | "verb-leaf-s"
+  | "bai-tong-singular-stamp"
+  | "workshop-he-she-it";
 
 export type GfaArtSlotSpec = {
   id: GfaArtSlotId;
@@ -47,6 +52,42 @@ export const GFA_SECTION1_ART = {
   lunchSupport: {
     id: "lunch-support",
     src: "/gfa/props/lunch-support.webp",
+    aspect: "1 / 1",
+    transparent: true,
+  },
+} as const satisfies Record<string, GfaArtSlotSpec>;
+
+export const GFA_SECTION2_ART = {
+  baiTongGroupCoach: {
+    id: "bai-tong-group-coach",
+    src: "/gfa/characters/bai-tong-group-coach.webp",
+    aspect: "5 / 6",
+    transparent: true,
+  },
+  playgroundIYouWeThey: {
+    id: "playground-i-you-we-they",
+    src: "/gfa/scenes/playground-i-you-we-they.webp",
+    aspect: "16 / 10",
+    transparent: false,
+  },
+} as const satisfies Record<string, GfaArtSlotSpec>;
+
+export const GFA_SECTION3_ART = {
+  baiTongSingularStamp: {
+    id: "bai-tong-singular-stamp",
+    src: "/gfa/characters/bai-tong-singular-stamp.webp",
+    aspect: "5 / 6",
+    transparent: true,
+  },
+  workshopHeSheIt: {
+    id: "workshop-he-she-it",
+    src: "/gfa/scenes/workshop-he-she-it.webp",
+    aspect: "16 / 10",
+    transparent: false,
+  },
+  verbLeafS: {
+    id: "verb-leaf-s",
+    src: "/gfa/props/verb-leaf-s.webp",
     aspect: "1 / 1",
     transparent: true,
   },

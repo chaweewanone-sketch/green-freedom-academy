@@ -102,7 +102,9 @@ Defined in `:root` in `app/globals.css`:
 | `GfaCharacter` | Named Bai Tong API retained; not Section 1 production art |
 | `GfaArtSlot` | Next/Image slot for original raster/SVG art with labeled empty fallback |
 | `GfaLessonProgress` | 8 path stones from in-session Learn state (UI chrome, not world art). Desktop stays a flex row; phone widths use one compact 8-column row so no step wraps away |
-| `EverydayGardenSection1` | Present Simple Section 1 Visual Master v1 (owner-approved): world art + HTML teaching text + interaction. Sections 2–8 are not this composition yet |
+| `EverydayGardenSection1` | Present Simple Section 1 Visual Master v1 (owner-approved, frozen) |
+| `EverydayGardenPlaygroundSection2` | Section 2 frozen: framed playground scene + cream HTML; group-coach retained unused |
+| `EverydayGardenWorkshopSection3` | Section 3 frozen: full workshop contain scene + cream HTML; stamp/leaf retained unused |
 
 **React:** `components/student-ui/`. Teacher UI stays on `--g` tokens. Millionaire keeps `.gfaGame*` from Sprint 42.
 

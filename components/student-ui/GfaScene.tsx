@@ -1,6 +1,10 @@
 import type { ReactNode } from "react";
 
-export type GfaSceneName = "everyday-garden-gate" | "fallback";
+export type GfaSceneName =
+  | "everyday-garden-gate"
+  | "everyday-garden-playground"
+  | "everyday-garden-workshop"
+  | "fallback";
 
 type GfaSceneProps = {
   name: GfaSceneName;
