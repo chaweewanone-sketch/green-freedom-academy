@@ -15,7 +15,9 @@ export type GfaArtSlotId =
   | "playground-i-you-we-they"
   | "verb-leaf-s"
   | "bai-tong-singular-stamp"
-  | "workshop-he-she-it";
+  | "workshop-he-she-it"
+  | "bai-tong-pause-guide"
+  | "quiet-shelter-not-doing";
 
 export type GfaArtSlotSpec = {
   id: GfaArtSlotId;
@@ -90,5 +92,20 @@ export const GFA_SECTION3_ART = {
     src: "/gfa/props/verb-leaf-s.webp",
     aspect: "1 / 1",
     transparent: true,
+  },
+} as const satisfies Record<string, GfaArtSlotSpec>;
+
+export const GFA_SECTION4_ART = {
+  baiTongPauseGuide: {
+    id: "bai-tong-pause-guide",
+    src: "/gfa/characters/bai-tong-pause-guide.webp",
+    aspect: "5 / 6",
+    transparent: true,
+  },
+  quietShelterNotDoing: {
+    id: "quiet-shelter-not-doing",
+    src: "/gfa/scenes/quiet-shelter-not-doing.webp",
+    aspect: "16 / 10",
+    transparent: false,
   },
 } as const satisfies Record<string, GfaArtSlotSpec>;

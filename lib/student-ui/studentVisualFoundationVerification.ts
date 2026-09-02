@@ -46,6 +46,13 @@ export function runStudentVisualFoundationVerification(): void {
     ),
     "utf8",
   );
+  const section4 = readFileSync(
+    resolve(
+      process.cwd(),
+      "components/student-ui/EverydayGardenQuietShelterSection4.tsx",
+    ),
+    "utf8",
+  );
   const quiz = readFileSync(
     resolve(process.cwd(), "components/quiz/QuizGame.tsx"),
     "utf8",
@@ -125,12 +132,20 @@ export function runStudentVisualFoundationVerification(): void {
     "learn: section 3 prototype",
   );
   assert(
+    companion.includes("EverydayGardenQuietShelterSection4"),
+    "learn: section 4 prototype",
+  );
+  assert(
     companion.includes('lesson.slug === "present-simple" && currentStep === 1'),
     "learn: section 2 step",
   );
   assert(
     companion.includes('lesson.slug === "present-simple" && currentStep === 2'),
     "learn: section 3 step",
+  );
+  assert(
+    companion.includes('lesson.slug === "present-simple" && currentStep === 3'),
+    "learn: section 4 step",
   );
   assert(
     companion.includes("everyday-garden-playground"),
@@ -140,7 +155,11 @@ export function runStudentVisualFoundationVerification(): void {
     companion.includes("everyday-garden-workshop"),
     "learn: workshop scene",
   );
-  assert(companion.includes("TeachingPanel"), "learn: sections 4-8 fallback");
+  assert(
+    companion.includes("everyday-garden-shelter"),
+    "learn: shelter scene",
+  );
+  assert(companion.includes("TeachingPanel"), "learn: sections 5-8 fallback");
   assert(companion.includes("showActivityGrid={!isStudentLearn}"), "learn: grid gated");
   assert(css.includes(".gfaLearningWorld .guidedLearnFooter .primary"), "css: student CTA");
 
@@ -198,8 +217,44 @@ export function runStudentVisualFoundationVerification(): void {
   assert(section3.includes("ch / sh / x / s"), "s3 r2: es endings visible");
   assert(!section3.includes("hissy"), "s3: no hissy-sound grammar rule");
   assert(!section3.includes("ป้ายสวน"), "s3: no garden-sign UI label");
+  assert(!section4.includes("gfaGardenGate"), "s4: not section 1 composition");
+  assert(section4.includes("GFA_SECTION4_ART"), "s4: asset map");
+  assert(section4.includes("baiTongPauseGuide"), "s4: pause guide in lead");
+  assert(section4.includes("quietShelterNotDoing"), "s4: shelter scene slot");
+  assert(section4.includes('fit="contain"'), "s4: scene contain");
+  assert(section4.includes("step.examples.filter"), "s4: examples from content");
+  assert(section4.includes("บอกว่าไม่ได้ทำ"), "s4: negative meaning");
+  assert(section4.includes("บอกว่า “ไม่ได้ทำ”"), "s4 r1: meaning is primary mission");
+  assert(
+    section4.indexOf("บอกว่า “ไม่ได้ทำ”") <
+      section4.indexOf("don't / doesn't + Verb 1"),
+    "s4 r1: meaning before formula",
+  );
+  assert(!section4.includes("gfaLearnFormula"), "s4 r1: no duplicate formula");
+  assert(
+    section4.includes("I / You / We / They →"),
+    "s4 r1: one group formula",
+  );
+  assert(section4.includes("He / She / It →"), "s4 r1: one singular formula");
+  assert(section4.includes("doesn't + <em>walk</em>"), "s4: verb 1 return");
+  assert(section4.includes("ไม่ใช่ doesn't + walks"), "s4: walks contrast");
+  assert(section4.includes("They play football."), "s4: group flip");
+  assert(section4.includes("She walks to school."), "s4: singular flip");
+  assert(section4.includes("takeAfterMark"), "s4: frozen check marks");
+  assert(section4.includes("memoryLine"), "s4: frozen memory line");
+  assert(!section4.includes("baiTongGroupCoach"), "s4: no group coach");
+  assert(!section4.includes("baiTongSingularStamp"), "s4: no singular stamp");
+  assert(!section4.includes("verbLeafS"), "s4: no leaf cue");
+  assert(!section4.includes("ป้ายสวน"), "s4: no garden-sign UI label");
+  assert(
+    (section4.match(/baiTongPauseGuide/g) ?? []).length === 2,
+    "s4: one Bai Tong slot",
+  );
   assert(css.includes(".gfaPlayground"), "css: playground section");
   assert(css.includes(".gfaWorkshop"), "css: workshop section");
+  assert(css.includes(".gfaShelter"), "css: shelter section");
+  assert(css.includes(".gfaShelterReturn"), "css: verb 1 return");
+  assert(css.includes(".gfaShelterMissionPattern"), "css: secondary mission formula");
   assert(css.includes(".gfaWorldStage"), "css: framed world stage");
   assert(css.includes(".gfaLearnSurface"), "css: cream learning surface");
   assert(
@@ -222,10 +277,26 @@ export function runStudentVisualFoundationVerification(): void {
     artAssets.includes("/gfa/props/verb-leaf-s.webp"),
     "assets: verb leaf path",
   );
+  assert(
+    artAssets.includes("/gfa/characters/bai-tong-pause-guide.webp"),
+    "assets: pause guide path",
+  );
+  assert(
+    artAssets.includes("/gfa/scenes/quiet-shelter-not-doing.webp"),
+    "assets: shelter path",
+  );
 
   assert(existsSync(resolve(process.cwd(), "public/gfa/characters")), "assets: characters dir");
   assert(existsSync(resolve(process.cwd(), "public/gfa/scenes")), "assets: scenes dir");
   assert(existsSync(resolve(process.cwd(), "public/gfa/props")), "assets: props dir");
+  assert(
+    existsSync(resolve(process.cwd(), "public/gfa/characters/bai-tong-pause-guide.webp")),
+    "assets: pause guide file",
+  );
+  assert(
+    existsSync(resolve(process.cwd(), "public/gfa/scenes/quiet-shelter-not-doing.webp")),
+    "assets: shelter file",
+  );
   assert(artAssets.includes("/gfa/characters/bai-tong-explaining.webp"), "assets: bai tong path");
   assert(artAssets.includes("/gfa/scenes/habit-walk-to-school.webp"), "assets: habit path");
   assert(artAssets.includes("/gfa/scenes/general-truth-sunrise-east.webp"), "assets: sunrise path");
@@ -239,6 +310,8 @@ export function runStudentVisualFoundationVerification(): void {
   assert(artContract.includes("NAME=general-truth-sunrise-east"), "contract: sunrise");
   assert(artContract.includes("NAME=everyday-garden-background"), "contract: background");
   assert(artContract.includes("NAME=lunch-support"), "contract: lunch");
+  assert(artContract.includes("NAME=bai-tong-pause-guide"), "contract: pause guide");
+  assert(artContract.includes("NAME=quiet-shelter-not-doing"), "contract: shelter scene");
   assert(artContract.includes("TEXT_INSIDE_ASSET=NO"), "contract: no baked text");
 
   assert(!quiz.includes("student-ui"), "quiz: no student-ui import");

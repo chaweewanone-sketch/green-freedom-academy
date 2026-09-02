@@ -1114,7 +1114,8 @@
   outline-offset: 3px;
 }
 .gfaPlayground,
-.gfaWorkshop {
+.gfaWorkshop,
+.gfaShelter {
   display: grid;
   gap: 14px;
   min-width: 0;
@@ -1266,6 +1267,87 @@
   font-weight: 900;
   border-bottom: 4px solid var(--gfa-honey);
 }
+.gfaShelterLead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 8px 12px;
+}
+.gfaShelterLeadCopy {
+  min-width: 0;
+}
+.gfaShelterGuide {
+  width: 132px;
+  max-height: 168px;
+  flex: 0 0 132px;
+  border: 0;
+  background: transparent;
+}
+.gfaShelterGuide img {
+  object-fit: contain;
+}
+.gfaShelterMissionPattern {
+  display: block;
+  margin-top: 4px;
+  color: var(--gfa-primary);
+  font-size: clamp(1.05rem, 1.8vw, 1.28rem);
+  font-weight: 800;
+  line-height: 1.3;
+}
+.gfaShelterGroup,
+.gfaShelterSingular,
+.gfaShelterReturn,
+.gfaShelterFlip {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+.gfaShelterReturn {
+  padding: 14px 16px;
+  border-radius: 20px;
+  background: rgba(244, 196, 74, 0.22);
+  box-shadow: inset 0 0 0 3px rgba(23, 107, 77, 0.08);
+}
+.gfaShelterReturnTitle {
+  margin: 0;
+  color: var(--gfa-primary);
+  font-size: clamp(1.35rem, 3vw, 1.85rem);
+  font-weight: 900;
+  line-height: 1.25;
+}
+.gfaShelterReturnOk {
+  margin: 0;
+  color: var(--gfa-ink);
+  font-size: clamp(1.55rem, 3.4vw, 2.15rem);
+  font-weight: 900;
+  line-height: 1.2;
+}
+.gfaShelterReturnOk em {
+  color: var(--gfa-primary);
+  font-style: normal;
+  border-bottom: 6px solid var(--gfa-honey);
+}
+.gfaShelterReturnNo {
+  margin: 0;
+  color: var(--gfa-muted);
+  font-size: clamp(1.05rem, 2.2vw, 1.28rem);
+  font-weight: 800;
+  line-height: 1.35;
+}
+.gfaShelterFlip p {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 16px;
+  background: rgba(255, 248, 232, 0.96);
+  color: var(--gfa-ink);
+  font-size: clamp(1.18rem, 2.6vw, 1.48rem);
+  font-weight: 800;
+  line-height: 1.45;
+}
+.gfaShelterFlip span {
+  color: var(--gfa-primary);
+  font-weight: 900;
+}
 @media (max-width: 900px) {
   .gfaLearnPage {
     width: min(1360px, 96vw);
@@ -1403,6 +1485,28 @@
   }
   .gfaWorkshop .gfaEndingRuleTitle,
   .gfaWorkshop .gfaEndingRulePairs li {
+    font-size: 1.2rem;
+  }
+  .gfaShelterLead {
+    align-items: start;
+    gap: 6px 8px;
+  }
+  .gfaShelterGuide {
+    width: min(92px, 26vw);
+    max-height: 112px;
+    flex-basis: auto;
+  }
+  .gfaShelter .gfaGardenTitle {
+    font-size: 1.55rem;
+  }
+  .gfaShelter .gfaGardenSection {
+    font-size: 1.7rem;
+  }
+  .gfaShelterReturnOk {
+    font-size: 1.45rem;
+  }
+  .gfaShelterReturnTitle,
+  .gfaShelterFlip p {
     font-size: 1.2rem;
   }
 }

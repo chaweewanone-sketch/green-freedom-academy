@@ -91,4 +91,29 @@ ART = visual meaning. HTML = grammar authority.
 
 The current `workshop-he-she-it` scene is an approved prototype-era exception with baked labels. Do not regenerate it in this freeze.
 
-Future Sections 4–8 production art must avoid baked instructional grammar text. HTML remains grammar authority; art shows people, places, and actions.
+Future Sections 5–8 production art must avoid baked instructional grammar text. HTML remains grammar authority; art shows people, places, and actions.
+
+## SECTION_4
+
+NAME=bai-tong-pause-guide
+PATH=`/gfa/characters/bai-tong-pause-guide.webp`
+PURPOSE=gentle pause / not-now companion in Quiet Shelter lead
+RECOMMENDED_ASPECT=5:6
+TRANSPARENT_BACKGROUND=YES
+DESKTOP_ROLE=small companion in the lead/mission area only
+MOBILE_ROLE=compact companion; must not dominate the screen
+TEXT_INSIDE_ASSET=NO
+QUALITY=Bai Tong pause-guide; open-palm not-now gesture; no baked grammar
+
+## SECTION_4_SCENE
+
+NAME=quiet-shelter-not-doing
+PATH=`/gfa/scenes/quiet-shelter-not-doing.webp`
+PURPOSE=visual cue for “ไม่ได้ทำ”
+CONTENT=shaded garden pavilion; idle football; children resting/waiting; school path; sleeping cat
+TEXT_INSIDE_ASSET=NO
+RECOMMENDED_ASPECT=16:10
+DESKTOP_ROLE=framed world stage, object-fit contain, no HTML over artwork
+MOBILE_ROLE=full-width contained scene; do not cover-crop
+QUALITY=scene only; no sentence text; no Thai grammar; no ✓/✗; no lesson heading
+

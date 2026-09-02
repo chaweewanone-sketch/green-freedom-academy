@@ -52,10 +52,12 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Sprint 45C-R1 composition rescue — Sections 2–3 use a framed teaching scene plus cream HTML surfaces; competing character overlays and the leaf cue are hidden from composition but assets stay in `public/gfa/`
 - Sprint 45C-R2 — Section 3 s/es rule is a compact HTML scan block (`เติม -s` / `ch / sh / x / s` → `-es`); R1 composition otherwise unchanged. Future Sections 4–8 production art must not bake instructional grammar text.
 - Sprint 45C freeze — Present Simple Sections 2–3 are owner-approved Learn compositions (playground / workshop). Art is visual meaning; HTML is grammar authority. Unused group-coach, singular-stamp, and verb-leaf files stay in `public/gfa/`.
+- Sprint 46B Section 4 Quiet Shelter Learn prototype — Present Simple negatives (`don't` / `doesn't` + Verb 1) use a dedicated cream lead, framed contained shelter scene, HTML grammar beats, and two production WebPs (`bai-tong-pause-guide`, `quiet-shelter-not-doing`). Sections 1–3 stay frozen. Sections 5–8 stay on the readable fallback.
+- Sprint 46B-R1 — Section 4 mission puts meaning before formula (`บอกว่า “ไม่ได้ทำ”` then `don't / doesn't + Verb 1`); duplicate formula lines are removed. Artwork and Sections 1–3 stay unchanged.
 
 ### Changed
 - Section 1 student copy: grammar board no longer shows ป้ายสวน; จำไว้ : sits on the Present Simple summary line
-- Section 1 Visual Master v1 — owner-approved Everyday Garden Learn (five frozen production WebPs, HTML educational text, desktop 38/62, mobile 8-stone row); Sections 2–3 are frozen Learn compositions; Sections 4–8 remain a readable fallback
+- Section 1 Visual Master v1 — owner-approved Everyday Garden Learn (five frozen production WebPs, HTML educational text, desktop 38/62, mobile 8-stone row); Sections 2–3 are frozen Learn compositions; Section 4 is an owner-review Quiet Shelter prototype; Sections 5–8 remain a readable fallback
 - Sprint 45C owner-approved freeze — Present Simple Sections 2–3 use playground / workshop compositions; Section 1 Visual Master and functional freeze stay unchanged
 - `/dashboard` history flow is client-loaded so events survive browser refresh
 - `/dashboard` no longer auto-seeds sample learning events; it shows only real completions or the empty state
