@@ -87,11 +87,14 @@ QUALITY=lunch / noon concept; no instructional text; transparent preferred
 
 Do not bake progress, titles, English sentences, Thai teaching copy, or fake buttons into illustrations.
 
-ART = visual meaning. HTML = grammar authority.
+ART = VISUAL MEANING + WORLD STORYTELLING.
+HTML = GRAMMAR AUTHORITY.
+
+Environmental / world-building text may exist in artwork (location names, booth names, wayfinding, school branding, short interaction cues). Artwork must not become the source of grammar formulas, Verb 1 rules, Do/Does structures, short-answer formulas, assessed example sentences, or ✓/✗ contrasts.
 
 The current `workshop-he-she-it` scene is an approved prototype-era exception with baked labels. Do not regenerate it in this freeze.
 
-Future Sections 5–8 production art must avoid baked instructional grammar text. HTML remains grammar authority; art shows people, places, and actions.
+Frozen Sections 1–4 production files are unchanged by this refinement.
 
 ## SECTION_4
 
@@ -116,4 +119,29 @@ RECOMMENDED_ASPECT=16:10
 DESKTOP_ROLE=framed world stage, object-fit contain, no HTML over artwork
 MOBILE_ROLE=full-width contained scene; do not cover-crop
 QUALITY=scene only; no sentence text; no Thai grammar; no ✓/✗; no lesson heading
+
+## SECTION_5
+
+NAME=bai-tong-question-guide
+PATH=`/gfa/characters/bai-tong-question-guide.webp`
+PURPOSE=friendly interviewer / question guide in Question Booth lead
+RECOMMENDED_ASPECT=5:6
+TRANSPARENT_BACKGROUND=YES
+DESKTOP_ROLE=small companion in the lead/mission area only
+MOBILE_ROLE=compact companion; must not dominate the screen
+TEXT_INSIDE_ASSET=NO
+QUALITY=Bai Tong holding a blank ticket; inviting gesture; no instructional grammar
+
+## SECTION_5_SCENE
+
+NAME=question-booth-ask-answer
+PATH=`/gfa/scenes/question-booth-ask-answer.webp`
+PURPOSE=visual ASK → LISTEN → ANSWER at the garden Question Booth
+CONTENT=wooden booth; girl and boy exchanging a blank ticket; waiting queue; lush garden path; school world
+WORLD_STORYTELLING_TEXT=YES
+ALLOWED_ENVIRONMENTAL_TEXT=QUESTION BOOTH; Ask Listen Answer; ANSWER TICKETS; GFA / Green Freedom Academy; garden/classroom/playground wayfinding
+FORBIDDEN_GRAMMAR_AUTHORITY=Do/Does formulas; Verb 1 rules; assessed example questions; short-answer formulas; ✓/✗
+RECOMMENDED_ASPECT=16:10
+DESKTOP_ROLE=framed world stage, object-fit contain, no HTML over artwork
+MOBILE_ROLE=full-width contained scene; do not cover-crop faces, booth, ticket, or signs
 

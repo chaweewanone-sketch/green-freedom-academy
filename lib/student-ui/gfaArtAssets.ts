@@ -3,7 +3,7 @@
  * Files are optional until GFA illustrations are supplied.
  * Preferred: WebP at the listed path. PNG or SVG with the same basename is also accepted
  * by renaming to the listed filename or updating `src`.
- * Do not bake educational text into artwork.
+ * ART = visual meaning + world storytelling. HTML = grammar authority.
  */
 export type GfaArtSlotId =
   | "bai-tong-explaining"
@@ -17,7 +17,9 @@ export type GfaArtSlotId =
   | "bai-tong-singular-stamp"
   | "workshop-he-she-it"
   | "bai-tong-pause-guide"
-  | "quiet-shelter-not-doing";
+  | "quiet-shelter-not-doing"
+  | "bai-tong-question-guide"
+  | "question-booth-ask-answer";
 
 export type GfaArtSlotSpec = {
   id: GfaArtSlotId;
@@ -105,6 +107,21 @@ export const GFA_SECTION4_ART = {
   quietShelterNotDoing: {
     id: "quiet-shelter-not-doing",
     src: "/gfa/scenes/quiet-shelter-not-doing.webp",
+    aspect: "16 / 10",
+    transparent: false,
+  },
+} as const satisfies Record<string, GfaArtSlotSpec>;
+
+export const GFA_SECTION5_ART = {
+  baiTongQuestionGuide: {
+    id: "bai-tong-question-guide",
+    src: "/gfa/characters/bai-tong-question-guide.webp",
+    aspect: "5 / 6",
+    transparent: true,
+  },
+  questionBoothAskAnswer: {
+    id: "question-booth-ask-answer",
+    src: "/gfa/scenes/question-booth-ask-answer.webp",
     aspect: "16 / 10",
     transparent: false,
   },
