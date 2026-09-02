@@ -11,6 +11,7 @@ import {
   recordActivityCompletion,
 } from "@/lib/history";
 import { presentSimpleLesson } from "@/lib/lessons/present-simple";
+import { getQuestionBankSize } from "@/lib/question-bank";
 import { getActivityPath } from "@/lib/routes";
 import {
   createQuizAttemptSnapshot,
@@ -60,6 +61,11 @@ function frozenQuizSession(): AssessmentSession {
     randomize: false,
     questionCount: 10,
   });
+}
+
+function hasUniqueQuestionIds(session: AssessmentSession): boolean {
+  const ids = session.questions.map((question) => question.id);
+  return ids.length === session.questions.length && new Set(ids).size === ids.length;
 }
 
 function firstWrongChoiceId(question: Question): string {
@@ -167,30 +173,47 @@ export function verifyQ1WrongIncrementsIncorrectOnly(): void {
 }
 
 export function verifyAttempt2ResultIgnoresAttempt1(): void {
-  const session = frozenQuizSession();
-  const attempt1 = buildAssessmentResult(session, 8, 2);
+  const session1 = createAssessmentSession(presentSimpleLesson, "quiz");
+  const session2 = createAssessmentSession(presentSimpleLesson, "quiz");
+  const attempt1 = buildAssessmentResult(session1, 8, 2);
   const restart = createQuizAttemptSnapshot("intro");
 
+  assert(session1.sessionId !== session2.sessionId, "H: retry mints a new sessionId");
+  assert(session1.activity === "quiz", "H: retry stays quiz");
+  assert(session2.activity === "quiz", "H: new session is quiz");
+  assert(session1.lessonSlug === "present-simple", "H: same lesson bank");
+  assert(session2.lessonSlug === "present-simple", "H: retry uses Present Simple");
+  assert(getQuestionBankSize("present-simple") === 50, "H: bank still 50");
+  assert(session1.questions.length === 10, "H: attempt 1 has 10 questions");
+  assert(session2.questions.length === 10, "H: attempt 2 has 10 questions");
+  assert(hasUniqueQuestionIds(session1), "H: attempt 1 questions unique");
+  assert(hasUniqueQuestionIds(session2), "H: attempt 2 questions unique");
   assert(attempt1.score === 8, "H: attempt 1 is 8/10");
   assert(attempt1.percentage === 80, "H: attempt 1 is 80%");
   assert(restart.result === null, "H: retry intro has no result");
   assert(restart.correctCount === 0, "H: retry counts start at 0");
   assert(restart.incorrectCount === 0, "H: retry incorrect starts at 0");
 
-  const attempt2 = buildAssessmentResult(session, 3, 7);
-  assert(attempt2.sessionId === session.sessionId, "H: same session identity");
+  const attempt2 = buildAssessmentResult(session2, 3, 7);
+  assert(attempt2.sessionId === session2.sessionId, "H: attempt 2 uses new session");
+  assert(attempt2.sessionId !== attempt1.sessionId, "H: attempt 2 is not attempt 1 identity");
   assert(attempt2.score === 3, "H: attempt 2 uses attempt 2 counts");
   assert(attempt2.score !== attempt1.score, "H: attempt 2 is not stale 8/10");
   assert(attempt2.percentage !== attempt1.percentage, "H: percentage is attempt 2");
 }
 
 export function verifyWeakAndDevelopingRestartSameSession(): void {
-  const session = frozenQuizSession();
+  const first = createAssessmentSession(presentSimpleLesson, "quiz");
+  const retry = createAssessmentSession(presentSimpleLesson, "quiz");
   const firstKey = 0;
   const restartKey = nextQuizAttemptKey(firstKey);
 
   assert(restartKey !== firstKey, "D: remount key changes");
-  assert(session.questions.length === 10, "D: same 10-question session");
+  assert(first.sessionId !== retry.sessionId, "D: retry mints a new sessionId");
+  assert(first.questions.length === 10, "D: first session is 10 questions");
+  assert(retry.questions.length === 10, "D: retry session is 10 questions");
+  assert(hasUniqueQuestionIds(first), "D: first questions unique");
+  assert(hasUniqueQuestionIds(retry), "D: retry questions unique");
 
   const weak = resolveForwardResultNextAction({
     currentActivity: "quiz",
@@ -258,16 +281,18 @@ export function verifyStrongRouteUnchanged(): void {
 }
 
 export function verifyHistoryWritesOncePerFinishedAttempt(): void {
-  const session = frozenQuizSession();
+  const session1 = createAssessmentSession(presentSimpleLesson, "quiz");
+  const session2 = createAssessmentSession(presentSimpleLesson, "quiz");
   const repository = new MemoryLearningHistoryRepository();
 
   const first = recordActivityCompletion({
-    result: quizResultFromCounts(session, 8, 2, 1_700_040_000_000),
-    lessonSlug: session.lessonSlug,
+    result: quizResultFromCounts(session1, 8, 2, 1_700_040_000_000),
+    lessonSlug: session1.lessonSlug,
     repository,
   });
   assert(first !== null, "I: attempt 1 writes");
   assert(repository.getAll().length === 1, "I: one event after attempt 1");
+  assert(first?.sessionId === session1.sessionId, "I: attempt 1 keeps sessionId");
 
   const retry = createQuizAttemptSnapshot("intro");
   const started = createQuizAttemptSnapshot("question");
@@ -276,15 +301,23 @@ export function verifyHistoryWritesOncePerFinishedAttempt(): void {
   assert(repository.getAll().length === 1, "I: retry/start do not append");
 
   const second = recordActivityCompletion({
-    result: quizResultFromCounts(session, 3, 7, 1_700_040_000_500),
-    lessonSlug: session.lessonSlug,
+    result: quizResultFromCounts(session2, 3, 7, 1_700_040_000_500),
+    lessonSlug: session2.lessonSlug,
     repository,
   });
   assert(second !== null, "I: attempt 2 writes");
   assert(repository.getAll().length === 2, "I: one additional event");
   assert(
-    repository.getAll()[0]?.sessionId === repository.getAll()[1]?.sessionId,
-    "I: same sessionId is reused",
+    repository.getAll()[0]?.sessionId === session1.sessionId,
+    "I: prior attempt preserved",
+  );
+  assert(
+    repository.getAll()[1]?.sessionId === session2.sessionId,
+    "I: retry completion uses new sessionId",
+  );
+  assert(
+    repository.getAll()[0]?.sessionId !== repository.getAll()[1]?.sessionId,
+    "I: attempts are distinct identities",
   );
   assert(
     repository.getAll()[0]?.completedAt !== repository.getAll()[1]?.completedAt,
@@ -313,10 +346,16 @@ export function verifyQuizGameRemountsOnRestart(): void {
   assert(source.includes("เริ่มทำแบบทดสอบ"), "G: intro Start remains");
   assert(
     !source.includes("createAssessmentSession"),
-    "G: restart does not create a new session",
+    "G: QuizGame does not mint sessions",
   );
-  assert(player.includes("session={session}"), "G: player still reuses session");
-  assert(!player.includes("key="), "G: player does not remount a new session");
+  assert(player.includes("createAssessmentSession"), "G: player mints fresh session");
+  assert(player.includes("liveSession"), "G: player owns live session");
+  assert(
+    player.includes("key={liveSession.sessionId}"),
+    "G: player remounts on new sessionId",
+  );
+  assert(player.includes("setLiveSession"), "G: retry replaces live session");
+  assert(player.includes("session={liveSession}"), "G: games use live session");
 }
 
 export function runQuizAttemptResetVerification(): void {

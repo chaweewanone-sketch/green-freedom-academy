@@ -45,6 +45,7 @@ export default async function ActivityPage({ params }: ActivityPageProps) {
       <main className="page">
         <StudentActivityPlayer
           session={session}
+          lesson={lesson}
           lessonTitle={lesson.title}
           lessonPath={getLessonPath(slug)}
         />
