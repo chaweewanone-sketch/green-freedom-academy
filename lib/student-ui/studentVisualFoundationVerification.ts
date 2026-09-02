@@ -67,6 +67,13 @@ export function runStudentVisualFoundationVerification(): void {
     ),
     "utf8",
   );
+  const section7 = readFileSync(
+    resolve(
+      process.cwd(),
+      "components/student-ui/EverydayGardenClockGardenSection7.tsx",
+    ),
+    "utf8",
+  );
   const quiz = readFileSync(
     resolve(process.cwd(), "components/quiz/QuizGame.tsx"),
     "utf8",
@@ -178,6 +185,14 @@ export function runStudentVisualFoundationVerification(): void {
     "learn: section 6 step",
   );
   assert(
+    companion.includes("EverydayGardenClockGardenSection7"),
+    "learn: section 7 prototype",
+  );
+  assert(
+    companion.includes('lesson.slug === "present-simple" && currentStep === 6'),
+    "learn: section 7 step",
+  );
+  assert(
     companion.includes("everyday-garden-playground"),
     "learn: playground scene",
   );
@@ -197,7 +212,11 @@ export function runStudentVisualFoundationVerification(): void {
     companion.includes("everyday-garden-trail"),
     "learn: trail scene",
   );
-  assert(companion.includes("TeachingPanel"), "learn: sections 7-8 fallback");
+  assert(
+    companion.includes("everyday-garden-clock"),
+    "learn: clock scene",
+  );
+  assert(companion.includes("TeachingPanel"), "learn: section 8 fallback");
   assert(companion.includes("showActivityGrid={!isStudentLearn}"), "learn: grid gated");
   assert(css.includes(".gfaLearningWorld .guidedLearnFooter .primary"), "css: student CTA");
 
@@ -370,6 +389,52 @@ export function runStudentVisualFoundationVerification(): void {
     (section6.match(/baiTongClueGuide/g) ?? []).length === 2,
     "s6: one Bai Tong slot",
   );
+  assert(!section7.includes("gfaGardenGate"), "s7: not section 1 composition");
+  assert(section7.includes("GFA_SECTION7_ART"), "s7: asset map");
+  assert(section7.includes("baiTongClockGuide"), "s7: clock guide in lead");
+  assert(section7.includes("clockGardenRoutines"), "s7: clock scene slot");
+  assert(section7.includes('fit="contain"'), "s7: scene contain");
+  assert(section7.includes("บ่อยแค่ไหน? เมื่อไร?"), "s7: meaning first");
+  assert(
+    section7.indexOf("บ่อยแค่ไหน? เมื่อไร?") <
+      section7.indexOf("Subject + adverb + Verb"),
+    "s7: meaning before formula",
+  );
+  assert(section7.includes("always"), "s7: always");
+  assert(section7.includes("usually"), "s7: usually");
+  assert(section7.includes("often"), "s7: often");
+  assert(section7.includes("sometimes"), "s7: sometimes");
+  assert(section7.includes("rarely"), "s7: rarely");
+  assert(section7.includes("never"), "s7: never");
+  assert(section7.includes("คำบอกความถี่วางหน้ากริยาหลัก"), "s7: position rule");
+  assert(
+    section7.includes("✓ I usually finish my homework."),
+    "s7: usually contrast ok",
+  );
+  assert(
+    section7.includes("✗ I finish usually my homework."),
+    "s7: usually contrast bad",
+  );
+  assert(section7.includes("How often + do/does + Subject + Verb 1?"), "s7: how often");
+  assert(section7.includes("every day"), "s7: every day");
+  assert(section7.includes("once a week"), "s7: once a week");
+  assert(section7.includes("twice a day"), "s7: twice a day");
+  assert(section7.includes("ไม่ใช่ every days"), "s7: every day note");
+  assert(section7.includes("at night"), "s7: at night");
+  assert(section7.includes("on"), "s7: on");
+  assert(section7.includes("ช่วงวัน"), "s7: in part of day");
+  assert(section7.includes("{step.examples.map"), "s7: examples from content");
+  assert(section7.includes("memoryLine"), "s7: frozen memory line");
+  assert(!section7.includes("%"), "s7: no percentages");
+  assert(!section7.includes("is always"), "s7: no be + adverb");
+  assert(!section7.includes("Sometimes I"), "s7: no front-position sometimes");
+  assert(!section7.includes("Which"), "s7: no which");
+  assert(!section7.includes("Who walks"), "s7: no who-as-subject");
+  assert(!section7.includes("gfaLearnFormula"), "s7: no duplicate formula");
+  assert(
+    (section7.match(/baiTongClockGuide/g) ?? []).length === 2,
+    "s7: one Bai Tong slot",
+  );
   assert(css.includes(".gfaPlayground"), "css: playground section");
   assert(css.includes(".gfaWorkshop"), "css: workshop section");
   assert(css.includes(".gfaShelter"), "css: shelter section");
@@ -380,6 +445,8 @@ export function runStudentVisualFoundationVerification(): void {
   assert(css.includes(".gfaTrail"), "css: trail section");
   assert(css.includes(".gfaTrailReturn"), "css: keep verb 1 beat");
   assert(css.includes(".gfaTrailClues"), "css: clue meanings");
+  assert(css.includes(".gfaClock"), "css: clock section");
+  assert(css.includes(".gfaClockScale"), "css: frequency scale");
   assert(css.includes(".gfaWorldStage"), "css: framed world stage");
   assert(css.includes(".gfaLearnSurface"), "css: cream learning surface");
   assert(
@@ -426,6 +493,14 @@ export function runStudentVisualFoundationVerification(): void {
     artAssets.includes("/gfa/scenes/clue-trail-garden.webp"),
     "assets: trail path",
   );
+  assert(
+    artAssets.includes("/gfa/characters/bai-tong-clock-guide.webp"),
+    "assets: clock guide path",
+  );
+  assert(
+    artAssets.includes("/gfa/scenes/clock-garden-routines.webp"),
+    "assets: clock garden path",
+  );
 
   assert(existsSync(resolve(process.cwd(), "public/gfa/characters")), "assets: characters dir");
   assert(existsSync(resolve(process.cwd(), "public/gfa/scenes")), "assets: scenes dir");
@@ -454,6 +529,14 @@ export function runStudentVisualFoundationVerification(): void {
     existsSync(resolve(process.cwd(), "public/gfa/scenes/clue-trail-garden.webp")),
     "assets: trail file",
   );
+  assert(
+    existsSync(resolve(process.cwd(), "public/gfa/characters/bai-tong-clock-guide.webp")),
+    "assets: clock guide file",
+  );
+  assert(
+    existsSync(resolve(process.cwd(), "public/gfa/scenes/clock-garden-routines.webp")),
+    "assets: clock garden file",
+  );
   assert(artAssets.includes("/gfa/characters/bai-tong-explaining.webp"), "assets: bai tong path");
   assert(artAssets.includes("/gfa/scenes/habit-walk-to-school.webp"), "assets: habit path");
   assert(artAssets.includes("/gfa/scenes/general-truth-sunrise-east.webp"), "assets: sunrise path");
@@ -473,6 +556,8 @@ export function runStudentVisualFoundationVerification(): void {
   assert(artContract.includes("NAME=question-booth-ask-answer"), "contract: booth scene");
   assert(artContract.includes("NAME=bai-tong-clue-guide"), "contract: clue guide");
   assert(artContract.includes("NAME=clue-trail-garden"), "contract: trail scene");
+  assert(artContract.includes("NAME=bai-tong-clock-guide"), "contract: clock guide");
+  assert(artContract.includes("NAME=clock-garden-routines"), "contract: clock garden");
   assert(artContract.includes("TEXT_INSIDE_ASSET=NO"), "contract: no baked text");
   assert(
     artContract.includes("ART = VISUAL MEANING + WORLD STORYTELLING"),

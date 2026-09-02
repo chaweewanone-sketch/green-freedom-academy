@@ -170,3 +170,28 @@ RECOMMENDED_ASPECT=16:10
 DESKTOP_ROLE=framed world stage, object-fit contain, no HTML over artwork
 MOBILE_ROLE=full-width contained scene; do not cover-crop entrance, clue markers, booth, or path
 
+## SECTION_7
+
+NAME=bai-tong-clock-guide
+PATH=`/gfa/characters/bai-tong-clock-guide.webp`
+PURPOSE=time keeper / routine guide in Clock Garden lead
+RECOMMENDED_ASPECT=5:6
+TRANSPARENT_BACKGROUND=NO
+DESKTOP_ROLE=small companion in the lead/mission area only
+MOBILE_ROLE=compact companion; must not dominate the screen
+TEXT_INSIDE_ASSET=NO
+QUALITY=full-body Bai Tong; holding a round clock; pointing; GFA green/cream; not detective styling
+
+## SECTION_7_SCENE
+
+NAME=clock-garden-routines
+PATH=`/gfa/scenes/clock-garden-routines.webp`
+PURPOSE=visual Clock Garden; when and how often routines happen
+CONTENT=giant garden clock; CLOCK GARDEN arch; Morning → Evening sky path; children in daily routines; weekday signpost; lush garden
+WORLD_STORYTELLING_TEXT=YES
+ALLOWED_ENVIRONMENTAL_TEXT=CLOCK GARDEN; MORNING; EVENING; weekday names; garden wayfinding
+FORBIDDEN_GRAMMAR_AUTHORITY=Subject + adverb + Verb; How often formula; adverb position rule; usually/finish contrast; at/on/in formulas; frequency percentages; assessed example sentences; ✓ / ✗
+RECOMMENDED_ASPECT=16:10
+DESKTOP_ROLE=framed world stage, object-fit contain, no HTML over artwork
+MOBILE_ROLE=full-width contained scene; do not cover-crop clock, arch, morning/evening, routines, or weekday signpost
+

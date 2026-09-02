@@ -1117,7 +1117,8 @@
 .gfaWorkshop,
 .gfaShelter,
 .gfaBooth,
-.gfaTrail {
+.gfaTrail,
+.gfaClock {
   display: grid;
   gap: 14px;
   min-width: 0;
@@ -1595,6 +1596,90 @@
   font-weight: 800;
   line-height: 1.35;
 }
+.gfaClockLead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 8px 12px;
+}
+.gfaClockLeadCopy {
+  min-width: 0;
+}
+.gfaClockGuide {
+  width: 132px;
+  max-height: 168px;
+  flex: 0 0 132px;
+  border: 0;
+  background: transparent;
+}
+.gfaClockGuide img {
+  object-fit: contain;
+}
+.gfaClockMissionPattern {
+  display: block;
+  margin-top: 4px;
+  color: var(--gfa-primary);
+  font-size: clamp(1.05rem, 1.8vw, 1.28rem);
+  font-weight: 800;
+  line-height: 1.3;
+}
+.gfaClockMeaning,
+.gfaClockScale,
+.gfaClockPosition,
+.gfaClockHow,
+.gfaClockTime {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+.gfaClockMeaning p,
+.gfaClockHowMeaning,
+.gfaClockHowBridge,
+.gfaClockAnswers,
+.gfaClockNote {
+  margin: 0;
+  color: var(--gfa-ink);
+  font-size: clamp(1.12rem, 2.4vw, 1.38rem);
+  font-weight: 800;
+  line-height: 1.4;
+}
+.gfaClockMeaning span,
+.gfaClockHowMeaning,
+.gfaClockNote span {
+  color: var(--gfa-primary);
+}
+.gfaClockHowBridge {
+  color: var(--gfa-muted);
+  font-size: clamp(1.05rem, 2.1vw, 1.28rem);
+}
+.gfaClockScale ul,
+.gfaClockTime ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.gfaClockScale li,
+.gfaClockTime li {
+  min-width: 0;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: rgba(232, 246, 255, 0.72);
+  color: var(--gfa-ink);
+  font-size: clamp(1.12rem, 2.4vw, 1.38rem);
+  font-weight: 800;
+  line-height: 1.4;
+}
+.gfaClockScale strong,
+.gfaClockTime strong {
+  color: var(--gfa-primary);
+  font-weight: 900;
+}
+.gfaClockTime ul {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
 @media (max-width: 900px) {
   .gfaLearnPage {
     width: min(1360px, 96vw);
@@ -1812,6 +1897,33 @@
   }
   .gfaTrailReturnTitle {
     font-size: 1.28rem;
+  }
+  .gfaClockLead {
+    align-items: start;
+    gap: 6px 8px;
+  }
+  .gfaClockGuide {
+    width: min(92px, 26vw);
+    max-height: 112px;
+    flex-basis: auto;
+  }
+  .gfaClock .gfaGardenTitle {
+    font-size: 1.55rem;
+  }
+  .gfaClock .gfaGardenSection {
+    font-size: 1.7rem;
+  }
+  .gfaClockScale ul,
+  .gfaClockTime ul {
+    grid-template-columns: 1fr;
+  }
+  .gfaClockMeaning p,
+  .gfaClockHowBridge,
+  .gfaClockAnswers,
+  .gfaClockNote,
+  .gfaClockScale li,
+  .gfaClockTime li {
+    font-size: 1.2rem;
   }
 }
 @media (prefers-reduced-motion: reduce) {

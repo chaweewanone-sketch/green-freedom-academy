@@ -21,7 +21,9 @@ export type GfaArtSlotId =
   | "bai-tong-question-guide"
   | "question-booth-ask-answer"
   | "bai-tong-clue-guide"
-  | "clue-trail-garden";
+  | "clue-trail-garden"
+  | "bai-tong-clock-guide"
+  | "clock-garden-routines";
 
 export type GfaArtSlotSpec = {
   id: GfaArtSlotId;
@@ -139,6 +141,21 @@ export const GFA_SECTION6_ART = {
   clueTrailGarden: {
     id: "clue-trail-garden",
     src: "/gfa/scenes/clue-trail-garden.webp",
+    aspect: "16 / 10",
+    transparent: false,
+  },
+} as const satisfies Record<string, GfaArtSlotSpec>;
+
+export const GFA_SECTION7_ART = {
+  baiTongClockGuide: {
+    id: "bai-tong-clock-guide",
+    src: "/gfa/characters/bai-tong-clock-guide.webp",
+    aspect: "5 / 6",
+    transparent: true,
+  },
+  clockGardenRoutines: {
+    id: "clock-garden-routines",
+    src: "/gfa/scenes/clock-garden-routines.webp",
     aspect: "16 / 10",
     transparent: false,
   },
