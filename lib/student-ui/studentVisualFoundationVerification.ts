@@ -74,6 +74,13 @@ export function runStudentVisualFoundationVerification(): void {
     ),
     "utf8",
   );
+  const section8 = readFileSync(
+    resolve(
+      process.cwd(),
+      "components/student-ui/EverydayGardenClubhouseMapSection8.tsx",
+    ),
+    "utf8",
+  );
   const quiz = readFileSync(
     resolve(process.cwd(), "components/quiz/QuizGame.tsx"),
     "utf8",
@@ -193,6 +200,14 @@ export function runStudentVisualFoundationVerification(): void {
     "learn: section 7 step",
   );
   assert(
+    companion.includes("EverydayGardenClubhouseMapSection8"),
+    "learn: section 8 prototype",
+  );
+  assert(
+    companion.includes('lesson.slug === "present-simple" && currentStep === 7'),
+    "learn: section 8 step",
+  );
+  assert(
     companion.includes("everyday-garden-playground"),
     "learn: playground scene",
   );
@@ -216,7 +231,11 @@ export function runStudentVisualFoundationVerification(): void {
     companion.includes("everyday-garden-clock"),
     "learn: clock scene",
   );
-  assert(companion.includes("TeachingPanel"), "learn: section 8 fallback");
+  assert(
+    companion.includes("everyday-garden-clubhouse"),
+    "learn: clubhouse scene",
+  );
+  assert(companion.includes("TeachingPanel"), "learn: TeachingPanel fallback");
   assert(companion.includes("showActivityGrid={!isStudentLearn}"), "learn: grid gated");
   assert(css.includes(".gfaLearningWorld .guidedLearnFooter .primary"), "css: student CTA");
 
@@ -435,6 +454,45 @@ export function runStudentVisualFoundationVerification(): void {
     (section7.match(/baiTongClockGuide/g) ?? []).length === 2,
     "s7: one Bai Tong slot",
   );
+  assert(!section8.includes("gfaGardenGate"), "s8: not section 1 composition");
+  assert(section8.includes("GFA_SECTION8_ART"), "s8: asset map");
+  assert(section8.includes("baiTongClubhouseGuide"), "s8: clubhouse guide in lead");
+  assert(section8.includes("clubhouseMapFinale"), "s8: clubhouse scene slot");
+  assert(section8.includes('fit="contain"'), "s8: scene contain");
+  assert(section8.includes("เรียนครบแล้ว!"), "s8: arrival mission");
+  assert(
+    section8.includes('<span className="gfaClubPlace">บ้านแผนที่</span>'),
+    "s8: place nowrap unit",
+  );
+  assert(css.includes(".gfaClubPlace{white-space:nowrap}"), "css: club place nowrap");
+  assert(section8.includes("มาดูแผนที่ Present Simple ก่อนออกไปลอง Quiz"), "s8: mission to practice");
+  assert(section8.includes("สิ่งที่ทำเป็นประจำ"), "s8: habit meaning");
+  assert(section8.includes("สิ่งที่เป็นจริงเสมอ"), "s8: truth meaning");
+  assert(section8.includes("S + Verb / Verb-s/es"), "s8: positive frame");
+  assert(section8.includes("S + don't/doesn't + Verb 1"), "s8: negative frame");
+  assert(section8.includes("Do/Does + S + Verb 1"), "s8: yes/no frame");
+  assert(section8.includes("Wh + do/does + S + V1"), "s8: wh frame");
+  assert(section8.includes("step.examples[index]"), "s8: examples from content");
+  assert(section8.includes("memoryLine"), "s8: frozen memory line");
+  assert(section8.includes("มีแผนที่แล้ว"), "s8: confidence beat");
+  assert(section8.includes("STRUCTURE_FRAMES"), "s8: four-frame map");
+  assert(
+    (section8.match(/mark: "/g) ?? []).length === 4,
+    "s8: exactly four frames",
+  );
+  assert(!section8.includes("How often"), "s8: no how often reteach");
+  assert(!section8.includes("always"), "s8: no frequency reteach");
+  assert(!section8.includes("%"), "s8: no percentages");
+  assert(!section8.includes("Yes, I do"), "s8: no short answers");
+  assert(!section8.includes("คำตอบสั้น"), "s8: no short-answer teaching");
+  assert(!section8.includes("at + นาฬิกา"), "s8: no at/on/in table");
+  assert(!section8.includes("usually"), "s8: no adverb reteach");
+  assert(!section8.includes("gfaLearnFormula"), "s8: no duplicate formula");
+  assert(!section8.includes("I play football after school."), "s8: no hardcoded examples");
+  assert(
+    (section8.match(/baiTongClubhouseGuide/g) ?? []).length === 2,
+    "s8: one Bai Tong slot",
+  );
   assert(css.includes(".gfaPlayground"), "css: playground section");
   assert(css.includes(".gfaWorkshop"), "css: workshop section");
   assert(css.includes(".gfaShelter"), "css: shelter section");
@@ -447,6 +505,8 @@ export function runStudentVisualFoundationVerification(): void {
   assert(css.includes(".gfaTrailClues"), "css: clue meanings");
   assert(css.includes(".gfaClock"), "css: clock section");
   assert(css.includes(".gfaClockScale"), "css: frequency scale");
+  assert(css.includes(".gfaClub"), "css: clubhouse section");
+  assert(css.includes(".gfaClubFrames"), "css: four-frame map");
   assert(css.includes(".gfaWorldStage"), "css: framed world stage");
   assert(css.includes(".gfaLearnSurface"), "css: cream learning surface");
   assert(
@@ -501,6 +561,14 @@ export function runStudentVisualFoundationVerification(): void {
     artAssets.includes("/gfa/scenes/clock-garden-routines.webp"),
     "assets: clock garden path",
   );
+  assert(
+    artAssets.includes("/gfa/characters/bai-tong-clubhouse-guide.webp"),
+    "assets: clubhouse guide path",
+  );
+  assert(
+    artAssets.includes("/gfa/scenes/clubhouse-map-finale.webp"),
+    "assets: clubhouse map path",
+  );
 
   assert(existsSync(resolve(process.cwd(), "public/gfa/characters")), "assets: characters dir");
   assert(existsSync(resolve(process.cwd(), "public/gfa/scenes")), "assets: scenes dir");
@@ -537,6 +605,14 @@ export function runStudentVisualFoundationVerification(): void {
     existsSync(resolve(process.cwd(), "public/gfa/scenes/clock-garden-routines.webp")),
     "assets: clock garden file",
   );
+  assert(
+    existsSync(resolve(process.cwd(), "public/gfa/characters/bai-tong-clubhouse-guide.webp")),
+    "assets: clubhouse guide file",
+  );
+  assert(
+    existsSync(resolve(process.cwd(), "public/gfa/scenes/clubhouse-map-finale.webp")),
+    "assets: clubhouse map file",
+  );
   assert(artAssets.includes("/gfa/characters/bai-tong-explaining.webp"), "assets: bai tong path");
   assert(artAssets.includes("/gfa/scenes/habit-walk-to-school.webp"), "assets: habit path");
   assert(artAssets.includes("/gfa/scenes/general-truth-sunrise-east.webp"), "assets: sunrise path");
@@ -558,6 +634,8 @@ export function runStudentVisualFoundationVerification(): void {
   assert(artContract.includes("NAME=clue-trail-garden"), "contract: trail scene");
   assert(artContract.includes("NAME=bai-tong-clock-guide"), "contract: clock guide");
   assert(artContract.includes("NAME=clock-garden-routines"), "contract: clock garden");
+  assert(artContract.includes("NAME=bai-tong-clubhouse-guide"), "contract: clubhouse guide");
+  assert(artContract.includes("NAME=clubhouse-map-finale"), "contract: clubhouse map");
   assert(artContract.includes("TEXT_INSIDE_ASSET=NO"), "contract: no baked text");
   assert(
     artContract.includes("ART = VISUAL MEANING + WORLD STORYTELLING"),

@@ -1118,7 +1118,8 @@
 .gfaShelter,
 .gfaBooth,
 .gfaTrail,
-.gfaClock {
+.gfaClock,
+.gfaClub {
   display: grid;
   gap: 14px;
   min-width: 0;
@@ -1680,6 +1681,137 @@
 .gfaClockTime ul {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
+.gfaClubLead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 8px 12px;
+}
+.gfaClubLeadCopy {
+  min-width: 0;
+}
+.gfaClubPlace{white-space:nowrap}
+.gfaClubGuide {
+  width: 132px;
+  max-height: 168px;
+  flex: 0 0 132px;
+  border: 0;
+  background: transparent;
+}
+.gfaClubGuide img {
+  object-fit: contain;
+}
+.gfaClubMissionLine {
+  display: block;
+  margin-top: 4px;
+  color: var(--gfa-primary);
+  font-size: clamp(1.05rem, 1.8vw, 1.28rem);
+  font-weight: 800;
+  line-height: 1.3;
+}
+.gfaClubIdea,
+.gfaClubMap,
+.gfaClubMemory {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+.gfaClubIdea p {
+  margin: 0;
+  color: var(--gfa-ink);
+  font-size: clamp(1.12rem, 2.4vw, 1.38rem);
+  font-weight: 800;
+  line-height: 1.4;
+}
+.gfaClubIdea span {
+  color: var(--gfa-primary);
+}
+.gfaClubFrames {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.gfaClubFrame {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: #fff;
+  border: 2px solid rgba(23, 107, 77, 0.14);
+}
+.gfaClubFrame-positive {
+  border-color: rgba(23, 107, 77, 0.28);
+  box-shadow: inset 6px 0 0 var(--gfa-primary);
+}
+.gfaClubFrame-negative {
+  border-color: rgba(196, 91, 58, 0.22);
+  box-shadow: inset 6px 0 0 var(--gfa-coral);
+}
+.gfaClubFrame-yesNo {
+  border-color: rgba(29, 111, 163, 0.22);
+  box-shadow: inset 6px 0 0 var(--gfa-sky-ink);
+}
+.gfaClubFrame-wh {
+  border-color: rgba(244, 196, 74, 0.45);
+  box-shadow: inset 6px 0 0 var(--gfa-honey);
+}
+.gfaClubMark,
+.gfaClubFormula,
+.gfaClubExample {
+  margin: 0;
+  min-width: 0;
+  line-height: 1.35;
+}
+.gfaClubMark {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  color: var(--gfa-muted);
+  font-size: clamp(1.05rem, 2vw, 1.2rem);
+  font-weight: 800;
+}
+.gfaClubMark strong {
+  color: var(--gfa-primary);
+  font-size: clamp(1.45rem, 3vw, 1.85rem);
+  font-weight: 900;
+}
+.gfaClubFormula {
+  color: var(--gfa-ink);
+  font-size: clamp(1.12rem, 2.3vw, 1.32rem);
+  font-weight: 900;
+  overflow-wrap: break-word;
+}
+.gfaClubExample {
+  color: var(--gfa-muted);
+  font-size: clamp(1.05rem, 2.1vw, 1.22rem);
+  font-weight: 800;
+}
+.gfaClubConfidence {
+  margin: 0;
+  color: var(--gfa-primary);
+  font-size: clamp(1.12rem, 2.4vw, 1.38rem);
+  font-weight: 800;
+}
+.gfaClubMemory ul {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 10px 14px;
+  list-style: none;
+  border-radius: 16px;
+  background: rgba(231, 245, 237, 0.92);
+}
+.gfaClubMemory li {
+  color: var(--gfa-ink);
+  font-size: clamp(1.08rem, 2.2vw, 1.28rem);
+  font-weight: 800;
+  line-height: 1.4;
+}
 @media (max-width: 900px) {
   .gfaLearnPage {
     width: min(1360px, 96vw);
@@ -1923,6 +2055,30 @@
   .gfaClockNote,
   .gfaClockScale li,
   .gfaClockTime li {
+    font-size: 1.2rem;
+  }
+  .gfaClubLead {
+    align-items: start;
+    gap: 6px 8px;
+  }
+  .gfaClubGuide {
+    width: min(92px, 26vw);
+    max-height: 112px;
+    flex-basis: auto;
+  }
+  .gfaClub .gfaGardenTitle {
+    font-size: 1.55rem;
+  }
+  .gfaClub .gfaGardenSection {
+    font-size: 1.7rem;
+  }
+  .gfaClubFrames {
+    grid-template-columns: 1fr;
+  }
+  .gfaClubIdea p,
+  .gfaClubFormula,
+  .gfaClubExample,
+  .gfaClubMemory li {
     font-size: 1.2rem;
   }
 }

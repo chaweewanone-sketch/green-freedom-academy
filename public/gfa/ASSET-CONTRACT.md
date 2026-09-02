@@ -195,3 +195,28 @@ RECOMMENDED_ASPECT=16:10
 DESKTOP_ROLE=framed world stage, object-fit contain, no HTML over artwork
 MOBILE_ROLE=full-width contained scene; do not cover-crop clock, arch, morning/evening, routines, or weekday signpost
 
+## SECTION_8
+
+NAME=bai-tong-clubhouse-guide
+PATH=`/gfa/characters/bai-tong-clubhouse-guide.webp`
+PURPOSE=clubhouse / map guide in Section 8 lead
+RECOMMENDED_ASPECT=5:6
+TRANSPARENT_BACKGROUND=YES
+DESKTOP_ROLE=small companion in the lead/mission area only
+MOBILE_ROLE=compact companion; must not dominate the screen
+TEXT_INSIDE_ASSET=NO
+QUALITY=full-body Bai Tong; holding the learning-journey map; welcoming extended hand; GFA green/cream; yellow scarf; hiking boots; no classroom board, trophy, or exam paper
+
+## SECTION_8_SCENE
+
+NAME=clubhouse-map-finale
+PATH=`/gfa/scenes/clubhouse-map-finale.webp`
+PURPOSE=visual Clubhouse Map arrival; past journey → arrival → practice ahead
+CONTENT=OUR LEARNING JOURNEY map; eight destinations; wooden CLUBHOUSE; EVERYDAY GARDEN sign; PRACTICE THIS WAY; warm garden; no Bai Tong
+WORLD_STORYTELLING_TEXT=YES
+ALLOWED_ENVIRONMENTAL_TEXT=OUR LEARNING JOURNEY; Garden Gate; Playground; One-Helper Workshop; Quiet Shelter; Question Booth; Clue Trail; Clock Garden; Clubhouse / YOU ARE HERE; CLUBHOUSE; EVERYDAY GARDEN; PRACTICE THIS WAY
+FORBIDDEN_GRAMMAR_AUTHORITY=+ S + Verb / Verb-s/es; don't/doesn't + Verb 1; Do/Does + S + Verb 1; Wh + do/does + S + V1; assessed example sentences; frequency reteach; ✓ / ✗
+RECOMMENDED_ASPECT=16:10
+DESKTOP_ROLE=framed world stage, object-fit contain, no HTML over artwork
+MOBILE_ROLE=full-width contained scene; do not cover-crop the journey map, clubhouse, or practice sign
+

@@ -57,10 +57,11 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Sprint 47B Section 5 Question Booth Learn prototype — Yes/No questions and short answers use a cream lead, contained booth scene, and HTML grammar beats. World-storytelling text in the approved booth scene is allowed; HTML stays grammar authority. Sections 1–4 stay frozen. Sections 6–8 stay on the readable fallback.
 - Sprint 48B Section 6 Clue Trail Learn prototype — Wh-questions use a cream lead, contained Clue Trail scene, and HTML grammar beats. Approved Wh marker words in the scene are world storytelling; HTML stays grammar authority. Sections 1–5 stay frozen. Sections 7–8 stay on the readable fallback.
 - Sprint 49B Section 7 Clock Garden Learn prototype — frequency and time use a cream lead, contained Clock Garden scene, and HTML grammar beats. CLOCK GARDEN / MORNING / EVENING / weekday signs are world storytelling; HTML stays grammar authority. Sections 1–6 stay frozen. Section 8 stays on the readable fallback.
+- Sprint 50C Section 8 Clubhouse Map Learn prototype — Present Simple synthesis uses a cream lead, contained Clubhouse Map scene, and a four-frame HTML map. Journey labels in the approved scene are world storytelling; HTML stays grammar authority. No new grammar. Sections 1–7 stay frozen.
 
 ### Changed
 - Section 1 student copy: grammar board no longer shows ป้ายสวน; จำไว้ : sits on the Present Simple summary line
-- Section 1 Visual Master v1 — owner-approved Everyday Garden Learn (five frozen production WebPs, HTML educational text, desktop 38/62, mobile 8-stone row); Sections 2–6 are frozen Learn compositions; Section 7 is an owner-review Clock Garden prototype; Section 8 remains a readable fallback
+- Section 1 Visual Master v1 — owner-approved Everyday Garden Learn (five frozen production WebPs, HTML educational text, desktop 38/62, mobile 8-stone row); Sections 2–7 are frozen Learn compositions; Section 8 is an owner-review Clubhouse Map prototype
 - Sprint 45C owner-approved freeze — Present Simple Sections 2–3 use playground / workshop compositions; Section 1 Visual Master and functional freeze stay unchanged
 - `/dashboard` history flow is client-loaded so events survive browser refresh
 - `/dashboard` no longer auto-seeds sample learning events; it shows only real completions or the empty state

@@ -53,7 +53,7 @@ FUTURE           AI generators, Teacher Studio, Classroom Companion
 | Complete Present Simple Learn | CURRENT | Learner is taught the assessed Present Simple foundation before Short Practice. Quiz and Millionaire still use the existing 50-item bank (10 questions each) |
 | Guided Student Learn | CURRENT | `/lesson/[slug]` walks Sections 1–8 with one dominant footer action, then persists Learn on Section 8 and continues to Quiz. Teacher `?from=teacher` keeps classroom chrome |
 | Lesson content versioning | CURRENT | Learn completion is per lesson + `contentVersion`. Legacy unversioned Learn events are v1. Stale Present Simple Learn-only history stays LEARN until current v2 is completed |
-| Student visual foundation | CURRENT | Additive `--gfa-*` tokens and `GfaLearningWorld` (ลานเขียวอิสระ / Everyday Garden). Present Simple Section 1 is Visual Master v1 (owner-approved, frozen). Sections 2–6 are frozen Learn compositions (playground / workshop / Quiet Shelter / Question Booth / Clue Trail). Section 7 is an owner-review Clock Garden prototype. Section 8 stays on a readable fallback. Quiz and Millionaire stay on their existing surfaces. Contract: `ASSET-CONTRACT.md` |
+| Student visual foundation | CURRENT | Additive `--gfa-*` tokens and `GfaLearningWorld` (ลานเขียวอิสระ / Everyday Garden). Present Simple Section 1 is Visual Master v1 (owner-approved, frozen). Sections 2–7 are frozen Learn compositions (playground / workshop / Quiet Shelter / Question Booth / Clue Trail / Clock Garden). Section 8 is an owner-review Clubhouse Map prototype. Quiz and Millionaire stay on their existing surfaces. Contract: `ASSET-CONTRACT.md` |
 
 **Known gaps in Phase 0:**
 
