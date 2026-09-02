@@ -19,7 +19,9 @@ export type GfaArtSlotId =
   | "bai-tong-pause-guide"
   | "quiet-shelter-not-doing"
   | "bai-tong-question-guide"
-  | "question-booth-ask-answer";
+  | "question-booth-ask-answer"
+  | "bai-tong-clue-guide"
+  | "clue-trail-garden";
 
 export type GfaArtSlotSpec = {
   id: GfaArtSlotId;
@@ -122,6 +124,21 @@ export const GFA_SECTION5_ART = {
   questionBoothAskAnswer: {
     id: "question-booth-ask-answer",
     src: "/gfa/scenes/question-booth-ask-answer.webp",
+    aspect: "16 / 10",
+    transparent: false,
+  },
+} as const satisfies Record<string, GfaArtSlotSpec>;
+
+export const GFA_SECTION6_ART = {
+  baiTongClueGuide: {
+    id: "bai-tong-clue-guide",
+    src: "/gfa/characters/bai-tong-clue-guide.webp",
+    aspect: "5 / 6",
+    transparent: true,
+  },
+  clueTrailGarden: {
+    id: "clue-trail-garden",
+    src: "/gfa/scenes/clue-trail-garden.webp",
     aspect: "16 / 10",
     transparent: false,
   },

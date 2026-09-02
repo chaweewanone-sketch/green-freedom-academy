@@ -55,10 +55,11 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Sprint 46B Section 4 Quiet Shelter Learn prototype — Present Simple negatives (`don't` / `doesn't` + Verb 1) use a dedicated cream lead, framed contained shelter scene, HTML grammar beats, and two production WebPs (`bai-tong-pause-guide`, `quiet-shelter-not-doing`). Sections 1–3 stay frozen. Sections 5–8 stay on the readable fallback.
 - Sprint 46B-R1 — Section 4 mission puts meaning before formula (`บอกว่า “ไม่ได้ทำ”` then `don't / doesn't + Verb 1`); duplicate formula lines are removed. Artwork and Sections 1–3 stay unchanged.
 - Sprint 47B Section 5 Question Booth Learn prototype — Yes/No questions and short answers use a cream lead, contained booth scene, and HTML grammar beats. World-storytelling text in the approved booth scene is allowed; HTML stays grammar authority. Sections 1–4 stay frozen. Sections 6–8 stay on the readable fallback.
+- Sprint 48B Section 6 Clue Trail Learn prototype — Wh-questions use a cream lead, contained Clue Trail scene, and HTML grammar beats. Approved Wh marker words in the scene are world storytelling; HTML stays grammar authority. Sections 1–5 stay frozen. Sections 7–8 stay on the readable fallback.
 
 ### Changed
 - Section 1 student copy: grammar board no longer shows ป้ายสวน; จำไว้ : sits on the Present Simple summary line
-- Section 1 Visual Master v1 — owner-approved Everyday Garden Learn (five frozen production WebPs, HTML educational text, desktop 38/62, mobile 8-stone row); Sections 2–4 are frozen Learn compositions; Section 5 is an owner-review Question Booth prototype; Sections 6–8 remain a readable fallback
+- Section 1 Visual Master v1 — owner-approved Everyday Garden Learn (five frozen production WebPs, HTML educational text, desktop 38/62, mobile 8-stone row); Sections 2–4 are frozen Learn compositions; Section 5 is a frozen Question Booth composition; Section 6 is an owner-review Clue Trail prototype; Sections 7–8 remain a readable fallback
 - Sprint 45C owner-approved freeze — Present Simple Sections 2–3 use playground / workshop compositions; Section 1 Visual Master and functional freeze stay unchanged
 - `/dashboard` history flow is client-loaded so events survive browser refresh
 - `/dashboard` no longer auto-seeds sample learning events; it shows only real completions or the empty state

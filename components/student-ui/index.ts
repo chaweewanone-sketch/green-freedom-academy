@@ -12,6 +12,7 @@ export { EverydayGardenPlaygroundSection2 } from "./EverydayGardenPlaygroundSect
 export { EverydayGardenWorkshopSection3 } from "./EverydayGardenWorkshopSection3";
 export { EverydayGardenQuietShelterSection4 } from "./EverydayGardenQuietShelterSection4";
 export { EverydayGardenQuestionBoothSection5 } from "./EverydayGardenQuestionBoothSection5";
+export { EverydayGardenClueTrailSection6 } from "./EverydayGardenClueTrailSection6";
 export { GfaArtSlot } from "./GfaArtSlot";
 export { GfaCharacter } from "./GfaCharacter";
 export type {

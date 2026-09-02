@@ -60,6 +60,13 @@ export function runStudentVisualFoundationVerification(): void {
     ),
     "utf8",
   );
+  const section6 = readFileSync(
+    resolve(
+      process.cwd(),
+      "components/student-ui/EverydayGardenClueTrailSection6.tsx",
+    ),
+    "utf8",
+  );
   const quiz = readFileSync(
     resolve(process.cwd(), "components/quiz/QuizGame.tsx"),
     "utf8",
@@ -163,6 +170,14 @@ export function runStudentVisualFoundationVerification(): void {
     "learn: section 5 step",
   );
   assert(
+    companion.includes("EverydayGardenClueTrailSection6"),
+    "learn: section 6 prototype",
+  );
+  assert(
+    companion.includes('lesson.slug === "present-simple" && currentStep === 5'),
+    "learn: section 6 step",
+  );
+  assert(
     companion.includes("everyday-garden-playground"),
     "learn: playground scene",
   );
@@ -178,7 +193,11 @@ export function runStudentVisualFoundationVerification(): void {
     companion.includes("everyday-garden-booth"),
     "learn: booth scene",
   );
-  assert(companion.includes("TeachingPanel"), "learn: sections 6-8 fallback");
+  assert(
+    companion.includes("everyday-garden-trail"),
+    "learn: trail scene",
+  );
+  assert(companion.includes("TeachingPanel"), "learn: sections 7-8 fallback");
   assert(companion.includes("showActivityGrid={!isStudentLearn}"), "learn: grid gated");
   assert(css.includes(".gfaLearningWorld .guidedLearnFooter .primary"), "css: student CTA");
 
@@ -297,6 +316,60 @@ export function runStudentVisualFoundationVerification(): void {
     (section5.match(/baiTongQuestionGuide/g) ?? []).length === 2,
     "s5: one Bai Tong slot",
   );
+  assert(!section6.includes("gfaGardenGate"), "s6: not section 1 composition");
+  assert(section6.includes("GFA_SECTION6_ART"), "s6: asset map");
+  assert(section6.includes("baiTongClueGuide"), "s6: clue guide in lead");
+  assert(section6.includes("clueTrailGarden"), "s6: trail scene slot");
+  assert(section6.includes('fit="contain"'), "s6: scene contain");
+  assert(section6.includes("อยากรู้อะไร?"), "s6: meaning first");
+  assert(
+    section6.indexOf("อยากรู้อะไร?") <
+      section6.indexOf("Wh + do/does + ... + Verb 1?"),
+    "s6: meaning before formula",
+  );
+  assert(section6.includes("What"), "s6: what");
+  assert(section6.includes("Where"), "s6: where");
+  assert(section6.includes("When"), "s6: when");
+  assert(section6.includes("Why"), "s6: why");
+  assert(section6.includes("Who"), "s6: who");
+  assert(section6.includes("How"), "s6: how");
+  assert(section6.includes("What time"), "s6: what time");
+  assert(section6.includes("สิ่ง / เรื่องอะไร"), "s6: what meaning");
+  assert(section6.includes("ที่ไหน"), "s6: where meaning");
+  assert(section6.includes("เมื่อไร"), "s6: when meaning");
+  assert(section6.includes("กี่โมง"), "s6: what time meaning");
+  assert(section6.includes("ทำไม"), "s6: why meaning");
+  assert(section6.includes("ใคร"), "s6: who meaning");
+  assert(section6.includes("อย่างไร"), "s6: how meaning");
+  assert(section6.includes("{step.formula}"), "s6: formula from content");
+  assert(section6.includes("{step.examples.map"), "s6: examples from content");
+  assert(
+    section6.includes("Wh- มาเพิ่มข้างหน้า — กฎ Verb 1 ยังเหมือนเดิม"),
+    "s6: verb 1 heading",
+  );
+  assert(
+    section6.includes("Where + does + he + <em>keep</em> ...?"),
+    "s6: keep beat",
+  );
+  assert(
+    section6.includes("Does แล้ว → <em>keep</em> ไม่ใช่ keeps"),
+    "s6: keeps contrast",
+  );
+  assert(section6.includes("takeAfterMark"), "s6: frozen check marks");
+  assert(section6.includes("memoryLine"), "s6: frozen memory line");
+  assert(!section6.includes("How often"), "s6: no how often");
+  assert(!section6.includes("Which"), "s6: no which");
+  assert(!section6.includes("Yes, I do"), "s6: no short answers");
+  assert(!section6.includes("คำตอบสั้น"), "s6: no short-answer teaching");
+  assert(!section6.includes("Who walks"), "s6: no who-as-subject");
+  assert(!section6.includes("gfaLearnFormula"), "s6: no duplicate formula");
+  assert(!section6.includes("When do you"), "s6: no invented when example");
+  assert(!section6.includes("Why do you"), "s6: no invented why example");
+  assert(!section6.includes("Who do you"), "s6: no invented who example");
+  assert(
+    (section6.match(/baiTongClueGuide/g) ?? []).length === 2,
+    "s6: one Bai Tong slot",
+  );
   assert(css.includes(".gfaPlayground"), "css: playground section");
   assert(css.includes(".gfaWorkshop"), "css: workshop section");
   assert(css.includes(".gfaShelter"), "css: shelter section");
@@ -304,6 +377,9 @@ export function runStudentVisualFoundationVerification(): void {
   assert(css.includes(".gfaShelterMissionPattern"), "css: secondary mission formula");
   assert(css.includes(".gfaBooth"), "css: booth section");
   assert(css.includes(".gfaBoothReturn"), "css: does verb 1 beat");
+  assert(css.includes(".gfaTrail"), "css: trail section");
+  assert(css.includes(".gfaTrailReturn"), "css: keep verb 1 beat");
+  assert(css.includes(".gfaTrailClues"), "css: clue meanings");
   assert(css.includes(".gfaWorldStage"), "css: framed world stage");
   assert(css.includes(".gfaLearnSurface"), "css: cream learning surface");
   assert(
@@ -342,6 +418,14 @@ export function runStudentVisualFoundationVerification(): void {
     artAssets.includes("/gfa/scenes/question-booth-ask-answer.webp"),
     "assets: booth path",
   );
+  assert(
+    artAssets.includes("/gfa/characters/bai-tong-clue-guide.webp"),
+    "assets: clue guide path",
+  );
+  assert(
+    artAssets.includes("/gfa/scenes/clue-trail-garden.webp"),
+    "assets: trail path",
+  );
 
   assert(existsSync(resolve(process.cwd(), "public/gfa/characters")), "assets: characters dir");
   assert(existsSync(resolve(process.cwd(), "public/gfa/scenes")), "assets: scenes dir");
@@ -362,6 +446,14 @@ export function runStudentVisualFoundationVerification(): void {
     existsSync(resolve(process.cwd(), "public/gfa/scenes/question-booth-ask-answer.webp")),
     "assets: booth file",
   );
+  assert(
+    existsSync(resolve(process.cwd(), "public/gfa/characters/bai-tong-clue-guide.webp")),
+    "assets: clue guide file",
+  );
+  assert(
+    existsSync(resolve(process.cwd(), "public/gfa/scenes/clue-trail-garden.webp")),
+    "assets: trail file",
+  );
   assert(artAssets.includes("/gfa/characters/bai-tong-explaining.webp"), "assets: bai tong path");
   assert(artAssets.includes("/gfa/scenes/habit-walk-to-school.webp"), "assets: habit path");
   assert(artAssets.includes("/gfa/scenes/general-truth-sunrise-east.webp"), "assets: sunrise path");
@@ -379,6 +471,8 @@ export function runStudentVisualFoundationVerification(): void {
   assert(artContract.includes("NAME=quiet-shelter-not-doing"), "contract: shelter scene");
   assert(artContract.includes("NAME=bai-tong-question-guide"), "contract: question guide");
   assert(artContract.includes("NAME=question-booth-ask-answer"), "contract: booth scene");
+  assert(artContract.includes("NAME=bai-tong-clue-guide"), "contract: clue guide");
+  assert(artContract.includes("NAME=clue-trail-garden"), "contract: trail scene");
   assert(artContract.includes("TEXT_INSIDE_ASSET=NO"), "contract: no baked text");
   assert(
     artContract.includes("ART = VISUAL MEANING + WORLD STORYTELLING"),

@@ -15,6 +15,7 @@ import {
   EverydayGardenWorkshopSection3,
   EverydayGardenQuietShelterSection4,
   EverydayGardenQuestionBoothSection5,
+  EverydayGardenClueTrailSection6,
   GfaContinueAction,
   GfaLearningWorld,
   GfaLessonProgress,
@@ -182,6 +183,8 @@ export function ClassroomCompanion({
     lesson.slug === "present-simple" && currentStep === 3;
   const isSection5Prototype =
     lesson.slug === "present-simple" && currentStep === 4;
+  const isSection6Prototype =
+    lesson.slug === "present-simple" && currentStep === 5;
 
   const studentSceneName = isSection1Prototype
     ? "everyday-garden-gate"
@@ -193,7 +196,9 @@ export function ClassroomCompanion({
           ? "everyday-garden-shelter"
           : isSection5Prototype
             ? "everyday-garden-booth"
-            : "fallback";
+            : isSection6Prototype
+              ? "everyday-garden-trail"
+              : "fallback";
 
   if (isStudentLearn) {
     return (
@@ -241,6 +246,11 @@ export function ClassroomCompanion({
               />
             ) : isSection5Prototype ? (
               <EverydayGardenQuestionBoothSection5
+                step={activeStep}
+                lessonTitle={title}
+              />
+            ) : isSection6Prototype ? (
+              <EverydayGardenClueTrailSection6
                 step={activeStep}
                 lessonTitle={title}
               />

@@ -90,7 +90,7 @@ Do not bake progress, titles, English sentences, Thai teaching copy, or fake but
 ART = VISUAL MEANING + WORLD STORYTELLING.
 HTML = GRAMMAR AUTHORITY.
 
-Environmental / world-building text may exist in artwork (location names, booth names, wayfinding, school branding, short interaction cues). Artwork must not become the source of grammar formulas, Verb 1 rules, Do/Does structures, short-answer formulas, assessed example sentences, or ✓/✗ contrasts.
+Environmental / world-building text may exist in artwork (location names, booth names, wayfinding, school branding, short interaction cues, approved Wh clue labels). Artwork must not become the source of grammar formulas, Verb 1 rules, Do/Does structures, short-answer formulas, assessed example sentences, or ✓/✗ contrasts.
 
 The current `workshop-he-she-it` scene is an approved prototype-era exception with baked labels. Do not regenerate it in this freeze.
 
@@ -144,4 +144,29 @@ FORBIDDEN_GRAMMAR_AUTHORITY=Do/Does formulas; Verb 1 rules; assessed example que
 RECOMMENDED_ASPECT=16:10
 DESKTOP_ROLE=framed world stage, object-fit contain, no HTML over artwork
 MOBILE_ROLE=full-width contained scene; do not cover-crop faces, booth, ticket, or signs
+
+## SECTION_6
+
+NAME=bai-tong-clue-guide
+PATH=`/gfa/characters/bai-tong-clue-guide.webp`
+PURPOSE=trail explorer / curiosity guide in Clue Trail lead
+RECOMMENDED_ASPECT=5:6
+TRANSPARENT_BACKGROUND=YES
+DESKTOP_ROLE=small companion in the lead/mission area only
+MOBILE_ROLE=compact companion; must not dominate the screen
+TEXT_INSIDE_ASSET=NO
+QUALITY=full-body Bai Tong; GFA green/cream; backpack; map; magnifying glass; pointing toward the trail; cheerful explorer; not detective/crime styling
+
+## SECTION_6_SCENE
+
+NAME=clue-trail-garden
+PATH=`/gfa/scenes/clue-trail-garden.webp`
+PURPOSE=visual Clue Trail in Everyday Garden; curiosity / follow-the-clues world
+CONTENT=bright garden trail; CLUE TRAIL entrance; Question Booth visible behind; winding path; children/exploration; daylight; green / cream / honey
+WORLD_STORYTELLING_TEXT=YES
+ALLOWED_ENVIRONMENTAL_TEXT=CLUE TRAIL; อยากรู้อะไร?; What? Where? When? Why? Who? How?; Follow the clues; GFA / garden wayfinding; Question Booth continuity
+FORBIDDEN_GRAMMAR_AUTHORITY=Wh + do/does formula; Verb 1 rule; keep/keeps correction; full assessed example questions; ✓ / ✗ grammar correction; How often
+RECOMMENDED_ASPECT=16:10
+DESKTOP_ROLE=framed world stage, object-fit contain, no HTML over artwork
+MOBILE_ROLE=full-width contained scene; do not cover-crop entrance, clue markers, booth, or path
 

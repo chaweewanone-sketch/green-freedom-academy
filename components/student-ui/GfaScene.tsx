@@ -6,6 +6,7 @@ export type GfaSceneName =
   | "everyday-garden-workshop"
   | "everyday-garden-shelter"
   | "everyday-garden-booth"
+  | "everyday-garden-trail"
   | "fallback";
 
 type GfaSceneProps = {
