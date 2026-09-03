@@ -28,7 +28,9 @@ export type GfaArtSlotId =
   | "clubhouse-map-finale"
   | "quiz-practice-garden"
   | "bai-tong-quiz-coach"
-  | "bai-tong-quiz-coach-pointing";
+  | "bai-tong-quiz-coach-pointing"
+  | "millionaire-adventure-clearing"
+  | "bai-tong-millionaire-companion";
 
 export type GfaArtSlotSpec = {
   id: GfaArtSlotId;
@@ -197,6 +199,21 @@ export const GFA_QUIZ_ART = {
   baiTongQuizCoachPointing: {
     id: "bai-tong-quiz-coach-pointing",
     src: "/gfa/characters/bai-tong-quiz-coach-pointing.webp",
+    aspect: "2 / 3",
+    transparent: true,
+  },
+} as const satisfies Record<string, GfaArtSlotSpec>;
+
+export const GFA_MILLIONAIRE_ART = {
+  adventureClearing: {
+    id: "millionaire-adventure-clearing",
+    src: "/gfa/scenes/millionaire-adventure-clearing.webp",
+    aspect: "16 / 9",
+    transparent: false,
+  },
+  baiTongCompanion: {
+    id: "bai-tong-millionaire-companion",
+    src: "/gfa/characters/bai-tong-millionaire-companion.webp",
     aspect: "2 / 3",
     transparent: true,
   },

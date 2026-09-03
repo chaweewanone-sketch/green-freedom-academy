@@ -1,5 +1,4 @@
 import { ActivityResultActions } from "@/components/activities/ActivityResultActions";
-import { GameHeroCharacter } from "./GameHeroCharacter";
 import { buildGameResultPresentation } from "@/lib/millionaire/gameResultPresentation";
 import type { ResultNextAction } from "@/lib/analytics/resultNextAction";
 
@@ -24,10 +23,6 @@ export function ResultPanel({
 
   return (
     <section className={`gfaGameResult gfaGameResult-${presentation.band}`}>
-      <GameHeroCharacter
-        size="result"
-        mood={presentation.band === "weak" ? "encourage" : "cheer"}
-      />
       <p className="gfaGameResultKicker">{presentation.kicker}</p>
       <h1>{presentation.title}</h1>
       <p className="gfaGameResultStars">⭐ {presentation.starsLabel}</p>

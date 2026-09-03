@@ -2702,10 +2702,544 @@
     max-width: 7.5rem;
   }
 }
+
+.gfaMillionairePage {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+.gfaMillionaireWorld {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  color: var(--gfa-ink);
+  background: #3d6b3a;
+}
+.gfaMillionaireArtboard {
+  position: relative;
+  z-index: 1;
+  aspect-ratio: 16 / 9;
+  width: min(100vw, calc(100vh * 16 / 9));
+  width: min(100vw, calc(100dvh * 16 / 9));
+  max-width: 100%;
+  max-height: 100vh;
+  max-height: 100dvh;
+  overflow: hidden;
+  box-sizing: border-box;
+  background: transparent;
+}
+.gfaMillionaireWorldArt {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.gfaMillionaireWorldArt .gfaArtSlot {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto !important;
+  border: 0;
+  background: transparent;
+}
+.gfaMillionaireWorldArt img {
+  object-fit: cover;
+  object-position: 50% 62%;
+}
+.gfaMillionaireComposition {
+  position: absolute;
+  z-index: 1;
+  left: 3%;
+  right: 2.4%;
+  top: 12%;
+  bottom: 3%;
+  display: grid;
+  grid-template-columns: minmax(0, 1.18fr) minmax(12rem, 0.62fr);
+  grid-template-areas: "board companion";
+  align-items: end;
+  column-gap: 1.8%;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+.gfaMillionaireComposition-play {
+  grid-template-columns:
+    minmax(0, 1.18fr)
+    minmax(12rem, 0.52fr)
+    minmax(4.5rem, 0.14fr);
+  grid-template-areas: "board companion ladder";
+  column-gap: 1.4%;
+}
+.gfaMillionaireBoardArea {
+  grid-area: board;
+  min-width: 0;
+  min-height: 0;
+  z-index: 2;
+  align-self: center;
+  max-height: 86%;
+  overflow: hidden;
+}
+.gfaMillionaireCompanionArea {
+  grid-area: companion;
+  position: relative;
+  z-index: 3;
+  align-self: end;
+  height: 84%;
+  max-height: 84%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  pointer-events: none;
+  line-height: 0;
+}
+.gfaMillionaireCompanionImg {
+  position: absolute;
+  left: 50%;
+  bottom: -3%;
+  transform: translateX(-50%);
+  display: block;
+  height: 103%;
+  width: auto;
+  max-width: none;
+  aspect-ratio: 842 / 1400;
+  object-fit: cover;
+  object-position: center bottom;
+  user-select: none;
+}
+.gfaMillionaireLadderArea {
+  grid-area: ladder;
+  z-index: 2;
+  align-self: stretch;
+  min-width: 0;
+  min-height: 0;
+  max-height: 100%;
+  overflow: hidden;
+  display: flex;
+}
+.gfaMillionaireWorld .gfaGameWorld {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  min-height: 0;
+  overflow: visible;
+  background: transparent;
+}
+.gfaMillionaireWorld .gfaGameHero,
+.gfaMillionaireWorld .gfaGameShell,
+.gfaMillionaireWorld .gfaGameResult {
+  width: 100%;
+  margin: 0;
+  padding: 16px 18px 18px;
+  border-radius: 26px;
+  background: rgba(255, 252, 244, 0.93);
+  border: 2px solid rgba(23, 107, 77, 0.16);
+  box-shadow:
+    0 18px 40px rgba(23, 53, 42, 0.16),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+}
+.gfaMillionaireWorld .gfaGameHero {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  max-height: 100%;
+  align-items: stretch;
+}
+.gfaMillionaireWorld .gfaGameHeroCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.gfaMillionaireWorld .gfaGameHero h1,
+.gfaMillionaireWorld .gfaGameTitle {
+  font-size: clamp(1.55rem, 2.4vw, 2.05rem);
+  text-shadow: none;
+  color: var(--gfa-ink);
+}
+.gfaMillionaireWorld .gfaGameIntroEyebrow {
+  margin: 0;
+  font-size: 0.78rem;
+}
+.gfaMillionaireWorld .gfaGameIntroLesson,
+.gfaMillionaireWorld .gfaGameLesson {
+  margin: 0;
+  font-size: 1rem;
+}
+.gfaMillionaireWorld .gfaGameSpeech {
+  display: inline-block;
+  margin: 4px 0 8px;
+  padding: 8px 12px;
+  border-radius: 16px 16px 16px 6px;
+  background: #fff8e8;
+  border: 1px solid rgba(23, 107, 77, 0.14);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--gfa-primary);
+  box-shadow: none;
+}
+.gfaMillionaireWorld .gfaMissionCard {
+  max-width: none;
+  margin: 0 0 8px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  border-width: 2px;
+  box-shadow: 0 4px 0 #e09f3e;
+}
+.gfaMillionaireWorld .gfaMissionLine {
+  font-size: 0.98rem;
+  line-height: 1.4;
+}
+.gfaMillionaireWorld .gfaGameCta {
+  min-height: 52px;
+  padding: 10px 22px;
+  font-size: 1.08rem;
+  box-shadow: 0 5px 0 #0f4d36;
+}
+.gfaMillionaireWorld .gfaGameHeroTrail {
+  min-height: 0;
+  padding: 6px 4px 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+.gfaMillionaireWorld .gfaAdventureMap-desktop {
+  width: 100%;
+  height: auto;
+  max-height: 86px;
+}
+.gfaMillionaireWorld .gfaAdventureMap-mobile {
+  display: none;
+}
+.gfaMillionaireWorld .gfaGameShell {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px 16px;
+}
+.gfaMillionaireWorld .gfaGameHeader {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 8px 10px;
+  align-items: end;
+  margin: 0 0 4px;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--gfa-ink);
+  box-shadow: none;
+}
+.gfaMillionaireWorld .gfaGameHeader .gfaGameTitle {
+  font-size: 1.2rem;
+  color: var(--gfa-ink);
+}
+.gfaMillionaireWorld .gfaGameHeader .gfaGameLesson {
+  margin: 0;
+  color: var(--gfa-muted);
+  font-size: 0.92rem;
+}
+.gfaMillionaireWorld .gfaGameStageNow,
+.gfaMillionaireWorld .gfaGameScoreNow {
+  margin: 0;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--gfa-primary-soft);
+  color: var(--gfa-primary);
+  font-size: 0.88rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+.gfaMillionaireWorld .gfaGameStageNow-final {
+  background: #fff4c4;
+  color: #8a5a12;
+}
+.gfaMillionaireWorld .gfaGameBoard {
+  display: block;
+}
+.gfaMillionaireWorld .gfaGameQuestion {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.gfaMillionaireWorld .gfaGameQuestion h2 {
+  margin: 0 0 8px;
+  font-size: clamp(1.2rem, 1.7vw, 1.48rem);
+}
+.gfaMillionaireWorld .gfaGameChoiceHint {
+  margin: 0 0 8px;
+  font-size: 0.88rem;
+}
+.gfaMillionaireWorld .gfaGameChoices {
+  gap: 7px;
+}
+.gfaMillionaireWorld .gfaGameChoice {
+  grid-template-columns: 36px minmax(0, 1fr) auto;
+  gap: 8px;
+}
+.gfaMillionaireWorld .gfaGameChoiceLetter {
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
+  font-size: 0.95rem;
+}
+.gfaMillionaireWorld .gfaGameChoices .millionaireChoice {
+  min-height: 44px;
+  padding: 8px 12px;
+  font-size: 0.98rem;
+}
+.gfaMillionaireBoardArea:has(.gfaGameQuestion-answered) {
+  max-height: 100%;
+}
+.gfaMillionaireWorld .gfaGameShell:has(.gfaGameQuestion-answered) {
+  gap: 4px;
+  padding: 12px 16px 12px;
+}
+.gfaMillionaireWorld .gfaGameQuestion-answered h2 {
+  margin: 0 0 6px;
+}
+.gfaMillionaireWorld .gfaGameQuestion-answered .gfaGameChoiceHint {
+  display: none;
+}
+.gfaMillionaireWorld .gfaGameQuestion-answered .gfaGameChoiceNote {
+  display: none;
+}
+.gfaMillionaireWorld .gfaGameQuestion-answered .gfaGameChoices {
+  gap: 5px;
+}
+.gfaMillionaireWorld .gfaGameQuestion-answered .gfaGameChoices .millionaireChoice {
+  min-height: 48px;
+  padding: 8px 12px;
+}
+.gfaMillionaireWorld .gfaGameQuestion-answered .gfaGameFeedbackPanel {
+  margin-top: 6px;
+  padding: 8px 10px;
+}
+.gfaMillionaireWorld .gfaGameQuestion-answered .gfaGameFeedbackTitle {
+  font-size: 1rem;
+}
+.gfaMillionaireWorld .gfaGameQuestion-answered .gfaGameFeedbackHint {
+  margin-top: 0;
+  font-size: 0.88rem;
+}
+.gfaMillionaireWorld .gfaGameQuestion-answered .gfaGameExplanation {
+  margin-top: 6px;
+  padding: 8px 10px;
+  line-height: 1.45;
+  font-size: 0.95rem;
+}
+.gfaMillionaireWorld .gfaGameQuestion-answered .gfaGameContinue {
+  margin-top: 8px;
+}
+.gfaMillionaireWorld .gfaGameQuestion-answered .gfaGameContinue .button {
+  min-height: 48px;
+}
+.gfaMillionaireWorld .gfaGameFeedbackPanel {
+  margin-top: 10px;
+  padding: 10px 12px;
+}
+.gfaMillionaireWorld .gfaGameFeedbackTitle {
+  font-size: 1.05rem;
+}
+.gfaMillionaireWorld .gfaGameExplanation {
+  font-size: 0.95rem;
+}
+.gfaMillionaireWorld .gfaGameContinue {
+  margin-top: 10px;
+}
+.gfaMillionaireWorld .gfaGameContinue .button {
+  min-height: 46px;
+  min-width: 11rem;
+  font-size: 1rem;
+}
+.gfaMillionaireWorld .gfaGameLadderColumn {
+  width: 100%;
+  padding: 10px 8px 12px;
+  border-radius: 20px;
+  background: rgba(255, 252, 244, 0.92);
+  color: var(--gfa-ink);
+  border: 2px solid rgba(23, 107, 77, 0.16);
+  box-shadow: 0 10px 24px rgba(23, 53, 42, 0.12);
+}
+.gfaMillionaireWorld .gfaGameLadderTitle {
+  color: var(--gfa-primary);
+  font-size: 0.78rem;
+}
+.gfaMillionaireWorld .gfaGameLadderGoal {
+  margin: 2px 0 8px;
+  font-size: 0.72rem;
+  color: var(--gfa-muted);
+}
+.gfaMillionaireWorld .gfaStageLadder-journey {
+  display: grid;
+  gap: 0;
+}
+.gfaMillionaireWorld .gfaStage {
+  min-height: 38px;
+  padding: 0 0 8px;
+  color: var(--gfa-muted);
+  font-size: 0.78rem;
+}
+.gfaMillionaireWorld .gfaStageLadder-journey .gfaStage:not(:last-child)::after {
+  top: 34px;
+  width: 3px;
+  background: rgba(23, 107, 77, 0.2);
+}
+.gfaMillionaireWorld .gfaStageCorrect:not(:last-child)::after {
+  background: var(--gfa-honey);
+}
+.gfaMillionaireWorld .gfaStageMark {
+  width: 30px;
+  height: 30px;
+  border-width: 2px;
+  font-size: 0.78rem;
+  background: #fff;
+  border-color: rgba(23, 107, 77, 0.28);
+  color: var(--gfa-ink);
+}
+.gfaMillionaireWorld .gfaStageCurrent .gfaStageMark {
+  background: var(--gfa-honey);
+  border-color: #fff;
+  color: #17352a;
+  box-shadow: 0 0 0 3px rgba(244, 196, 74, 0.35);
+}
+.gfaMillionaireWorld .gfaStageDestination .gfaStageMark {
+  width: 36px;
+  height: 36px;
+  font-size: 0.95rem;
+}
+.gfaMillionaireWorld .gfaGameResult {
+  text-align: left;
+  max-width: none;
+  border-width: 2px;
+  box-shadow: 0 18px 40px rgba(23, 53, 42, 0.16);
+}
+.gfaMillionaireWorld .gfaGameResult h1 {
+  margin: 6px 0 8px;
+  font-size: clamp(1.55rem, 2.4vw, 2.1rem);
+}
+.gfaMillionaireWorld .gfaGameResultStars {
+  font-size: 1.45rem;
+}
+.gfaMillionaireWorld .gfaGameResult .millionaireResultActions,
+.gfaMillionaireWorld .gfaGameResult .guidedResultActions {
+  justify-content: flex-start;
+}
+.gfaMillionaireAudioDiag {
+  position: fixed;
+  left: 12px;
+  bottom: 12px;
+  z-index: 80;
+  margin: 0;
+  padding: 6px 10px;
+  border: 1px solid rgba(23, 53, 42, 0.35);
+  border-radius: 8px;
+  background: rgba(255, 252, 244, 0.92);
+  color: #17352a;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.2;
+  cursor: pointer;
+}
+.gfaMillionaireCelebration {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  overflow: hidden;
+  pointer-events: none;
+}
+.gfaMillionaireCelebrationPiece {
+  position: absolute;
+  top: -8%;
+  border-radius: 2px;
+  pointer-events: none;
+  animation: gfaMillionaireConfettiFall 1000ms ease-out forwards;
+}
+.gfaMillionaireCelebrationPiece-star {
+  border-radius: 1px;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+@keyframes gfaMillionaireConfettiFall {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(var(--gfa-confetti-dx, 0), 72vh, 0)
+      rotate(var(--gfa-confetti-rot, 180deg));
+    opacity: 0;
+  }
+}
+@media (max-width: 900px) {
+  .gfaMillionaireWorld {
+    height: auto;
+    min-height: 100vh;
+    overflow: auto;
+  }
+  .gfaMillionaireArtboard {
+    aspect-ratio: auto;
+    width: 100%;
+    max-height: none;
+    min-height: 100vh;
+  }
+  .gfaMillionaireComposition,
+  .gfaMillionaireComposition-play {
+    position: relative;
+    left: auto;
+    right: auto;
+    top: auto;
+    bottom: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 16px 12px 20px;
+    gap: 12px;
+  }
+  .gfaMillionaireCompanionArea {
+    height: 10rem;
+    justify-content: flex-end;
+    order: 2;
+  }
+  .gfaMillionaireCompanionImg {
+    height: 10rem;
+    bottom: 0;
+  }
+  .gfaMillionaireLadderArea {
+    order: 3;
+  }
+  .gfaMillionaireWorld .gfaStageLadder-journey {
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+  }
+  .gfaMillionaireWorld .gfaStageLadder-journey .gfaStage:not(:last-child)::after {
+    display: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .gfaMillionaireCelebration,
+  .gfaMillionaireCelebrationPiece {
+    animation: none !important;
+    display: none !important;
+  }
   .gfaLearningWorld,
   .gfaStudentWorld,
   .gfaQuizWorld,
+  .gfaMillionaireWorld,
   .gfaQuizChoice,
   .gfaCharacter {
     animation: none;

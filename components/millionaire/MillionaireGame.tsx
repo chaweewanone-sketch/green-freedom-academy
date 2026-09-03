@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { AdventureMap } from "./AdventureMap";
-import { GameHeroCharacter } from "./GameHeroCharacter";
 import { GameWorld } from "./GameWorld";
 import { QuestionCard } from "./QuestionCard";
 import { ResultPanel } from "./ResultPanel";
+import { StageCelebration } from "./StageCelebration";
 import { StageLadder } from "./StageLadder";
+import { playCelebrationSound } from "@/lib/millionaire/playSuccessChime";
 import type { ResultNextAction } from "@/lib/analytics/resultNextAction";
 import { buildAssessmentResult } from "@/lib/assessment";
 import {
@@ -69,6 +70,8 @@ function MillionaireAttempt({
   );
   const [revealed, setRevealed] = useState(initial.revealed);
   const [stageOutcomes, setStageOutcomes] = useState(initial.stageOutcomes);
+  const [celebrationToken, setCelebrationToken] = useState(0);
+  const lastCelebratedIndexRef = useRef<number | null>(null);
 
   const currentQuestion = gameQuestions[currentIndex];
   const stageStatuses = resolveStageStatuses(
@@ -89,7 +92,7 @@ function MillionaireAttempt({
     hasRecordedCompletionRef.current = started.hasRecordedCompletion;
   }
 
-  function handleChoice(choiceId: string) {
+  async function handleChoice(choiceId: string) {
     if (revealed || !currentQuestion) return;
 
     const isValidChoice = currentQuestion.choices.some(
@@ -99,6 +102,12 @@ function MillionaireAttempt({
 
     const isCorrect = choiceId === currentQuestion.correctChoiceId;
     const answered = applyStageAnswer(score, stageOutcomes, isCorrect);
+
+    if (isCorrect && lastCelebratedIndexRef.current !== currentIndex) {
+      lastCelebratedIndexRef.current = currentIndex;
+      await playCelebrationSound();
+      setCelebrationToken((current) => current + 1);
+    }
 
     setSelectedChoiceId(choiceId);
     setRevealed(true);
@@ -134,6 +143,7 @@ function MillionaireAttempt({
             <p className="gfaGameIntroEyebrow">เกม</p>
             <h1>เกมพิชิต 10 ด่าน</h1>
             <p className="gfaGameIntroLesson">{lessonTitle}</p>
+            <p className="gfaGameSpeech">มาพิชิต 10 ด่านกัน!</p>
             {totalQuestions > 0 ? (
               <aside className="gfaMissionCard">
                 <p className="gfaMissionKicker">ภารกิจของวันนี้ ⭐</p>
@@ -160,10 +170,6 @@ function MillionaireAttempt({
                 กลับไปบทเรียน
               </Link>
             </div>
-          </div>
-          <div className="gfaGameHeroArt">
-            <GameHeroCharacter size="hero" />
-            <p className="gfaGameSpeech">มาพิชิต 10 ด่านกัน!</p>
           </div>
           {totalQuestions > 0 ? (
             <div className="gfaGameHeroTrail">
@@ -195,14 +201,21 @@ function MillionaireAttempt({
   }
 
   const finalStage = isFinalStage(currentIndex, totalQuestions);
-  const playMood =
-    revealed && selectedChoiceId !== currentQuestion.correctChoiceId
-      ? "encourage"
-      : "cheer";
 
   return (
-    <GameWorld phase="playing">
-      <section className="gfaGameShell">
+    <>
+      <StageCelebration token={celebrationToken} />
+      <GameWorld
+        phase="playing"
+        ladder={
+          <aside className="gfaGameLadderColumn">
+            <p className="gfaGameLadderTitle">เส้นทางผจญภัย</p>
+            <p className="gfaGameLadderGoal">ไปให้ถึงถ้วย 🏆</p>
+            <StageLadder statuses={stageStatuses} />
+          </aside>
+        }
+      >
+        <section className="gfaGameShell">
         <header className="gfaGameHeader">
           <div className="gfaGameHeaderCopy">
             <h1 className="gfaGameTitle">เกมพิชิต 10 ด่าน</h1>
@@ -215,9 +228,7 @@ function MillionaireAttempt({
               ? "🏆 ด่านสุดท้าย"
               : `ด่าน ${currentIndex + 1} จาก ${totalQuestions}`}
           </p>
-          <div className="gfaGameHeaderBuddy">
-            <GameHeroCharacter size="support" mood={playMood} />
-          </div>
+          <p className="gfaGameScoreNow">⭐ {score}/{totalQuestions}</p>
         </header>
         <div className="gfaGameBoard">
           <div className="gfaGamePlay">
@@ -230,14 +241,10 @@ function MillionaireAttempt({
               onContinue={handleContinue}
             />
           </div>
-          <aside className="gfaGameLadderColumn">
-            <p className="gfaGameLadderTitle">เส้นทางผจญภัย</p>
-            <p className="gfaGameLadderGoal">ไปให้ถึงถ้วย 🏆</p>
-            <StageLadder statuses={stageStatuses} />
-          </aside>
         </div>
       </section>
-    </GameWorld>
+      </GameWorld>
+    </>
   );
 }
 
@@ -252,7 +259,8 @@ export function MillionaireGame({
   const [attemptKey, setAttemptKey] = useState(0);
 
   return (
-    <MillionaireAttempt
+    <>
+      <MillionaireAttempt
       key={attemptKey}
       session={session}
       lessonTitle={lessonTitle}
@@ -264,5 +272,6 @@ export function MillionaireGame({
         setAttemptKey((current) => nextMillionaireAttemptKey(current));
       }}
     />
+    </>
   );
 }

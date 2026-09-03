@@ -93,6 +93,14 @@ export function runStudentVisualFoundationVerification(): void {
     resolve(process.cwd(), "components/millionaire/MillionaireGame.tsx"),
     "utf8",
   );
+  const gameWorld = readFileSync(
+    resolve(process.cwd(), "components/millionaire/GameWorld.tsx"),
+    "utf8",
+  );
+  const resultPanel = readFileSync(
+    resolve(process.cwd(), "components/millionaire/ResultPanel.tsx"),
+    "utf8",
+  );
   const artAssets = readFileSync(
     resolve(process.cwd(), "lib/student-ui/gfaArtAssets.ts"),
     "utf8",
@@ -116,6 +124,7 @@ export function runStudentVisualFoundationVerification(): void {
   assert(css.includes(".gfaLearningWorld"), "css: learning world");
   assert(css.includes(".gfaStudentWorld-quiz"), "css: quiz world foundation");
   assert(css.includes(".gfaQuizWorld"), "css: quiz practice garden world");
+  assert(css.includes(".gfaMillionaireWorld"), "css: millionaire adventure clearing world");
   assert(css.includes(".gfaAdventureMap"), "css: game map still present");
   assert(!css.includes(".gfaStudentLearnStage"), "css: rejected 44A stage removed");
   assert(
@@ -578,6 +587,14 @@ export function runStudentVisualFoundationVerification(): void {
     artAssets.includes("/gfa/characters/bai-tong-quiz-coach.webp"),
     "assets: quiz coach path",
   );
+  assert(
+    artAssets.includes("/gfa/scenes/millionaire-adventure-clearing.webp"),
+    "assets: millionaire adventure clearing path",
+  );
+  assert(
+    artAssets.includes("/gfa/characters/bai-tong-millionaire-companion.webp"),
+    "assets: millionaire companion path",
+  );
 
   assert(existsSync(resolve(process.cwd(), "public/gfa/characters")), "assets: characters dir");
   assert(existsSync(resolve(process.cwd(), "public/gfa/scenes")), "assets: scenes dir");
@@ -630,6 +647,14 @@ export function runStudentVisualFoundationVerification(): void {
     existsSync(resolve(process.cwd(), "public/gfa/characters/bai-tong-quiz-coach.webp")),
     "assets: quiz coach file",
   );
+  assert(
+    existsSync(resolve(process.cwd(), "public/gfa/scenes/millionaire-adventure-clearing.webp")),
+    "assets: millionaire clearing file",
+  );
+  assert(
+    existsSync(resolve(process.cwd(), "public/gfa/characters/bai-tong-millionaire-companion.webp")),
+    "assets: millionaire companion file",
+  );
   assert(artAssets.includes("/gfa/characters/bai-tong-explaining.webp"), "assets: bai tong path");
   assert(artAssets.includes("/gfa/scenes/habit-walk-to-school.webp"), "assets: habit path");
   assert(artAssets.includes("/gfa/scenes/general-truth-sunrise-east.webp"), "assets: sunrise path");
@@ -655,6 +680,8 @@ export function runStudentVisualFoundationVerification(): void {
   assert(artContract.includes("NAME=clubhouse-map-finale"), "contract: clubhouse map");
   assert(artContract.includes("NAME=quiz-practice-garden"), "contract: quiz garden");
   assert(artContract.includes("NAME=bai-tong-quiz-coach"), "contract: quiz coach");
+  assert(artContract.includes("NAME=millionaire-adventure-clearing"), "contract: millionaire clearing");
+  assert(artContract.includes("NAME=bai-tong-millionaire-companion"), "contract: millionaire companion");
   assert(artContract.includes("TEXT_INSIDE_ASSET=NO"), "contract: no baked text");
   assert(
     artContract.includes("ART = VISUAL MEANING + WORLD STORYTELLING"),
@@ -667,7 +694,13 @@ export function runStudentVisualFoundationVerification(): void {
   assert(choice.includes("millionaireChoice"), "choice: shared button unchanged");
   assert(game.includes("GameWorld"), "game: Sprint 42 world remains");
   assert(game.includes("AdventureMap"), "game: adventure map remains");
-  assert(game.includes("GameHeroCharacter"), "game: game character remains");
+  assert(gameWorld.includes("GfaMillionaireWorld"), "game: adventure clearing wrap");
+  assert(!game.includes("GameHeroCharacter"), "game: generic hero replaced by Bai Tong companion");
+  assert(
+    !resultPanel.includes("GameHeroCharacter"),
+    "game: result uses Bai Tong companion, not generic hero",
+  );
+  assert(game.includes("เริ่มพิชิตด่าน"), "game: intro CTA unchanged");
   assert(lesson.includes("Present Simple คืออะไร"), "content: Present Simple unchanged");
   assert(lesson.includes("contentVersion: 2"), "content: version frozen");
   assert(lesson.includes("We eat lunch at noon."), "content: third example frozen");

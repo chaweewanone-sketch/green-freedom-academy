@@ -22,7 +22,7 @@ export function QuestionCard({
     selectedChoiceId !== null && selectedChoiceId === question.correctChoiceId;
 
   return (
-    <article className="gfaGameQuestion">
+    <article className={revealed ? "gfaGameQuestion gfaGameQuestion-answered" : "gfaGameQuestion"}>
       <h2>{question.prompt}</h2>
       <p className="gfaGameChoiceHint">เลือกคำตอบ</p>
       <div className="gfaGameChoices">

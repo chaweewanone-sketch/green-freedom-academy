@@ -282,6 +282,15 @@ SHA256=66315c27fafab1bb4762bc8dc72426624628cb7b77f332a830d70d83e23ee50d
 
 ## MILLIONAIRE_CHARACTER
 
+## MILLIONAIRE_REWARD_AUDIO
+
+NAME=millionaire-reward-cheer
+PATH=`/gfa/audio/millionaire-reward-cheer.m4a`
+PURPOSE=owner-provided original cheer recording used as the Millionaire correct-answer reward sound
+SOURCE=original recording by owner; GFA-owned; not downloaded from web
+FROZEN=YES — do not replace or modify without owner approval
+SPRINT=53C
+
 NAME=bai-tong-millionaire-companion
 PATH=`/gfa/characters/bai-tong-millionaire-companion.webp`
 PURPOSE=canonical Bai Tong Millionaire Game Companion (full body, explorer pose, encouraging)
@@ -294,5 +303,5 @@ MOBILE_ROLE=compact companion under/near board; preserve identity; dedicated sta
 TEXT_INSIDE_ASSET=NO
 AUTHORITY=ART = VISUAL MEANING + WORLD STORYTELLING; HTML = GAME / GRAMMAR AUTHORITY
 QUALITY=frozen Sprint 53B production art; real alpha; no prop text; do not regenerate, recompress, crop, or replace
-SHA256=adc39bfb564db50d2045eb0303c6aa1af3829d3fab1148afaabd101a5c1356ca
+SHA256=57c87fa2d62f8a628b4b8f655654e6253a46e6ce8d4b7f7bf1e2436881350f6e
 
