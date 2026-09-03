@@ -263,3 +263,36 @@ TEXT_INSIDE_ASSET=NO
 QUALITY=frozen Sprint 52C production art; pointing pose; no prop; no baked text; do not regenerate, recompress, crop, or replace
 SHA256=fdd55a40e2f75b4231e7f7bf703dc23f0a1ff2b1b00b14fd57477066ef31ba76
 
+## MILLIONAIRE_BACKGROUND
+
+NAME=millionaire-adventure-clearing
+PATH=`/gfa/scenes/millionaire-adventure-clearing.webp`
+PURPOSE=Millionaire Adventure Clearing visual environment for Present Simple Millionaire
+ROLE=full-bleed Millionaire world atmosphere
+ART=WORLD / ENVIRONMENT
+RENDER=cover / composition focal on central stone clearing
+RECOMMENDED_ASPECT=16:9-ish (1672×941 source)
+TRANSPARENT_BACKGROUND=NO
+TEXT_INSIDE_ASSET=NO
+BAI_TONG_INSIDE_ASSET=NO
+FORBIDDEN=game board; question; A/B/C/D; progress; score; stage labels; buttons; instructional grammar; characters
+AUTHORITY=ART = VISUAL MEANING + WORLD STORYTELLING; HTML = GAME / GRAMMAR AUTHORITY
+QUALITY=frozen Sprint 53B production art; do not regenerate, recompress, crop, or replace
+SHA256=66315c27fafab1bb4762bc8dc72426624628cb7b77f332a830d70d83e23ee50d
+
+## MILLIONAIRE_CHARACTER
+
+NAME=bai-tong-millionaire-companion
+PATH=`/gfa/characters/bai-tong-millionaire-companion.webp`
+PURPOSE=canonical Bai Tong Millionaire Game Companion (full body, explorer pose, encouraging)
+PRODUCT_PRINCIPLE=ONE ACADEMY / ONE BAI TONG / DIFFERENT LEARNING WORLDS
+ART=CHARACTER / GAME COMPANION
+RECOMMENDED_ASPECT=2:3
+TRANSPARENT_BACKGROUND=YES
+DESKTOP_ROLE=Game Companion grounded on Adventure Clearing beside HTML Millionaire board
+MOBILE_ROLE=compact companion under/near board; preserve identity; dedicated stacked composition
+TEXT_INSIDE_ASSET=NO
+AUTHORITY=ART = VISUAL MEANING + WORLD STORYTELLING; HTML = GAME / GRAMMAR AUTHORITY
+QUALITY=frozen Sprint 53B production art; real alpha; no prop text; do not regenerate, recompress, crop, or replace
+SHA256=adc39bfb564db50d2045eb0303c6aa1af3829d3fab1148afaabd101a5c1356ca
+
