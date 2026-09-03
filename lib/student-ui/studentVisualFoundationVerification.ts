@@ -115,6 +115,7 @@ export function runStudentVisualFoundationVerification(): void {
   assert(css.includes("--g:#176b4d"), "tokens: teacher --g preserved");
   assert(css.includes(".gfaLearningWorld"), "css: learning world");
   assert(css.includes(".gfaStudentWorld-quiz"), "css: quiz world foundation");
+  assert(css.includes(".gfaQuizWorld"), "css: quiz practice garden world");
   assert(css.includes(".gfaAdventureMap"), "css: game map still present");
   assert(!css.includes(".gfaStudentLearnStage"), "css: rejected 44A stage removed");
   assert(
@@ -569,6 +570,14 @@ export function runStudentVisualFoundationVerification(): void {
     artAssets.includes("/gfa/scenes/clubhouse-map-finale.webp"),
     "assets: clubhouse map path",
   );
+  assert(
+    artAssets.includes("/gfa/scenes/quiz-practice-garden.webp"),
+    "assets: quiz practice garden path",
+  );
+  assert(
+    artAssets.includes("/gfa/characters/bai-tong-quiz-coach.webp"),
+    "assets: quiz coach path",
+  );
 
   assert(existsSync(resolve(process.cwd(), "public/gfa/characters")), "assets: characters dir");
   assert(existsSync(resolve(process.cwd(), "public/gfa/scenes")), "assets: scenes dir");
@@ -613,6 +622,14 @@ export function runStudentVisualFoundationVerification(): void {
     existsSync(resolve(process.cwd(), "public/gfa/scenes/clubhouse-map-finale.webp")),
     "assets: clubhouse map file",
   );
+  assert(
+    existsSync(resolve(process.cwd(), "public/gfa/scenes/quiz-practice-garden.webp")),
+    "assets: quiz practice garden file",
+  );
+  assert(
+    existsSync(resolve(process.cwd(), "public/gfa/characters/bai-tong-quiz-coach.webp")),
+    "assets: quiz coach file",
+  );
   assert(artAssets.includes("/gfa/characters/bai-tong-explaining.webp"), "assets: bai tong path");
   assert(artAssets.includes("/gfa/scenes/habit-walk-to-school.webp"), "assets: habit path");
   assert(artAssets.includes("/gfa/scenes/general-truth-sunrise-east.webp"), "assets: sunrise path");
@@ -636,14 +653,16 @@ export function runStudentVisualFoundationVerification(): void {
   assert(artContract.includes("NAME=clock-garden-routines"), "contract: clock garden");
   assert(artContract.includes("NAME=bai-tong-clubhouse-guide"), "contract: clubhouse guide");
   assert(artContract.includes("NAME=clubhouse-map-finale"), "contract: clubhouse map");
+  assert(artContract.includes("NAME=quiz-practice-garden"), "contract: quiz garden");
+  assert(artContract.includes("NAME=bai-tong-quiz-coach"), "contract: quiz coach");
   assert(artContract.includes("TEXT_INSIDE_ASSET=NO"), "contract: no baked text");
   assert(
     artContract.includes("ART = VISUAL MEANING + WORLD STORYTELLING"),
     "contract: refined art rule",
   );
 
-  assert(!quiz.includes("student-ui"), "quiz: no student-ui import");
-  assert(!quiz.includes("GfaLearningWorld"), "quiz: no world wrap");
+  assert(quiz.includes("GfaQuizWorld"), "quiz: practice garden wrap");
+  assert(!quiz.includes("GfaLearningWorld"), "quiz: no learn world wrap");
   assert(quiz.includes("เริ่มทำแบบทดสอบ"), "quiz: intro copy unchanged");
   assert(choice.includes("millionaireChoice"), "choice: shared button unchanged");
   assert(game.includes("GameWorld"), "game: Sprint 42 world remains");

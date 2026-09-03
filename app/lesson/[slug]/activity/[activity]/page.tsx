@@ -40,9 +40,10 @@ export default async function ActivityPage({ params }: ActivityPageProps) {
 
   if (isRecordedActivity(activityId)) {
     const session = createAssessmentSession(lesson, activityId);
+    const mainClass = activityId === "quiz" ? "gfaQuizPage" : "page";
 
     return (
-      <main className="page">
+      <main className={mainClass}>
         <StudentActivityPlayer
           session={session}
           lesson={lesson}

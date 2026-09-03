@@ -82,6 +82,7 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Present Simple Learn is a complete 8-card curriculum; Quiz and Millionaire still use the existing 50-item bank (10 questions each) instead of shrinking Practice to the old 4-card scope
 - Student `/lesson/[slug]` is a guided sequence; teacher/classroom `?from=teacher` still shows modes, timer, planning, tips, and ActivityGrid. Existing Learn history no longer jumps the learner to the last section on refresh
 - `recordLearnCompletion` is idempotent per lesson version, not per slug forever; companion `learnSaved` means current-version completion only
+- Quiz Practice Garden is a compact two-zone lawn scene: card ~62–67% of an 84vw stage, Bai Tong grounded at stage-end on the garden, Question 1–10 sized for 100% desktop zoom; scoring and Millionaire stay frozen
 
 ---
 

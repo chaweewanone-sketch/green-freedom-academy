@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ActivityResultActions } from "@/components/activities/ActivityResultActions";
-import { ChoiceButton } from "@/components/millionaire/ChoiceButton";
+import { GfaQuizWorld } from "@/components/student-ui/GfaQuizWorld";
 import type { ResultNextAction } from "@/lib/analytics/resultNextAction";
 import { buildAssessmentResult } from "@/lib/assessment";
 import {
@@ -34,6 +34,68 @@ function formatLessonSlug(slug: string): string {
     .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
+}
+
+function choiceLetter(index: number): string {
+  return String.fromCharCode(65 + index);
+}
+
+function QuizShell({ children }: { children: ReactNode }) {
+  return <GfaQuizWorld>{children}</GfaQuizWorld>;
+}
+
+type QuizChoiceButtonProps = {
+  letter: string;
+  label: string;
+  onClick: () => void;
+  disabled: boolean;
+  selected: boolean;
+  state: "default" | "correct" | "incorrect";
+};
+
+function QuizChoiceButton({
+  letter,
+  label,
+  onClick,
+  disabled,
+  selected,
+  state,
+}: QuizChoiceButtonProps) {
+  const stateNote =
+    state === "correct" ? " ถูก" : state === "incorrect" ? " ที่เลือก" : "";
+
+  return (
+    <button
+      type="button"
+      className={[
+        "gfaQuizChoice",
+        `gfaQuizChoice-${state}`,
+        selected ? "gfaQuizChoice-selected" : "",
+        disabled ? "gfaQuizChoice-disabled" : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+      onClick={onClick}
+      disabled={disabled}
+      aria-pressed={selected}
+      aria-label={`ตัวเลือก ${letter}: ${label}${stateNote}`}
+    >
+      <span className="gfaQuizChoiceLetter" aria-hidden="true">
+        {letter}
+      </span>
+      <span className="gfaQuizChoiceText">{label}</span>
+      {state === "correct" ? (
+        <span className="gfaQuizChoiceMark" aria-hidden="true">
+          ✓
+        </span>
+      ) : null}
+      {state === "incorrect" ? (
+        <span className="gfaQuizChoiceMark" aria-hidden="true">
+          ✗
+        </span>
+      ) : null}
+    </button>
+  );
 }
 
 type QuizAttemptProps = {
@@ -150,116 +212,155 @@ function QuizAttempt({
 
   if (phase === "intro") {
     return (
-      <section className="millionaireGame panel">
-        <span className="eyebrow">QUIZ</span>
-        <h1>Quiz</h1>
-        <p className="millionaireIntro">
-          บทเรียน: <strong>{lessonTitle}</strong>
-        </p>
-        {totalQuestions > 0 ? (
-          <p className="millionaireIntro">
-            ทำแบบทดสอบ {session.selectedCount} ข้อ
-          </p>
-        ) : (
-          <p className="millionaireIntro">
-            ไม่มีคำถามที่ตรงกับเงื่อนไขสำหรับบทเรียนนี้
-          </p>
-        )}
-        {totalQuestions > 0 ? (
-          <button
-            type="button"
-            className="button primary"
-            onClick={startQuiz}
-          >
-            เริ่มทำแบบทดสอบ
-          </button>
-        ) : (
-          <Link className="button secondary" href={lessonPath}>
-            กลับไปบทเรียน
-          </Link>
-        )}
-      </section>
+      <QuizShell>
+        <article className="gfaQuizCard gfaQuiz-intro">
+          <div className="gfaQuizIntroIdentity">
+            <span className="gfaQuizEyebrow">Quiz</span>
+            <strong>{lessonTitle}</strong>
+          </div>
+          <div className="gfaQuizIntroBody">
+            <h1>Quiz</h1>
+            <p className="gfaQuizLead">
+              บทเรียน: <strong>{lessonTitle}</strong>
+            </p>
+            {totalQuestions > 0 ? (
+              <p className="gfaQuizLead">
+                ทำแบบทดสอบ {session.selectedCount} ข้อ
+              </p>
+            ) : (
+              <p className="gfaQuizLead">
+                ไม่มีคำถามที่ตรงกับเงื่อนไขสำหรับบทเรียนนี้
+              </p>
+            )}
+          </div>
+          <div className="gfaQuizIntroAction">
+            {totalQuestions > 0 ? (
+              <button
+                type="button"
+                className="button primary"
+                onClick={startQuiz}
+              >
+                เริ่มทำแบบทดสอบ
+              </button>
+            ) : (
+              <Link className="button secondary" href={lessonPath}>
+                กลับไปบทเรียน
+              </Link>
+            )}
+          </div>
+        </article>
+      </QuizShell>
     );
   }
 
   if (phase === "result" && result) {
     return (
-      <section className="millionaireResult panel">
-        <span className="eyebrow">RESULT</span>
-        <h1>ผลการทำแบบทดสอบ</h1>
-        <p className="millionaireResultScore">
-          คะแนน <strong>{result.score}</strong> / {totalQuestions}
-        </p>
-        <dl className="activityPlaceholderMeta quizResultMeta">
-          <div>
-            <dt>ถูก</dt>
-            <dd>{result.correct}</dd>
+      <QuizShell>
+        <article className="gfaQuizCard gfaQuiz-result">
+          <div className="gfaQuizIntroIdentity">
+            <span className="gfaQuizEyebrow">RESULT</span>
+            <strong>{lessonTitle}</strong>
           </div>
-          <div>
-            <dt>ผิด</dt>
-            <dd>{result.incorrect}</dd>
+          <div className="gfaQuizIntroBody">
+            <h1>ผลการทำแบบทดสอบ</h1>
+            <p className="gfaQuizScore">
+              คะแนน <strong>{result.score}</strong> / {totalQuestions}
+            </p>
+            <dl className="gfaQuizResultMeta">
+              <div>
+                <dt>ถูก</dt>
+                <dd>{result.correct}</dd>
+              </div>
+              <div>
+                <dt>ผิด</dt>
+                <dd>{result.incorrect}</dd>
+              </div>
+              <div>
+                <dt>เปอร์เซ็นต์</dt>
+                <dd>{result.percentage}%</dd>
+              </div>
+            </dl>
           </div>
-          <div>
-            <dt>เปอร์เซ็นต์</dt>
-            <dd>{result.percentage}%</dd>
+          <div className="gfaQuizIntroAction gfaQuizResultActions">
+            <ActivityResultActions
+              lessonPath={lessonPath}
+              onRestart={onRequestRestart}
+              nextAction={nextAction}
+              guided
+            />
           </div>
-        </dl>
-        <ActivityResultActions
-          lessonPath={lessonPath}
-          onRestart={onRequestRestart}
-          nextAction={nextAction}
-          guided
-        />
-      </section>
+        </article>
+      </QuizShell>
     );
   }
 
   if (!currentQuestion) {
     return (
-      <section className="millionaireGame panel">
-        <span className="eyebrow">QUIZ</span>
-        <h1>Quiz</h1>
-        <p className="millionaireIntro">
-          ไม่มีคำถามที่ตรงกับเงื่อนไขสำหรับบทเรียนนี้
-        </p>
-        <Link className="button secondary" href={lessonPath}>
-          กลับไปบทเรียน
-        </Link>
-      </section>
+      <QuizShell>
+        <article className="gfaQuizCard gfaQuiz-empty">
+          <span className="gfaQuizEyebrow">QUIZ</span>
+          <h1>Quiz</h1>
+          <p className="gfaQuizLead">
+            ไม่มีคำถามที่ตรงกับเงื่อนไขสำหรับบทเรียนนี้
+          </p>
+          <Link className="button secondary" href={lessonPath}>
+            กลับไปบทเรียน
+          </Link>
+        </article>
+      </QuizShell>
     );
   }
 
   return (
-    <section className="millionaireGame">
-      <div className="millionaireProgress">
-        <div className="millionaireProgressMeta">
-          <span>
-            {currentIndex + 1} / {totalQuestions}
-          </span>
-          <span>
-            ถูก <strong>{correctCount}</strong> · ผิด{" "}
-            <strong>{incorrectCount}</strong>
-          </span>
-        </div>
-        <div
-          className="progress millionaireProgressBar"
-          role="progressbar"
-          aria-valuenow={progressPercent}
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-label="ความคืบหน้าแบบทดสอบ"
-        >
-          <div style={{ width: `${progressPercent}%` }} />
-        </div>
-      </div>
-
+    <QuizShell>
       <article className="millionaireQuestion card">
-        <span className="eyebrow">
+        <header className="gfaQuizHeader">
+          <div className="gfaQuizHeaderIdentity">
+            <span className="gfaQuizEyebrow">Quiz</span>
+            <strong>{lessonTitle}</strong>
+          </div>
+          <div className="gfaQuizHeaderProgress">
+            <span>
+              ข้อ {currentIndex + 1} จาก {totalQuestions}
+            </span>
+            <div
+              className="progress gfaQuizProgressBar"
+              role="progressbar"
+              aria-valuenow={progressPercent}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label="ความคืบหน้าแบบทดสอบ"
+            >
+              <div style={{ width: `${progressPercent}%` }} />
+            </div>
+          </div>
+          <div className="gfaQuizHeaderCounts">
+            <span className="gfaQuizCount gfaQuizCount-correct">
+              <span className="gfaQuizCountIcon" aria-hidden="true">
+                ✓
+              </span>
+              <small>ถูก</small>
+              <strong>{correctCount}</strong>
+            </span>
+            <span className="gfaQuizCount gfaQuizCount-wrong">
+              <span className="gfaQuizCountIcon" aria-hidden="true">
+                ✗
+              </span>
+              <small>ผิด</small>
+              <strong>{incorrectCount}</strong>
+            </span>
+            <span className="gfaQuizCoin" aria-label="เหรียญ 0">
+              <span className="gfaQuizCoinGlyph" aria-hidden="true" />
+              <strong>0</strong>
+            </span>
+          </div>
+        </header>
+        <span className="gfaQuizEyebrow">
           QUIZ · {difficultyLabels[currentQuestion.difficulty]}
         </span>
         <h2>{currentQuestion.prompt}</h2>
-        <div className="millionaireChoices">
-          {currentQuestion.choices.map((choice) => {
+        <div className="gfaQuizChoices">
+          {currentQuestion.choices.map((choice, index) => {
             let state: "default" | "correct" | "incorrect" = "default";
 
             if (revealed && choice.id === currentQuestion.correctChoiceId) {
@@ -273,23 +374,35 @@ function QuizAttempt({
             }
 
             return (
-              <ChoiceButton
+              <QuizChoiceButton
                 key={choice.id}
+                letter={choiceLetter(index)}
                 label={choice.text}
                 onClick={() => handleChoice(choice.id)}
                 disabled={revealed || !choiceInputArmed}
+                selected={choice.id === selectedChoiceId}
                 state={state}
               />
             );
           })}
         </div>
-        {revealed && (
-          <div className="millionaireExplanation planningTip">
-            {currentQuestion.explanation}
+        {revealed ? (
+          <div className="gfaQuizExplanation" role="status">
+            <span className="gfaQuizExplanationCue" aria-hidden="true">
+              ✦
+            </span>
+            <p>{currentQuestion.explanation}</p>
+          </div>
+        ) : (
+          <div className="gfaQuizExplanation gfaQuizHelper" role="note">
+            <span className="gfaQuizExplanationCue" aria-hidden="true">
+              ✦
+            </span>
+            <p>เลือกคำตอบที่ถูกต้องที่สุดเพียงข้อเดียว</p>
           </div>
         )}
         {revealed && (
-          <div className="quizNextAction">
+          <div className="gfaQuizNextAction">
             <button
               type="button"
               className="button primary"
@@ -300,7 +413,7 @@ function QuizAttempt({
           </div>
         )}
       </article>
-    </section>
+    </QuizShell>
   );
 }
 

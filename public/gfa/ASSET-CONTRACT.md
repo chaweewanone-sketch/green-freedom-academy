@@ -220,3 +220,46 @@ RECOMMENDED_ASPECT=16:10
 DESKTOP_ROLE=framed world stage, object-fit contain, no HTML over artwork
 MOBILE_ROLE=full-width contained scene; do not cover-crop the journey map, clubhouse, or practice sign
 
+## QUIZ_BACKGROUND
+
+NAME=quiz-practice-garden
+PATH=`/gfa/scenes/quiz-practice-garden.webp`
+PURPOSE=Practice Garden visual environment for Present Simple Quiz
+ROLE=full-bleed Quiz world atmosphere
+RENDER=cover / center center
+RECOMMENDED_ASPECT=16:9
+TRANSPARENT_BACKGROUND=NO
+TEXT_INSIDE_ASSET=NO
+BAI_TONG_INSIDE_ASSET=NO
+FORBIDDEN=Quiz card; question; A/B/C/D; progress; score; buttons; instructional grammar; characters
+QUALITY=frozen Sprint 52B production art; do not regenerate, recompress, crop, or replace
+SHA256=45c6a71be118a118dd650a58eed25e148b804acc97876c97857c0c0c06fcfc5e
+
+## QUIZ_CHARACTER
+
+NAME=bai-tong-quiz-coach
+PATH=`/gfa/characters/bai-tong-quiz-coach.webp`
+PURPOSE=archived Sprint 52B Bai Tong Quiz Coach (passive standing / thumbs-up); retained frozen; not used for Sprint 52C+ Quiz presentation
+PRODUCT_PRINCIPLE=ONE ACADEMY / ONE BAI TONG / DIFFERENT LEARNING WORLDS
+RECOMMENDED_ASPECT=2:3
+TRANSPARENT_BACKGROUND=YES
+DESKTOP_ROLE=legacy asset only
+MOBILE_ROLE=legacy asset only
+TEXT_INSIDE_ASSET=NO
+QUALITY=frozen Sprint 52B production art; do not regenerate, recompress, crop, or replace
+SHA256=95202b990bfeb7da94e72f01cfed474e4271ec817c873a0d943a68b916b72535
+
+## QUIZ_CHARACTER_POINTING
+
+NAME=bai-tong-quiz-coach-pointing
+PATH=`/gfa/characters/bai-tong-quiz-coach-pointing.webp`
+PURPOSE=canonical Bai Tong Quiz Coach for Sprint 52C+ (full body, pointing up, encouraging)
+PRODUCT_PRINCIPLE=ONE ACADEMY / ONE BAI TONG / DIFFERENT LEARNING WORLDS
+RECOMMENDED_ASPECT=2:3
+TRANSPARENT_BACKGROUND=YES
+DESKTOP_ROLE=right-side Quiz Coach planted on foreground lawn beside HTML Quiz card
+MOBILE_ROLE=compact companion; may hide at 360px if collision requires
+TEXT_INSIDE_ASSET=NO
+QUALITY=frozen Sprint 52C production art; pointing pose; no prop; no baked text; do not regenerate, recompress, crop, or replace
+SHA256=fdd55a40e2f75b4231e7f7bf703dc23f0a1ff2b1b00b14fd57477066ef31ba76
+

@@ -1,5 +1,6 @@
 export { GfaStudentWorld } from "./GfaStudentWorld";
 export type { StudentWorldIntensity } from "./GfaStudentWorld";
+export { GfaQuizWorld } from "./GfaQuizWorld";
 export { GfaLearningWorld } from "./GfaLearningWorld";
 export type { GfaLearningPlot } from "./GfaLearningWorld";
 export { GfaScene } from "./GfaScene";

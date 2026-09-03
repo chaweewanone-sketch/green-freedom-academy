@@ -2082,9 +2082,631 @@
     font-size: 1.2rem;
   }
 }
+.gfaQuizPage {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+/* Sprint 52C — single 16:9 artboard desktop system (fits window.inner*). */
+.gfaQuizWorld {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  padding: 0;
+  color: var(--gfa-ink);
+  background: #8ec6f0;
+}
+.gfaQuizArtboard {
+  position: relative;
+  z-index: 1;
+  aspect-ratio: 16 / 9;
+  width: min(100vw, calc(100vh * 16 / 9));
+  width: min(100vw, calc(100dvh * 16 / 9));
+  max-width: 100%;
+  max-height: 100vh;
+  max-height: 100dvh;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.gfaQuizWorldArt {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.gfaQuizWorldArt .gfaArtSlot {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto !important;
+  border: 0;
+  background: transparent;
+}
+.gfaQuizWorldArt img {
+  object-fit: cover;
+  /* Prefer mid-lawn under coach; avoid extreme bottom-right flower bed. */
+  object-position: 40% 66%;
+}
+.gfaQuizComposition {
+  position: absolute;
+  z-index: 1;
+  /* Shift pair LEFT so Bai Tong stands on open central lawn, not right flower bed. */
+  left: 3%;
+  right: 15%;
+  top: 15%;
+  bottom: 16%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1%;
+  box-sizing: border-box;
+  min-width: 0;
+}
+.gfaQuizCardArea {
+  flex: 0 0 73%;
+  width: 73%;
+  max-width: 73%;
+  min-width: 0;
+  z-index: 2;
+  /* ~73% of ~82% artboard span ≈ 60% artboard width */
+}
+.gfaQuizCoachArea {
+  flex: 1 1 auto;
+  z-index: 3;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  align-self: stretch;
+  min-width: 0;
+  max-width: 28%;
+  height: auto;
+  /* Coach-only lock: shift left onto open lawn; card/artboard/background untouched. */
+  margin-left: -24px;
+  overflow: visible;
+  pointer-events: none;
+  line-height: 0;
+}
+.gfaQuizCoachImg {
+  display: block;
+  height: 94%;
+  width: auto;
+  max-width: none;
+  /* Transparent left pad tuck so opaque body sits against the card. */
+  margin-left: -14%;
+  /* Visual lawn plant: lift from -135 by 60 → -75; nudge down for ~25–35px grass under soles. */
+  margin-bottom: -105px;
+  aspect-ratio: 2 / 3;
+  object-fit: contain;
+  object-position: left bottom;
+  filter: drop-shadow(0 1px 2px rgba(23, 53, 42, 0.22));
+  user-select: none;
+}
+.gfaQuizHeader {
+  display: grid;
+  grid-template-columns: minmax(5.5rem, 0.8fr) minmax(0, 1.4fr) auto;
+  gap: 6px 10px;
+  align-items: end;
+  margin-bottom: 8px;
+}
+.gfaQuizHeaderIdentity {
+  display: grid;
+  gap: 1px;
+}
+.gfaQuizHeaderIdentity strong {
+  font-size: 0.98rem;
+  color: var(--gfa-ink);
+}
+.gfaQuizHeaderProgress {
+  display: grid;
+  gap: 5px;
+  font-weight: 800;
+  font-size: 0.92rem;
+  color: var(--gfa-ink);
+}
+.gfaQuizProgressBar {
+  margin: 0;
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(23, 107, 77, 0.12);
+}
+.gfaQuizProgressBar > div {
+  height: 100%;
+  background: linear-gradient(90deg, #176b4d, #2f9d6a);
+}
+.gfaQuizHeaderCounts {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+}
+.gfaQuizCount {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "icon label"
+    "icon value";
+  align-items: center;
+  column-gap: 5px;
+  min-width: 3.9rem;
+  padding: 4px 7px;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid var(--line);
+}
+.gfaQuizCountIcon {
+  grid-area: icon;
+  display: grid;
+  place-items: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 900;
+  line-height: 1;
+}
+.gfaQuizCount small {
+  grid-area: label;
+  color: var(--gfa-muted);
+  font-weight: 800;
+  font-size: 0.66rem;
+  letter-spacing: 0.02em;
+}
+.gfaQuizCount strong {
+  grid-area: value;
+  font-size: 1.02rem;
+  line-height: 1;
+  color: var(--gfa-ink);
+}
+.gfaQuizCount-correct {
+  border-color: rgba(23, 107, 77, 0.28);
+  background: rgba(231, 245, 237, 0.95);
+}
+.gfaQuizCount-correct .gfaQuizCountIcon {
+  background: var(--gfa-success);
+  color: #fff;
+}
+.gfaQuizCount-correct strong {
+  color: var(--gfa-success);
+}
+.gfaQuizCount-wrong {
+  border-color: rgba(196, 91, 58, 0.28);
+  background: rgba(253, 236, 236, 0.95);
+}
+.gfaQuizCount-wrong .gfaQuizCountIcon {
+  background: var(--gfa-error);
+  color: #fff;
+}
+.gfaQuizCount-wrong strong {
+  color: var(--gfa-error);
+}
+.gfaQuizCoin {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 3.3rem;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ffe9a3, #f4c44a);
+  border: 1px solid rgba(138, 90, 18, 0.28);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+.gfaQuizCoinGlyph {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 35% 30%, #fff6c8 0 22%, transparent 24%),
+    linear-gradient(145deg, #ffe27a, #e0a812);
+  border: 2px solid #c98a12;
+  box-shadow: inset 0 0 0 2px rgba(255, 236, 160, 0.65);
+}
+.gfaQuizCoin strong {
+  font-size: 0.95rem;
+  color: #7a4d08;
+  line-height: 1;
+}
+.gfaQuizEyebrow {
+  color: var(--gfa-primary);
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.gfaQuizCard,
+.gfaQuizCardArea > .card {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: 100%;
+  padding: 12px 16px 12px;
+  border-radius: 22px;
+  background: rgba(255, 252, 244, 0.97);
+  border: 1px solid rgba(23, 107, 77, 0.14);
+  box-shadow: 0 14px 34px rgba(23, 53, 42, 0.13);
+}
+.gfaQuizIntroIdentity {
+  display: grid;
+  gap: 2px;
+}
+.gfaQuizIntroIdentity strong {
+  font-size: 1rem;
+  color: var(--gfa-ink);
+}
+.gfaQuizIntroBody {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.gfaQuizIntroAction {
+  padding-top: 2px;
+}
+.gfaQuiz-intro,
+.gfaQuiz-result,
+.gfaQuiz-empty {
+  gap: 10px;
+  justify-content: flex-start;
+  width: 100%;
+  max-width: none;
+}
+.gfaQuiz-intro h1,
+.gfaQuiz-result h1,
+.gfaQuiz-empty h1 {
+  margin: 0;
+  font-size: clamp(1.55rem, 2.4vw, 1.95rem);
+  line-height: 1.15;
+}
+.gfaQuiz-intro .button.primary,
+.gfaQuiz-empty .button.primary {
+  min-height: 44px;
+  min-width: 11rem;
+  padding: 10px 18px;
+  font-size: 1.02rem;
+}
+.gfaQuizCard h2,
+.gfaQuizCardArea > .card h2 {
+  margin: 4px 0 10px;
+  font-size: clamp(1.2rem, 1.55vw, 1.45rem);
+  line-height: 1.28;
+  overflow-wrap: anywhere;
+}
+.gfaQuizLead {
+  color: var(--gfa-muted);
+  line-height: 1.4;
+  margin: 0;
+  font-size: 0.98rem;
+}
+.gfaQuizLead strong {
+  color: var(--gfa-ink);
+}
+.gfaQuizChoices {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+  margin-top: 2px;
+}
+.gfaQuizChoice {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 40px;
+  padding: 7px 10px;
+  border: 2px solid rgba(23, 107, 77, 0.16);
+  border-radius: 12px;
+  background: #fffef9;
+  color: var(--gfa-ink);
+  font-size: 0.96rem;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.gfaQuizChoice:hover:not(:disabled) {
+  background: var(--gfa-cream);
+  border-color: var(--gfa-primary);
+}
+.gfaQuizChoice:focus-visible {
+  outline: 3px solid var(--gfa-sky);
+  outline-offset: 3px;
+}
+.gfaQuizChoice-selected:not(.gfaQuizChoice-correct):not(.gfaQuizChoice-incorrect) {
+  border-color: var(--gfa-primary);
+  background: #f3fff8;
+  box-shadow: inset 0 0 0 1px rgba(23, 107, 77, 0.28);
+}
+.gfaQuizChoice-correct {
+  border-color: var(--gfa-success);
+  background: var(--gfa-primary-soft);
+}
+.gfaQuizChoice-incorrect {
+  border-color: var(--gfa-error);
+  background: #fdecec;
+}
+.gfaQuizChoice-disabled,
+.gfaQuizChoice:disabled {
+  cursor: default;
+}
+.gfaQuizChoiceLetter {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--gfa-primary-soft);
+  color: var(--gfa-primary);
+  font-weight: 900;
+  font-size: 0.9rem;
+}
+.gfaQuizChoice-correct .gfaQuizChoiceLetter {
+  background: var(--gfa-success);
+  color: #fff;
+}
+.gfaQuizChoice-incorrect .gfaQuizChoiceLetter {
+  background: #f3eee8;
+  color: var(--gfa-error);
+  text-decoration: none;
+}
+.gfaQuizChoiceText {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.gfaQuizChoiceMark {
+  font-size: 0.95rem;
+  font-weight: 900;
+  white-space: nowrap;
+  color: var(--gfa-muted);
+}
+.gfaQuizChoice-correct .gfaQuizChoiceMark {
+  color: var(--gfa-success);
+}
+.gfaQuizChoice-incorrect .gfaQuizChoiceMark {
+  color: var(--gfa-error);
+}
+.gfaQuizExplanation {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  margin-top: 8px;
+  padding: 8px 11px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fff8e0, #ffe9b0);
+  border: 1px solid rgba(196, 146, 42, 0.28);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  line-height: 1.4;
+  font-size: 0.9rem;
+  color: var(--gfa-ink);
+}
+.gfaQuizHelper {
+  opacity: 0.96;
+}
+.gfaQuizExplanationCue {
+  display: grid;
+  place-items: center;
+  width: 1.45rem;
+  height: 1.45rem;
+  border-radius: 999px;
+  background: rgba(244, 196, 74, 0.55);
+  color: #8a5a12;
+  font-weight: 900;
+  line-height: 1;
+  font-size: 0.85rem;
+}
+.gfaQuizExplanation p {
+  margin: 0;
+}
+.gfaQuizNextAction {
+  margin-top: 8px;
+}
+.gfaQuizNextAction .button.primary {
+  min-height: 42px;
+  padding: 8px 16px;
+}
+.gfaQuizScore {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--gfa-muted);
+}
+.gfaQuizScore strong {
+  font-size: 1.85rem;
+  color: var(--gfa-primary);
+}
+.gfaQuizResultMeta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  text-align: left;
+  margin: 8px 0 0;
+}
+.gfaQuizResultMeta dt {
+  color: var(--gfa-muted);
+  font-weight: 700;
+  font-size: 0.88rem;
+}
+.gfaQuizResultMeta dd {
+  margin: 2px 0 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+.gfaQuizResultActions .millionaireResultActions,
+.gfaQuizResultActions .guidedResultActions {
+  justify-content: flex-start;
+}
+.gfaQuizWorld a:focus-visible,
+.gfaQuizWorld button:focus-visible {
+  outline: 3px solid var(--gfa-sky);
+  outline-offset: 3px;
+}
+@media (max-width: 900px) {
+  .gfaQuizWorld {
+    height: auto;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 16px 12px 20px;
+    align-items: stretch;
+  }
+  .gfaQuizArtboard {
+    aspect-ratio: auto;
+    width: 100%;
+    max-width: 100%;
+    max-height: none;
+    height: auto;
+    overflow: visible;
+  }
+  .gfaQuizWorldArt {
+    position: absolute;
+    inset: 0;
+    min-height: 100%;
+  }
+  .gfaQuizComposition {
+    position: relative;
+    left: auto;
+    right: auto;
+    top: auto;
+    bottom: auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    align-items: stretch;
+    width: min(42rem, 100%);
+    max-width: 100%;
+    margin: 0 auto;
+    gap: 10px;
+    padding: 12px 0 8px;
+  }
+  .gfaQuizCardArea {
+    flex: none;
+    width: 100%;
+    max-width: none;
+  }
+  .gfaQuizCoachArea {
+    max-width: none;
+    height: auto;
+    margin-left: 0;
+    justify-content: center;
+    order: 2;
+  }
+  .gfaQuizCoachImg {
+    height: 10.5rem;
+    max-width: min(100%, 12rem);
+    margin-left: 0;
+    margin-bottom: 0;
+    filter: drop-shadow(0 8px 6px rgba(23, 53, 42, 0.22));
+  }
+  .gfaQuizHeaderCounts {
+    grid-column: 2;
+    justify-self: end;
+    flex-wrap: wrap;
+  }
+  .gfaQuizHeader {
+    grid-template-columns: 1fr 1fr;
+  }
+  .gfaQuizHeaderProgress {
+    grid-column: 1 / -1;
+  }
+  .gfaQuiz-intro h1,
+  .gfaQuiz-result h1,
+  .gfaQuiz-empty h1 {
+    font-size: clamp(1.6rem, 7vw, 2.1rem);
+  }
+  .gfaQuizChoice {
+    min-height: 48px;
+  }
+}
+@media (max-width: 560px) {
+  .gfaQuizWorld {
+    padding: 12px 10px 18px;
+  }
+  .gfaQuizComposition {
+    width: 100%;
+    max-width: 100%;
+    gap: 8px;
+  }
+  .gfaQuizCard,
+  .gfaQuizCardArea > .card {
+    padding: 12px 10px 14px;
+    border-radius: 20px;
+  }
+  .gfaQuizHeader {
+    grid-template-columns: 1fr;
+  }
+  .gfaQuizHeaderCounts {
+    grid-column: auto;
+    justify-self: start;
+  }
+  .gfaQuizCoachImg {
+    height: 7.5rem;
+    max-width: 9rem;
+  }
+  .gfaQuizResultMeta {
+    grid-template-columns: 1fr;
+  }
+  .gfaQuizChoice {
+    min-height: 48px;
+    font-size: 1rem;
+    padding: 10px 10px;
+  }
+  .gfaQuizCard h2,
+  .gfaQuizCardArea > .card h2 {
+    font-size: clamp(1.18rem, 5.2vw, 1.42rem);
+    margin: 8px 0 10px;
+  }
+  .gfaQuizNextAction .button.primary,
+  .gfaQuiz-intro .button.primary {
+    min-height: 48px;
+    width: 100%;
+  }
+}
+@media (max-width: 390px) {
+  .gfaQuizWorld {
+    padding: 10px 8px 16px;
+  }
+  .gfaQuizCoachImg {
+    height: 6.75rem;
+    max-width: 8.25rem;
+  }
+  .gfaQuizEyebrow {
+    font-size: 0.64rem;
+  }
+  .gfaQuizChoice {
+    min-height: 48px;
+    font-size: 0.95rem;
+  }
+}
+@media (max-width: 360px) {
+  .gfaQuizWorld {
+    padding: 8px 8px 14px;
+  }
+  .gfaQuizCoachArea {
+    display: flex;
+  }
+  .gfaQuizCoachImg {
+    height: 6rem;
+    max-width: 7.5rem;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .gfaLearningWorld,
   .gfaStudentWorld,
+  .gfaQuizWorld,
+  .gfaQuizChoice,
   .gfaCharacter {
     animation: none;
     transition: none;

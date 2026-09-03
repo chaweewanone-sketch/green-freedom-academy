@@ -25,7 +25,10 @@ export type GfaArtSlotId =
   | "bai-tong-clock-guide"
   | "clock-garden-routines"
   | "bai-tong-clubhouse-guide"
-  | "clubhouse-map-finale";
+  | "clubhouse-map-finale"
+  | "quiz-practice-garden"
+  | "bai-tong-quiz-coach"
+  | "bai-tong-quiz-coach-pointing";
 
 export type GfaArtSlotSpec = {
   id: GfaArtSlotId;
@@ -175,5 +178,26 @@ export const GFA_SECTION8_ART = {
     src: "/gfa/scenes/clubhouse-map-finale.webp",
     aspect: "16 / 10",
     transparent: false,
+  },
+} as const satisfies Record<string, GfaArtSlotSpec>;
+
+export const GFA_QUIZ_ART = {
+  quizPracticeGarden: {
+    id: "quiz-practice-garden",
+    src: "/gfa/scenes/quiz-practice-garden.webp",
+    aspect: "16 / 9",
+    transparent: false,
+  },
+  baiTongQuizCoach: {
+    id: "bai-tong-quiz-coach",
+    src: "/gfa/characters/bai-tong-quiz-coach.webp",
+    aspect: "2 / 3",
+    transparent: true,
+  },
+  baiTongQuizCoachPointing: {
+    id: "bai-tong-quiz-coach-pointing",
+    src: "/gfa/characters/bai-tong-quiz-coach-pointing.webp",
+    aspect: "2 / 3",
+    transparent: true,
   },
 } as const satisfies Record<string, GfaArtSlotSpec>;
