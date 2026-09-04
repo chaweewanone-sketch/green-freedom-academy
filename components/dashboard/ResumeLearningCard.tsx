@@ -4,13 +4,16 @@ import type { ResumeLearning } from "@/types/analytics";
 type ResumeLearningCardProps = {
   resume: ResumeLearning;
   compact?: boolean;
+  hasHistory?: boolean;
 };
 
 export function ResumeLearningCard({
   resume,
   compact = false,
+  hasHistory = false,
 }: ResumeLearningCardProps) {
   const { action } = resume;
+  const eyebrow = hasHistory ? "RESUME LEARNING" : "START LEARNING";
 
   return (
     <section
@@ -19,9 +22,9 @@ export function ResumeLearningCard({
           ? "panel studentDashboardSection resumeLearningCard resumeLearningCardCompact"
           : "panel studentDashboardSection resumeLearningCard"
       }
-      aria-label="เรียนต่อ"
+      aria-label={hasHistory ? "เรียนต่อ" : "เริ่มการเรียนรู้"}
     >
-      <span className="eyebrow">RESUME LEARNING</span>
+      <span className="eyebrow">{eyebrow}</span>
       {compact ? <h3>{resume.title}</h3> : <h2>{resume.title}</h2>}
       <p>
         <strong>{action.lessonTitle}</strong>

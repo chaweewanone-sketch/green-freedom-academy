@@ -372,6 +372,60 @@ export function verifyNoDirectStorageDependencies(): void {
   assert(!source.includes("loadDashboard"), "15: no dashboard loader");
 }
 
+export function verifyFirstVisitCopyPresentation(): void {
+  const home = readFileSync(
+    resolve(process.cwd(), "components/student/StudentLearningHome.tsx"),
+    "utf8",
+  );
+  const resumeCard = readFileSync(
+    resolve(process.cwd(), "components/dashboard/ResumeLearningCard.tsx"),
+    "utf8",
+  );
+  const empty = homeFromEvents([]);
+  const returningEvents = [
+    makeEvent({
+      activity: "quiz",
+      lessonSlug: "present-simple",
+      scorePercentage: 50,
+    }),
+  ];
+  const returning = buildStudentLearningHome(
+    buildLearningSummary(returningEvents),
+    returningEvents,
+  );
+  const completeEvents = presentCompleteEvents();
+  const complete = buildStudentLearningHome(
+    buildLearningSummary(completeEvents),
+    completeEvents,
+  );
+
+  assert(!empty.hasHistory, "16: empty hasHistory false");
+  assert(home.includes("เริ่มต้นการเรียนรู้ของคุณ"), "16: empty hero copy");
+  assert(home.includes("เรียนต่อจากจุดที่ค้างไว้"), "16: returning hero copy kept");
+  assert(resumeCard.includes("START LEARNING"), "16: start eyebrow");
+  assert(resumeCard.includes("RESUME LEARNING"), "16: resume eyebrow kept");
+  assert(resumeCard.includes("hasHistory"), "16: eyebrow uses hasHistory");
+  assert(empty.resumeLearning.title === "เริ่มการเรียนรู้", "16: empty title");
+  assert(
+    empty.resumeLearning.description === "เริ่มต้นบทเรียนแรกของคุณ",
+    "16: empty description",
+  );
+  assert(empty.resumeLearning.action.label === "เริ่มเรียน", "16: empty CTA");
+  assert(
+    empty.resumeLearning.action.href === getLessonPath("present-simple"),
+    "16: empty href",
+  );
+  assert(returning.hasHistory, "16: returning hasHistory");
+  assert(
+    complete.resumeLearning.action.href === getDashboardPath(),
+    "16: complete still dashboard",
+  );
+  assert(
+    complete.resumeLearning.action.href !== getLessonPath("past-simple"),
+    "16: complete not Past Simple",
+  );
+}
+
 export function runStudentHomeVerification(): void {
   verifyEmptyHistoryStartsPresent();
   verifyWeakPresentQuizResumesQuiz();
@@ -388,4 +442,5 @@ export function runStudentHomeVerification(): void {
   verifyInputsNotMutated();
   verifyDashboardHref();
   verifyNoDirectStorageDependencies();
+  verifyFirstVisitCopyPresentation();
 }

@@ -74,7 +74,11 @@ export function StudentDashboard({
         <CurriculumProgressCard progress={curriculumProgress} showOverallPercent={false} />
         <JourneyCard journey={journey} />
         <RecommendationCard recommendation={recommendation} />
-        <ResumeLearningCard resume={resume} compact />
+        <ResumeLearningCard
+          resume={resume}
+          compact
+          hasHistory={summary.totalActivities > 0}
+        />
       </>
     );
   }
@@ -180,7 +184,11 @@ export function StudentDashboard({
         </dl>
       </section>
 
-      <ResumeLearningCard resume={resume} compact />
+      <ResumeLearningCard
+        resume={resume}
+        compact
+        hasHistory={summary.totalActivities > 0}
+      />
     </div>
   );
 }

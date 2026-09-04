@@ -43,7 +43,9 @@ export function StudentLearningHome({ model }: StudentLearningHomeProps) {
           <h1>
             {isComplete
               ? "เรียนครบหลักสูตรแล้ว"
-              : "เรียนต่อจากจุดที่ค้างไว้"}
+              : hasHistory
+                ? "เรียนต่อจากจุดที่ค้างไว้"
+                : "เริ่มต้นการเรียนรู้ของคุณ"}
           </h1>
           <p>
             {isComplete
@@ -53,7 +55,7 @@ export function StudentLearningHome({ model }: StudentLearningHomeProps) {
         </div>
       </section>
 
-      <ResumeLearningCard resume={resumeLearning} />
+      <ResumeLearningCard resume={resumeLearning} hasHistory={hasHistory} />
 
       <div className="studentHomeCompactGrid">
         {activeLesson ? (
