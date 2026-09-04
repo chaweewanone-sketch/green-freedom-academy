@@ -1,9 +1,11 @@
 import type { Activity } from "@/types/activity";
 
+export const MILLIONAIRE_ACTIVITY_DISPLAY_NAME = "Millionaire Challenge";
+
 export const activities: Activity[] = [
   {
     id: "millionaire",
-    title: "Millionaire Challenge",
+    title: MILLIONAIRE_ACTIVITY_DISPLAY_NAME,
     description: "ตอบคำถามแบบเกมเศรษฐีเพื่อทบทวนบทเรียน",
     icon: "💰",
     status: "available",

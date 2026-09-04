@@ -7,6 +7,7 @@ import { buildCurriculumProgress } from "@/lib/analytics/curriculumProgress";
 import { buildLearningJourney } from "@/lib/analytics/journey";
 import { buildLearningRecommendation } from "@/lib/analytics/recommendation";
 import { buildResumeLearning } from "@/lib/analytics/resumeLearning";
+import { MILLIONAIRE_ACTIVITY_DISPLAY_NAME } from "@/lib/activities";
 import { getStudentPath } from "@/lib/routes";
 import { CurriculumProgressCard } from "./CurriculumProgressCard";
 import { JourneyCard } from "./JourneyCard";
@@ -20,7 +21,7 @@ type StudentDashboardProps = {
 
 function formatActivityLabel(activity: string): string {
   const labels: Record<string, string> = {
-    millionaire: "Millionaire Challenge",
+    millionaire: MILLIONAIRE_ACTIVITY_DISPLAY_NAME,
     quiz: "Quiz",
     learn: "เรียน",
     "flash-cards": "Flash Cards",
@@ -59,7 +60,7 @@ export function StudentDashboard({
           <span className="eyebrow">LEARNING SUMMARY</span>
           <h2>ยังไม่มีกิจกรรมการเรียน</h2>
           <p className="studentDashboardEmptyMessage">
-            เริ่มทำ Quiz, Millionaire หรือ Flash Cards เพื่อดูสรุปการเรียนที่นี่
+            เริ่มทำ Quiz, {MILLIONAIRE_ACTIVITY_DISPLAY_NAME} หรือ Flash Cards เพื่อดูสรุปการเรียนที่นี่
           </p>
           <div className="actions">
             <Link
@@ -87,7 +88,7 @@ export function StudentDashboard({
   const activityStats = [
     { label: "กิจกรรมทั้งหมด", value: String(summary.totalActivities) },
     { label: "Quiz", value: String(summary.quizAttempts) },
-    { label: "Millionaire", value: String(summary.millionaireAttempts) },
+    { label: MILLIONAIRE_ACTIVITY_DISPLAY_NAME, value: String(summary.millionaireAttempts) },
     { label: "Flash Cards", value: String(summary.flashCardAttempts) },
   ];
 
@@ -97,7 +98,7 @@ export function StudentDashboard({
       value: formatScore(summary.averageQuizScore),
     },
     {
-      label: "คะแนนเฉลี่ย Millionaire",
+      label: `คะแนนเฉลี่ย ${MILLIONAIRE_ACTIVITY_DISPLAY_NAME}`,
       value: formatScore(summary.averageMillionaireScore),
     },
   ];

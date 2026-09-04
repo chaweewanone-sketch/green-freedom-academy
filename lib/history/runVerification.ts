@@ -21,6 +21,7 @@ import { runResultNextActionVerification } from "@/lib/analytics/resultNextActio
 import { runQuizAttemptResetVerification } from "@/lib/quiz/quizAttemptResetVerification";
 import { runMillionaireAttemptResetVerification } from "@/lib/millionaire/millionaireAttemptResetVerification";
 import { runStageLadderVerification } from "@/lib/millionaire/stageLadderVerification";
+import { runMillionaireNamingVerification } from "@/lib/millionaire/millionaireNamingVerification";
 import { runStudentVisualFoundationVerification } from "@/lib/student-ui/studentVisualFoundationVerification";
 import { runLearnerLessonLaunchVerification } from "@/lib/analytics/learnerLessonLaunchVerification";
 import { runPilotUxVerification } from "@/lib/analytics/pilotUxVerification";
@@ -100,6 +101,9 @@ console.log("millionaire attempt reset verification passed");
 
 runStageLadderVerification();
 console.log("stage ladder verification passed");
+
+runMillionaireNamingVerification();
+console.log("millionaire naming verification passed");
 
 runStudentVisualFoundationVerification();
 console.log("student visual foundation verification passed");

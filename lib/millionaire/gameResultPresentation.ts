@@ -1,3 +1,4 @@
+import { MILLIONAIRE_ACTIVITY_DISPLAY_NAME } from "@/lib/activities";
 import { RECOMMENDATION_THRESHOLDS } from "@/lib/analytics/recommendation";
 
 export type GameResultBand = "weak" | "developing" | "strong";
@@ -30,7 +31,7 @@ export function buildGameResultPresentation(
 ): GameResultPresentation {
   const percentage = total > 0 ? Math.round((score / total) * 100) : 0;
   const band = resultBand(percentage);
-  const kicker = `เล่นครบ ${total} ด่านแล้ว!`;
+  const kicker = MILLIONAIRE_ACTIVITY_DISPLAY_NAME;
   const starsLabel = `ดาว ${score}/${total}`;
   const lesson = lessonTitle?.trim() || "เกมนี้";
 
@@ -39,7 +40,7 @@ export function buildGameResultPresentation(
       band,
       kicker,
       title: "สู้ต่อไปนะ เราไปด้วยกัน",
-      message: "กลับไปฝึก Quiz แล้วจะเก็บดาวได้มากขึ้น",
+      message: `เล่นครบ ${total} ด่านแล้ว กลับไปฝึก Quiz แล้วจะเก็บดาวได้มากขึ้น`,
       starsLabel,
       percentage,
     };
@@ -50,7 +51,7 @@ export function buildGameResultPresentation(
       band,
       kicker,
       title: "อีกนิดเดียว!",
-      message: "เก็บดาวเพิ่มอีกนิด แล้วจะพิชิตเกมนี้",
+      message: `เล่นครบ ${total} ด่านแล้ว เก็บดาวเพิ่มอีกนิด แล้วจะพิชิตเกมนี้`,
       starsLabel,
       percentage,
     };
@@ -60,7 +61,7 @@ export function buildGameResultPresentation(
     band,
     kicker,
     title: "🏆 เยี่ยมมาก!",
-    message: `พิชิตเกม ${lesson} สำเร็จแล้ว`,
+    message: `เล่นครบ ${total} ด่านแล้ว พิชิตเกม ${lesson} สำเร็จแล้ว`,
     starsLabel,
     percentage,
   };

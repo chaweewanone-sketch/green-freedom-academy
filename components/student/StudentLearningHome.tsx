@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ResumeLearningCard } from "@/components/dashboard/ResumeLearningCard";
+import { MILLIONAIRE_ACTIVITY_DISPLAY_NAME } from "@/lib/activities";
 import {
   presentActiveLessonCopy,
   presentHomeOverallProgressPercent,
@@ -13,7 +14,7 @@ type StudentLearningHomeProps = {
 
 function formatActivityLabel(activity: string): string {
   const labels: Record<string, string> = {
-    millionaire: "Millionaire Challenge",
+    millionaire: MILLIONAIRE_ACTIVITY_DISPLAY_NAME,
     quiz: "Quiz",
     learn: "เรียน",
     "flash-cards": "Flash Cards",

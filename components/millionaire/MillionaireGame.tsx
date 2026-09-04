@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRef, useState } from "react";
+import { MILLIONAIRE_ACTIVITY_DISPLAY_NAME } from "@/lib/activities";
 import { AdventureMap } from "./AdventureMap";
 import { GameWorld } from "./GameWorld";
 import { QuestionCard } from "./QuestionCard";
@@ -141,9 +142,11 @@ function MillionaireAttempt({
         <section className="gfaGameHero">
           <div className="gfaGameHeroCopy">
             <p className="gfaGameIntroEyebrow">เกม</p>
-            <h1>เกมพิชิต 10 ด่าน</h1>
+            <h1>{MILLIONAIRE_ACTIVITY_DISPLAY_NAME}</h1>
             <p className="gfaGameIntroLesson">{lessonTitle}</p>
-            <p className="gfaGameSpeech">มาพิชิต 10 ด่านกัน!</p>
+            <p className="gfaGameSpeech">
+              พิชิต 10 ด่าน ทดสอบความรู้ {lessonTitle}
+            </p>
             {totalQuestions > 0 ? (
               <aside className="gfaMissionCard">
                 <p className="gfaMissionKicker">ภารกิจของวันนี้ ⭐</p>
@@ -218,7 +221,7 @@ function MillionaireAttempt({
         <section className="gfaGameShell">
         <header className="gfaGameHeader">
           <div className="gfaGameHeaderCopy">
-            <h1 className="gfaGameTitle">เกมพิชิต 10 ด่าน</h1>
+            <h1 className="gfaGameTitle">{MILLIONAIRE_ACTIVITY_DISPLAY_NAME}</h1>
             <p className="gfaGameLesson">{lessonTitle}</p>
           </div>
           <p

@@ -145,6 +145,10 @@ export function verifyResultScoreUnchanged(): void {
   assert(presentation.starsLabel === "ดาว 8/10", "result: stars mirror correct count");
   assert(presentation.percentage === 80, "result: presentation uses same %");
   assert(presentation.band === "developing", "result: 80 is developing");
+  assert(
+    presentation.kicker === "Millionaire Challenge",
+    "result: canonical activity name",
+  );
   assert(buildGameResultPresentation(6, 10).band === "weak", "result: 60 weak");
   assert(buildGameResultPresentation(9, 10).band === "strong", "result: 90 strong");
 }
@@ -173,7 +177,8 @@ export function verifyMillionaireGameSourceBoundary(): void {
   );
   const css = readFileSync(resolve(process.cwd(), "app/globals.css"), "utf8");
 
-  assert(game.includes("เกมพิชิต 10 ด่าน"), "ui: original game title");
+  assert(game.includes("MILLIONAIRE_ACTIVITY_DISPLAY_NAME"), "ui: canonical activity name");
+  assert(!game.includes("เกมพิชิต 10 ด่าน"), "ui: competing title removed");
   assert(game.includes("เริ่มพิชิตด่าน"), "ui: explicit start remains");
   assert(!game.includes("setTimeout"), "ui: auto-advance timer removed");
   assert(!game.includes(", 700)"), "ui: 700ms delay removed");
