@@ -1,15 +1,17 @@
 import { GfaArtSlot } from "./GfaArtSlot";
 import { GfaMission } from "./GfaMission";
+import { GfaWorldLeadTitles } from "./GfaWorldLeadTitles";
 import { GFA_SECTION7_ART } from "@/lib/student-ui/gfaArtAssets";
+import { PRESENT_SIMPLE_WORLD_TITLES } from "@/lib/student-ui/presentSimpleWorldTitles";
 import type { LessonStep } from "@/types/lesson";
 
-const FREQUENCY_WORDS = [
-  "always",
-  "usually",
-  "often",
-  "sometimes",
-  "rarely",
-  "never",
+const FREQUENCY_AIDS = [
+  { word: "always", meaning: "เสมอ / เป็นประจำ", aid: "≈ 100%" },
+  { word: "usually", meaning: "โดยปกติ", aid: "≈ 80–90%" },
+  { word: "often", meaning: "บ่อย ๆ", aid: "≈ 60–70%" },
+  { word: "sometimes", meaning: "บางครั้ง", aid: "≈ 40–50%" },
+  { word: "rarely", meaning: "นาน ๆ ครั้ง", aid: "≈ 10–20%" },
+  { word: "never", meaning: "ไม่เคย", aid: "0%" },
 ] as const;
 
 const EXAMPLE_MARKS: Record<string, string> = {
@@ -60,9 +62,11 @@ export function EverydayGardenClockGardenSection7({
     <div className="gfaClock">
       <header className="gfaLearnLead gfaClockLead">
         <div className="gfaClockLeadCopy">
-          <p className="gfaGardenKicker">LEARN / เรียนรู้ · สวนนาฬิกา</p>
-          <h1 className="gfaGardenTitle">{lessonTitle}</h1>
-          <h2 className="gfaGardenSection">{step.title}</h2>
+          <GfaWorldLeadTitles
+            worldTitle={PRESENT_SIMPLE_WORLD_TITLES[6]}
+            lessonTitle={lessonTitle}
+            teachingTitle={step.title}
+          />
           <GfaMission>
             บ่อยแค่ไหน? เมื่อไร?
             <span className="gfaClockMissionPattern">
@@ -115,12 +119,17 @@ export function EverydayGardenClockGardenSection7({
         <div className="gfaClockScale" aria-label="คำบอกความถี่">
           <p className="gfaLearnBeat">A. คำบอกความถี่</p>
           <ul>
-            {FREQUENCY_WORDS.map((word) => (
-              <li key={word}>
-                <strong>{word}</strong>
+            {FREQUENCY_AIDS.map((item) => (
+              <li key={item.word}>
+                <strong>{item.word}</strong>
+                <span className="gfaClockScaleMeaning">{item.meaning}</span>
+                <span className="gfaClockScaleAid">{item.aid}</span>
               </li>
             ))}
           </ul>
+          <p className="gfaClockScaleNote">
+            เปอร์เซ็นต์เป็นค่าประมาณเพื่อช่วยให้เห็นระดับความถี่
+          </p>
         </div>
 
         <div className="gfaClockPosition" aria-label="ตำแหน่งคำบอกความถี่">

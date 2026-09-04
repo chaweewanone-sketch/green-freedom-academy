@@ -1,19 +1,26 @@
 import Link from "next/link";
+import { shouldHideSamePageDashboardAction } from "@/lib/analytics/pilotLearnerPresentation";
 import type { ResumeLearning } from "@/types/analytics";
 
 type ResumeLearningCardProps = {
   resume: ResumeLearning;
   compact?: boolean;
   hasHistory?: boolean;
+  suppressSamePageAction?: boolean;
 };
 
 export function ResumeLearningCard({
   resume,
   compact = false,
   hasHistory = false,
+  suppressSamePageAction = false,
 }: ResumeLearningCardProps) {
   const { action } = resume;
   const eyebrow = hasHistory ? "RESUME LEARNING" : "START LEARNING";
+  const hideAction = shouldHideSamePageDashboardAction(
+    suppressSamePageAction,
+    action.href,
+  );
 
   return (
     <section
@@ -30,15 +37,17 @@ export function ResumeLearningCard({
         <strong>{action.lessonTitle}</strong>
       </p>
       <p>{resume.description}</p>
-      <div className="actions">
-        <Link
-          className="button primary"
-          href={action.href}
-          aria-label={action.label}
-        >
-          {action.label}
-        </Link>
-      </div>
+      {hideAction ? null : (
+        <div className="actions">
+          <Link
+            className="button primary"
+            href={action.href}
+            aria-label={action.label}
+          >
+            {action.label}
+          </Link>
+        </div>
+      )}
     </section>
   );
 }

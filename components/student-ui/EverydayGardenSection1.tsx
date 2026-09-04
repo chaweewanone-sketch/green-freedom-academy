@@ -1,6 +1,8 @@
 import { GfaArtSlot } from "./GfaArtSlot";
 import { GfaMission } from "./GfaMission";
+import { GfaWorldLeadTitles } from "./GfaWorldLeadTitles";
 import { GFA_SECTION1_ART } from "@/lib/student-ui/gfaArtAssets";
+import { PRESENT_SIMPLE_WORLD_TITLES } from "@/lib/student-ui/presentSimpleWorldTitles";
 import type { LessonStep } from "@/types/lesson";
 
 const HABIT_EXAMPLE = "I walk to school every day.";
@@ -40,9 +42,11 @@ export function EverydayGardenSection1({
   return (
     <div className="gfaGardenGate">
       <div className="gfaGardenGateLead">
-        <p className="gfaGardenKicker">LEARN / เรียนรู้ · ลานเขียวอิสระ</p>
-        <h1 className="gfaGardenTitle">{lessonTitle}</h1>
-        <h2 className="gfaGardenSection">{step.title}</h2>
+        <GfaWorldLeadTitles
+          worldTitle={PRESENT_SIMPLE_WORLD_TITLES[0]}
+          lessonTitle={lessonTitle}
+          teachingTitle={step.title}
+        />
         <GfaMission>
           แยกสิ่งที่ทำเป็นประจำ
           <br />

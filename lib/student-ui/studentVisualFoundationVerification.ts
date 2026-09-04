@@ -247,6 +247,8 @@ export function runStudentVisualFoundationVerification(): void {
   );
   assert(companion.includes("TeachingPanel"), "learn: TeachingPanel fallback");
   assert(companion.includes("showActivityGrid={!isStudentLearn}"), "learn: grid gated");
+  assert(companion.includes("scrollIntoView"), "learn: section change scrolls to top");
+  assert(companion.includes("previousStepRef"), "learn: skip initial load scroll");
   assert(css.includes(".gfaLearningWorld .guidedLearnFooter .primary"), "css: student CTA");
 
   assert(section1.includes("I walk to school every day."), "s1: habit example");
@@ -298,6 +300,8 @@ export function runStudentVisualFoundationVerification(): void {
   assert(section3.includes("{step.examples.map"), "s3: examples from content");
   assert(section3.includes("gfaEndingMark"), "s3: ending stays HTML");
   assert(section3.includes("gfaEndingRule"), "s3 r2: scannable s/es rule");
+  assert(section3.includes("กริยาเติม"), "s3: เติม -s/-es wording");
+  assert(!section3.includes("กริยาเปลี่ยน"), "s3: no เปลี่ยน verb wording");
   assert(section3.includes("play →"), "s3 r2: play to plays");
   assert(section3.includes("watch →"), "s3 r2: watch to watches");
   assert(section3.includes("ch / sh / x / s"), "s3 r2: es endings visible");
@@ -454,7 +458,18 @@ export function runStudentVisualFoundationVerification(): void {
   assert(section7.includes("ช่วงวัน"), "s7: in part of day");
   assert(section7.includes("{step.examples.map"), "s7: examples from content");
   assert(section7.includes("memoryLine"), "s7: frozen memory line");
-  assert(!section7.includes("%"), "s7: no percentages");
+  assert(section7.includes("เสมอ / เป็นประจำ"), "s7: always Thai aid");
+  assert(section7.includes("โดยปกติ"), "s7: usually Thai aid");
+  assert(section7.includes("บ่อย ๆ"), "s7: often Thai aid");
+  assert(section7.includes("บางครั้ง"), "s7: sometimes Thai aid");
+  assert(section7.includes("นาน ๆ ครั้ง"), "s7: rarely Thai aid");
+  assert(section7.includes("ไม่เคย"), "s7: never Thai aid");
+  assert(section7.includes("≈ 100%"), "s7: always approximate aid");
+  assert(
+    section7.includes("เปอร์เซ็นต์เป็นค่าประมาณเพื่อช่วยให้เห็นระดับความถี่"),
+    "s7: approximate frequency note",
+  );
+  assert(!section7.includes("seldom"), "s7: no extra frequency word");
   assert(!section7.includes("is always"), "s7: no be + adverb");
   assert(!section7.includes("Sometimes I"), "s7: no front-position sometimes");
   assert(!section7.includes("Which"), "s7: no which");
@@ -471,8 +486,12 @@ export function runStudentVisualFoundationVerification(): void {
   assert(section8.includes('fit="contain"'), "s8: scene contain");
   assert(section8.includes("เรียนครบแล้ว!"), "s8: arrival mission");
   assert(
-    section8.includes('<span className="gfaClubPlace">บ้านแผนที่</span>'),
+    section8.includes("nowrapWorldName"),
     "s8: place nowrap unit",
+  );
+  assert(
+    section8.includes("PRESENT_SIMPLE_WORLD_TITLES[7]"),
+    "s8: English world title",
   );
   assert(css.includes(".gfaClubPlace{white-space:nowrap}"), "css: club place nowrap");
   assert(section8.includes("มาดูแผนที่ Present Simple ก่อนออกไปลอง Quiz"), "s8: mission to practice");
@@ -690,6 +709,9 @@ export function runStudentVisualFoundationVerification(): void {
 
   assert(quiz.includes("GfaQuizWorld"), "quiz: practice garden wrap");
   assert(!quiz.includes("GfaLearningWorld"), "quiz: no learn world wrap");
+  assert(!quiz.includes("gfaQuizCoin"), "quiz: nonfunctional coin removed");
+  assert(!quiz.includes("เหรียญ 0"), "quiz: hardcoded coin copy removed");
+  assert(!css.includes(".gfaQuizCoin"), "css: orphaned quiz coin removed");
   assert(quiz.includes("เริ่มทำแบบทดสอบ"), "quiz: intro copy unchanged");
   assert(choice.includes("millionaireChoice"), "choice: shared button unchanged");
   assert(game.includes("GameWorld"), "game: Sprint 42 world remains");

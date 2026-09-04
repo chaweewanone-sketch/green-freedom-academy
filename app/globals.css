@@ -878,6 +878,23 @@
   line-height: 1.15;
   text-shadow: 0 1px 0 rgba(255, 248, 232, 0.85), 0 6px 18px rgba(255, 248, 232, 0.45);
 }
+.gfaGardenSection:focus {
+  outline: none;
+}
+.gfaGardenSection:focus-visible {
+  outline: 2px solid var(--gfa-primary);
+  outline-offset: 3px;
+}
+.gfaGardenTeachingTitle {
+  margin: 0 0 8px;
+  color: var(--gfa-ink);
+  font-size: clamp(1.05rem, 2vw, 1.28rem);
+  font-weight: 800;
+  line-height: 1.25;
+}
+.gfaLearnPage:focus {
+  outline: none;
+}
 .gfaMission {
   display: flex;
   align-items: center;
@@ -1673,6 +1690,30 @@
   font-weight: 800;
   line-height: 1.4;
 }
+.gfaClockScale li {
+  display: grid;
+  gap: 2px;
+}
+.gfaClockScaleMeaning,
+.gfaClockScaleAid {
+  display: block;
+  font-size: 0.78em;
+  font-weight: 800;
+  line-height: 1.3;
+}
+.gfaClockScaleMeaning {
+  color: var(--gfa-ink);
+}
+.gfaClockScaleAid {
+  color: var(--gfa-primary);
+}
+.gfaClockScaleNote {
+  margin: 4px 0 0;
+  color: var(--gfa-muted);
+  font-size: clamp(0.92rem, 2vw, 1.05rem);
+  font-weight: 700;
+  line-height: 1.35;
+}
 .gfaClockScale strong,
 .gfaClockTime strong {
   color: var(--gfa-primary);
@@ -2291,32 +2332,6 @@
 }
 .gfaQuizCount-wrong strong {
   color: var(--gfa-error);
-}
-.gfaQuizCoin {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  min-width: 3.3rem;
-  padding: 4px 8px;
-  border-radius: 999px;
-  background: linear-gradient(180deg, #ffe9a3, #f4c44a);
-  border: 1px solid rgba(138, 90, 18, 0.28);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
-}
-.gfaQuizCoinGlyph {
-  width: 1rem;
-  height: 1rem;
-  border-radius: 999px;
-  background:
-    radial-gradient(circle at 35% 30%, #fff6c8 0 22%, transparent 24%),
-    linear-gradient(145deg, #ffe27a, #e0a812);
-  border: 2px solid #c98a12;
-  box-shadow: inset 0 0 0 2px rgba(255, 236, 160, 0.65);
-}
-.gfaQuizCoin strong {
-  font-size: 0.95rem;
-  color: #7a4d08;
-  line-height: 1;
 }
 .gfaQuizEyebrow {
   color: var(--gfa-primary);

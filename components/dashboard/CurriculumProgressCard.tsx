@@ -1,7 +1,6 @@
 import {
-  CURRICULUM_LESSON_STATUS_LABELS,
-} from "@/lib/analytics/curriculumProgress";
-import { JOURNEY_STAGE_LABELS } from "@/lib/analytics/journey";
+  presentCurriculumProgress,
+} from "@/lib/analytics/pilotLearnerPresentation";
 import { getLessonBySlug } from "@/lib/lessons";
 import type { CurriculumProgress } from "@/types/analytics";
 
@@ -14,6 +13,7 @@ export function CurriculumProgressCard({
   progress,
   showOverallPercent = true,
 }: CurriculumProgressCardProps) {
+  const presented = presentCurriculumProgress(progress);
   const activeTitle = progress.activeLessonSlug
     ? getLessonBySlug(progress.activeLessonSlug)?.title ??
       progress.activeLessonSlug
@@ -26,9 +26,15 @@ export function CurriculumProgressCard({
     >
       <span className="eyebrow">CURRICULUM PROGRESS</span>
       <h2>ความก้าวหน้าหลักสูตร</h2>
-      {activeTitle ? (
+      {activeTitle && presented.showActiveAsCurrent ? (
         <p>
           ตอนนี้กำลังเรียน: <strong>{activeTitle}</strong>
+        </p>
+      ) : activeTitle ? (
+        <p>
+          บทเรียนถัดไป: <strong>{activeTitle}</strong>
+          {" · "}
+          ยังไม่เปิดให้เรียน
         </p>
       ) : (
         <p>
@@ -37,55 +43,53 @@ export function CurriculumProgressCard({
       )}
       <p>
         เรียนจบแล้ว {progress.completedLessons}/{progress.totalLessons} บท
-        {showOverallPercent ? ` · ${progress.overallProgressPercent}%` : null}
+        {showOverallPercent ? ` · ${presented.displayOverallPercent}%` : null}
       </p>
       {showOverallPercent ? (
         <div
           className="progress"
           role="progressbar"
-          aria-valuenow={progress.overallProgressPercent}
+          aria-valuenow={presented.displayOverallPercent}
           aria-valuemin={0}
           aria-valuemax={100}
           aria-label="ความก้าวหน้าหลักสูตรโดยรวม"
         >
-          <div style={{ width: `${progress.overallProgressPercent}%` }} />
+          <div style={{ width: `${presented.displayOverallPercent}%` }} />
         </div>
       ) : null}
       <ol className="curriculumProgressList" aria-label="บทเรียนในหลักสูตร">
-        {progress.lessons.map((lesson) => {
-          const statusLabel = CURRICULUM_LESSON_STATUS_LABELS[lesson.status];
-          const stageLabel = JOURNEY_STAGE_LABELS[lesson.stage];
-          const statusClass = lesson.status.toLowerCase();
-
-          return (
-            <li
-              key={lesson.lessonSlug}
-              className={`curriculumProgressItem ${statusClass}`}
-              aria-current={lesson.status === "ACTIVE" ? "step" : undefined}
+        {presented.lessons.map((lesson) => (
+          <li
+            key={lesson.lessonSlug}
+            className={lesson.itemClassName}
+            aria-current={lesson.highlightAsActive ? "step" : undefined}
+          >
+            <div>
+              <strong>{lesson.lessonTitle}</strong>
+              <span>
+                {lesson.displayStatusLabel}
+                {lesson.displayAvailabilityLabel
+                  ? ` · ${lesson.displayAvailabilityLabel}`
+                  : null}
+                {lesson.displayStageLabel
+                  ? ` · ขั้น${lesson.displayStageLabel}`
+                  : null}
+                {" · "}
+                {lesson.displayPercent}%
+              </span>
+            </div>
+            <div
+              className="progress"
+              role="progressbar"
+              aria-valuenow={lesson.displayPercent}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label={`ความก้าวหน้า ${lesson.lessonTitle}`}
             >
-              <div>
-                <strong>{lesson.lessonTitle}</strong>
-                <span>
-                  {statusLabel}
-                  {" · ขั้น"}
-                  {stageLabel}
-                  {" · "}
-                  {lesson.progressPercent}%
-                </span>
-              </div>
-              <div
-                className="progress"
-                role="progressbar"
-                aria-valuenow={lesson.progressPercent}
-                aria-valuemin={0}
-                aria-valuemax={100}
-                aria-label={`ความก้าวหน้า ${lesson.lessonTitle}`}
-              >
-                <div style={{ width: `${lesson.progressPercent}%` }} />
-              </div>
-            </li>
-          );
-        })}
+              <div style={{ width: `${lesson.displayPercent}%` }} />
+            </div>
+          </li>
+        ))}
       </ol>
     </section>
   );

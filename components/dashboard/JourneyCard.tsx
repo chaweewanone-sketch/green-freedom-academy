@@ -5,6 +5,11 @@ import {
   learnerSafeNavigation,
 } from "@/lib/analytics/learnerLessonLaunch";
 import {
+  isPilotUnavailableLesson,
+  presentJourneyProgressPercent,
+  shouldHideSamePageDashboardAction,
+} from "@/lib/analytics/pilotLearnerPresentation";
+import {
   JOURNEY_STAGE_LABELS,
   JOURNEY_TRACK,
 } from "@/lib/analytics/journey";
@@ -12,6 +17,7 @@ import type { LearningJourney, LearningJourneyStage } from "@/types/analytics";
 
 type JourneyCardProps = {
   journey: LearningJourney;
+  suppressSamePageAction?: boolean;
 };
 
 function stageClassName(
@@ -32,7 +38,10 @@ function stageClassName(
   return "";
 }
 
-export function JourneyCard({ journey }: JourneyCardProps) {
+export function JourneyCard({
+  journey,
+  suppressSamePageAction = false,
+}: JourneyCardProps) {
   const lessonTitle =
     getLessonBySlug(journey.lessonSlug)?.title ?? journey.lessonSlug;
   const nextLessonTitle =
@@ -44,54 +53,76 @@ export function JourneyCard({ journey }: JourneyCardProps) {
     journey.nextAction.href,
     journey.nextAction.label,
   );
+  const unavailable = isPilotUnavailableLesson(journey.lessonSlug);
+  const displayPercent = presentJourneyProgressPercent(journey);
+  const hideAction = shouldHideSamePageDashboardAction(
+    suppressSamePageAction,
+    action.href,
+  );
 
   return (
     <section className="panel studentDashboardSection" aria-label="เส้นทางการเรียน">
       <span className="eyebrow">LEARNING JOURNEY</span>
       <h2>เส้นทางการเรียน</h2>
       <p>
-        บทเรียนปัจจุบัน: <strong>{lessonTitle}</strong>
-        {" · "}
-        ขั้น{stageLabel}
-        {" · "}
-        {journey.progressPercent}%
+        {unavailable ? (
+          <>
+            บทเรียนถัดไป: <strong>{lessonTitle}</strong>
+            {" · "}
+            ยังไม่เปิดให้เรียน
+            {" · "}
+            {displayPercent}%
+          </>
+        ) : (
+          <>
+            บทเรียนปัจจุบัน: <strong>{lessonTitle}</strong>
+            {" · "}
+            ขั้น{stageLabel}
+            {" · "}
+            {displayPercent}%
+          </>
+        )}
       </p>
       <div
         className="progress"
         role="progressbar"
-        aria-valuenow={journey.progressPercent}
+        aria-valuenow={displayPercent}
         aria-valuemin={0}
         aria-valuemax={100}
         aria-label="ความคืบหน้าเส้นทางการเรียน"
       >
-        <div style={{ width: `${journey.progressPercent}%` }} />
+        <div style={{ width: `${displayPercent}%` }} />
       </div>
-      <p>{journey.message}</p>
+      {unavailable ? null : <p>{journey.message}</p>}
       {nextLessonTitle ? <p>บทถัดไป: {nextLessonTitle}</p> : null}
-      <ol className="journeyTrack" aria-label="ลำดับเส้นทางการเรียน">
-        {JOURNEY_TRACK.map((stage) => (
-          <li
-            key={stage}
-            className={stageClassName(stage, journey.stage)}
-            aria-current={stage === journey.stage ? "step" : undefined}
+      {unavailable ? null : (
+        <ol className="journeyTrack" aria-label="ลำดับเส้นทางการเรียน">
+          {JOURNEY_TRACK.map((stage) => (
+            <li
+              key={stage}
+              className={stageClassName(stage, journey.stage)}
+              aria-current={stage === journey.stage ? "step" : undefined}
+            >
+              {JOURNEY_STAGE_LABELS[stage]}
+            </li>
+          ))}
+        </ol>
+      )}
+      {hideAction ? null : (
+        <div className="actions">
+          <Link
+            className="button primary"
+            href={action.href}
+            aria-label={
+              nextLessonTitle
+                ? `${action.label}: ${nextLessonTitle}`
+                : action.label
+            }
           >
-            {JOURNEY_STAGE_LABELS[stage]}
-          </li>
-        ))}
-      </ol>
-      <div className="actions">
-        <Link
-          className="button primary"
-          href={action.href}
-          aria-label={
-            nextLessonTitle
-              ? `${action.label}: ${nextLessonTitle}`
-              : action.label
-          }
-        >
-          {action.label}
-        </Link>
-      </div>
+            {action.label}
+          </Link>
+        </div>
+      )}
     </section>
   );
 }

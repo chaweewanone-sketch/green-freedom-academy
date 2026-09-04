@@ -1,6 +1,8 @@
 import { GfaArtSlot } from "./GfaArtSlot";
 import { GfaMission } from "./GfaMission";
+import { GfaWorldLeadTitles } from "./GfaWorldLeadTitles";
 import { GFA_SECTION5_ART } from "@/lib/student-ui/gfaArtAssets";
+import { PRESENT_SIMPLE_WORLD_TITLES } from "@/lib/student-ui/presentSimpleWorldTitles";
 import type { LessonStep } from "@/types/lesson";
 
 function takeAfterMark(text: string, mark: "✓" | "✗") {
@@ -79,9 +81,11 @@ export function EverydayGardenQuestionBoothSection5({
     <div className="gfaBooth">
       <header className="gfaLearnLead gfaBoothLead">
         <div className="gfaBoothLeadCopy">
-          <p className="gfaGardenKicker">LEARN / เรียนรู้ · ที่บูธถาม</p>
-          <h1 className="gfaGardenTitle">{lessonTitle}</h1>
-          <h2 className="gfaGardenSection">{step.title}</h2>
+          <GfaWorldLeadTitles
+            worldTitle={PRESENT_SIMPLE_WORLD_TITLES[4]}
+            lessonTitle={lessonTitle}
+            teachingTitle={step.title}
+          />
           <GfaMission>
             ถามว่า “…ไหม?”
             <br />

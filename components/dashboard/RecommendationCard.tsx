@@ -1,13 +1,18 @@
 import Link from "next/link";
 import { learnerSafeNavigation } from "@/lib/analytics/learnerLessonLaunch";
+import { shouldHideSamePageDashboardAction } from "@/lib/analytics/pilotLearnerPresentation";
 import { getLessonBySlug } from "@/lib/lessons";
 import type { LearningRecommendation } from "@/types/analytics";
 
 type RecommendationCardProps = {
   recommendation: LearningRecommendation;
+  suppressSamePageAction?: boolean;
 };
 
-export function RecommendationCard({ recommendation }: RecommendationCardProps) {
+export function RecommendationCard({
+  recommendation,
+  suppressSamePageAction = false,
+}: RecommendationCardProps) {
   const safe = learnerSafeNavigation(
     recommendation.href,
     recommendation.ctaLabel,
@@ -22,6 +27,10 @@ export function RecommendationCard({ recommendation }: RecommendationCardProps) 
   const message = safe.rewritten
     ? "ดูผลการเรียนได้จากแดชบอร์ด"
     : recommendation.message;
+  const hideAction = shouldHideSamePageDashboardAction(
+    suppressSamePageAction,
+    safe.href,
+  );
 
   return (
     <section className="panel studentDashboardSection" aria-label="แนะนำขั้นต่อไป">
@@ -32,15 +41,17 @@ export function RecommendationCard({ recommendation }: RecommendationCardProps) 
         <strong>{title}</strong>
       </p>
       <p>{message}</p>
-      <div className="actions">
-        <Link
-          className="button primary"
-          href={safe.href}
-          aria-label={safe.label}
-        >
-          {safe.label}
-        </Link>
-      </div>
+      {hideAction ? null : (
+        <div className="actions">
+          <Link
+            className="button primary"
+            href={safe.href}
+            aria-label={safe.label}
+          >
+            {safe.label}
+          </Link>
+        </div>
+      )}
     </section>
   );
 }

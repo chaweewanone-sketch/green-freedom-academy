@@ -1,5 +1,9 @@
 import Link from "next/link";
 import { ResumeLearningCard } from "@/components/dashboard/ResumeLearningCard";
+import {
+  presentActiveLessonCopy,
+  presentHomeOverallProgressPercent,
+} from "@/lib/analytics/pilotLearnerPresentation";
 import { getLessonBySlug } from "@/lib/lessons";
 import type { StudentLearningHomeModel } from "@/types/analytics";
 
@@ -34,6 +38,15 @@ export function StudentLearningHome({ model }: StudentLearningHomeProps) {
     ? getLessonBySlug(latestActivity.lessonSlug)?.title ??
       latestActivity.lessonSlug
     : undefined;
+  const activeCopy = activeLesson
+    ? presentActiveLessonCopy(activeLesson)
+    : null;
+  const displayOverallPercent = presentHomeOverallProgressPercent({
+    activeLessonSlug: activeLesson?.lessonSlug,
+    completedLessons: curriculumProgress.completedLessons,
+    totalLessons: curriculumProgress.totalLessons,
+    engineOverallPercent: curriculumProgress.overallProgressPercent,
+  });
 
   return (
     <div className="studentHome">
@@ -58,16 +71,16 @@ export function StudentLearningHome({ model }: StudentLearningHomeProps) {
       <ResumeLearningCard resume={resumeLearning} hasHistory={hasHistory} />
 
       <div className="studentHomeCompactGrid">
-        {activeLesson ? (
+        {activeLesson && activeCopy ? (
           <section
             className="panel studentHomeCompactCard"
             aria-labelledby="student-home-active-lesson"
           >
-            <h2 id="student-home-active-lesson">บทเรียนปัจจุบัน</h2>
+            <h2 id="student-home-active-lesson">{activeCopy.heading}</h2>
             <p>
               <strong>{activeLesson.lessonTitle}</strong>
             </p>
-            <p>ขั้น{activeLesson.stageLabel}</p>
+            <p>{activeCopy.availabilityLabel}</p>
           </section>
         ) : null}
 
@@ -82,18 +95,18 @@ export function StudentLearningHome({ model }: StudentLearningHomeProps) {
           </p>
           {hasHistory || isComplete ? (
             <>
-              <p>{curriculumProgress.overallProgressPercent}%</p>
+              <p>{displayOverallPercent}%</p>
               <div
                 className="progress"
                 role="progressbar"
-                aria-valuenow={curriculumProgress.overallProgressPercent}
+                aria-valuenow={displayOverallPercent}
                 aria-valuemin={0}
                 aria-valuemax={100}
                 aria-label="ความก้าวหน้าหลักสูตรโดยรวม"
               >
                 <div
                   style={{
-                    width: `${curriculumProgress.overallProgressPercent}%`,
+                    width: `${displayOverallPercent}%`,
                   }}
                 />
               </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { LessonFooter } from "./LessonFooter";
 import { LessonHeader } from "./LessonHeader";
@@ -51,6 +51,8 @@ export function ClassroomCompanion({
   const { steps, title } = lesson;
   const isStudentLearn = showLearnerProgress;
   const router = useRouter();
+  const sectionAnchorRef = useRef<HTMLElement>(null);
+  const previousStepRef = useRef<number | null>(null);
   const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [mode, setMode] = useState<CompanionMode>(defaultMode);
@@ -69,6 +71,38 @@ export function ClassroomCompanion({
 
     setLearnSaved(true);
   }, [isStudentLearn, lesson.slug]);
+
+  useEffect(() => {
+    if (!isStudentLearn) {
+      previousStepRef.current = currentStep;
+      return;
+    }
+
+    if (previousStepRef.current === null) {
+      previousStepRef.current = currentStep;
+      return;
+    }
+
+    if (previousStepRef.current === currentStep) {
+      return;
+    }
+
+    previousStepRef.current = currentStep;
+
+    const page = sectionAnchorRef.current;
+    if (!page) {
+      return;
+    }
+
+    page.scrollIntoView({ block: "start" });
+    const heading = page.querySelector<HTMLElement>(".gfaGardenSection");
+    if (heading) {
+      heading.focus({ preventScroll: true });
+      return;
+    }
+
+    page.focus({ preventScroll: true });
+  }, [currentStep, isStudentLearn]);
 
   const progressPercent = Math.round(
     (completedSteps.length / steps.length) * 100,
@@ -213,7 +247,7 @@ export function ClassroomCompanion({
   if (isStudentLearn) {
     return (
       <GfaLearningWorld plot="everyday-garden">
-        <main className="gfaLearnPage">
+        <main className="gfaLearnPage" ref={sectionAnchorRef} tabIndex={-1}>
           <LessonHeader
             backHref={backHref}
             backLabel={backLabel}

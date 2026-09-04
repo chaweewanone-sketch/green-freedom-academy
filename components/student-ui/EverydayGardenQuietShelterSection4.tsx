@@ -1,6 +1,8 @@
 import { GfaArtSlot } from "./GfaArtSlot";
 import { GfaMission } from "./GfaMission";
+import { GfaWorldLeadTitles } from "./GfaWorldLeadTitles";
 import { GFA_SECTION4_ART } from "@/lib/student-ui/gfaArtAssets";
+import { PRESENT_SIMPLE_WORLD_TITLES } from "@/lib/student-ui/presentSimpleWorldTitles";
 import type { LessonStep } from "@/types/lesson";
 
 const GROUP_VERBS = ["drink", "use"] as const;
@@ -70,9 +72,11 @@ export function EverydayGardenQuietShelterSection4({
     <div className="gfaShelter">
       <header className="gfaLearnLead gfaShelterLead">
         <div className="gfaShelterLeadCopy">
-          <p className="gfaGardenKicker">LEARN / เรียนรู้ · ที่พักเงียบ</p>
-          <h1 className="gfaGardenTitle">{lessonTitle}</h1>
-          <h2 className="gfaGardenSection">{step.title}</h2>
+          <GfaWorldLeadTitles
+            worldTitle={PRESENT_SIMPLE_WORLD_TITLES[3]}
+            lessonTitle={lessonTitle}
+            teachingTitle={step.title}
+          />
           <GfaMission>
             บอกว่า “ไม่ได้ทำ”
             <br />

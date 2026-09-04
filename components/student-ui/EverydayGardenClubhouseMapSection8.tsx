@@ -1,6 +1,8 @@
 import { GfaArtSlot } from "./GfaArtSlot";
 import { GfaMission } from "./GfaMission";
+import { GfaWorldLeadTitles } from "./GfaWorldLeadTitles";
 import { GFA_SECTION8_ART } from "@/lib/student-ui/gfaArtAssets";
+import { PRESENT_SIMPLE_WORLD_TITLES } from "@/lib/student-ui/presentSimpleWorldTitles";
 import type { LessonStep } from "@/types/lesson";
 
 const STRUCTURE_FRAMES = [
@@ -64,11 +66,12 @@ export function EverydayGardenClubhouseMapSection8({
     <div className="gfaClub">
       <header className="gfaLearnLead gfaClubLead">
         <div className="gfaClubLeadCopy">
-          <p className="gfaGardenKicker">
-            LEARN / เรียนรู้ · <span className="gfaClubPlace">บ้านแผนที่</span>
-          </p>
-          <h1 className="gfaGardenTitle">{lessonTitle}</h1>
-          <h2 className="gfaGardenSection">{step.title}</h2>
+          <GfaWorldLeadTitles
+            worldTitle={PRESENT_SIMPLE_WORLD_TITLES[7]}
+            lessonTitle={lessonTitle}
+            teachingTitle={step.title}
+            nowrapWorldName
+          />
           <GfaMission>
             เรียนครบแล้ว!
             <span className="gfaClubMissionLine">

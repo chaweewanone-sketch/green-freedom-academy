@@ -1,6 +1,8 @@
 import { GfaArtSlot } from "./GfaArtSlot";
 import { GfaMission } from "./GfaMission";
+import { GfaWorldLeadTitles } from "./GfaWorldLeadTitles";
 import { GFA_SECTION2_ART } from "@/lib/student-ui/gfaArtAssets";
+import { PRESENT_SIMPLE_WORLD_TITLES } from "@/lib/student-ui/presentSimpleWorldTitles";
 import type { LessonStep } from "@/types/lesson";
 
 const PLAIN_VERBS = ["play", "study", "eat"] as const;
@@ -58,9 +60,11 @@ export function EverydayGardenPlaygroundSection2({
   return (
     <div className="gfaPlayground">
       <header className="gfaLearnLead">
-        <p className="gfaGardenKicker">LEARN / เรียนรู้ · สนามเล่น</p>
-        <h1 className="gfaGardenTitle">{lessonTitle}</h1>
-        <h2 className="gfaGardenSection">{step.title}</h2>
+        <GfaWorldLeadTitles
+          worldTitle={PRESENT_SIMPLE_WORLD_TITLES[1]}
+          lessonTitle={lessonTitle}
+          teachingTitle={step.title}
+        />
         <GfaMission>
           I / You / We / They
           <br />

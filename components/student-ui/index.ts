@@ -7,6 +7,7 @@ export type { GfaLearningPlot } from "./GfaLearningWorld";
 export { GfaScene } from "./GfaScene";
 export type { GfaSceneName } from "./GfaScene";
 export { GfaMission } from "./GfaMission";
+export { GfaWorldLeadTitles } from "./GfaWorldLeadTitles";
 export { GfaLessonProgress } from "./GfaLessonProgress";
 export { GfaContinueAction } from "./GfaContinueAction";
 export { EverydayGardenSection1 } from "./EverydayGardenSection1";

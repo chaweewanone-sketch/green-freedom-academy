@@ -85,6 +85,7 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Quiz Practice Garden is a compact two-zone lawn scene: card ~62–67% of an 84vw stage, Bai Tong grounded at stage-end on the garden, Question 1–10 sized for 100% desktop zoom; scoring and Millionaire stay frozen
 - Present Simple pilot navigation — after Present Simple COMPLETE, learner-facing Resume / Journey / Recommendation CTAs go to `/dashboard` (`ดูผลการเรียน`) instead of `/lesson/past-simple`. Curriculum engines still identify Past Simple as next. Direct `/lesson/past-simple` remains reachable.
 - Empty-history `/student` copy — hero is `เริ่มต้นการเรียนรู้ของคุณ` and the Resume card eyebrow is `START LEARNING`; returning learners keep resume copy. CTA/href unchanged.
+- Sprint 56B Present Simple pilot UX polish — Learn sections scroll/focus to the new heading; English world titles; workshop `กริยาเติม -s / -es`; Clock Garden frequency aids; Quiz coin removed; dashboard same-page result CTAs hidden after Present COMPLETE; non-launchable Past Simple is shown as next/unavailable/0% without changing engines
 
 ---
 

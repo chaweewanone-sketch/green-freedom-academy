@@ -1,6 +1,8 @@
 import { GfaArtSlot } from "./GfaArtSlot";
 import { GfaMission } from "./GfaMission";
+import { GfaWorldLeadTitles } from "./GfaWorldLeadTitles";
 import { GFA_SECTION3_ART } from "@/lib/student-ui/gfaArtAssets";
+import { PRESENT_SIMPLE_WORLD_TITLES } from "@/lib/student-ui/presentSimpleWorldTitles";
 import type { LessonStep } from "@/types/lesson";
 
 const SINGULAR_VERBS = ["plays", "watches", "sleeps", "fixes"] as const;
@@ -64,9 +66,11 @@ export function EverydayGardenWorkshopSection3({
   return (
     <div className="gfaWorkshop">
       <header className="gfaLearnLead">
-        <p className="gfaGardenKicker">LEARN / เรียนรู้ · โรงงานคนเดียว</p>
-        <h1 className="gfaGardenTitle">{lessonTitle}</h1>
-        <h2 className="gfaGardenSection">{step.title}</h2>
+        <GfaWorldLeadTitles
+          worldTitle={PRESENT_SIMPLE_WORLD_TITLES[2]}
+          lessonTitle={lessonTitle}
+          teachingTitle={step.title}
+        />
         <GfaMission>
           He / She / It / คำนามเอกพจน์
           <br />
@@ -91,7 +95,7 @@ export function EverydayGardenWorkshopSection3({
 
       <section className="gfaLearnSurface" aria-label="ไวยากรณ์ He She It">
         <p className="gfaLearnBeat">
-          คนเดียว / He She It → กริยาเปลี่ยน → <strong>-s / -es</strong>
+          คนเดียว / He She It → กริยาเติม <strong>-s / -es</strong>
         </p>
         <p className="gfaLearnFormula">{step.formula}</p>
         <ul className="gfaExampleList" aria-label="ตัวอย่าง Verb-s/es">

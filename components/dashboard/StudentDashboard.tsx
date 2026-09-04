@@ -72,12 +72,13 @@ export function StudentDashboard({
           </div>
         </section>
         <CurriculumProgressCard progress={curriculumProgress} showOverallPercent={false} />
-        <JourneyCard journey={journey} />
-        <RecommendationCard recommendation={recommendation} />
+        <JourneyCard journey={journey} suppressSamePageAction />
+        <RecommendationCard recommendation={recommendation} suppressSamePageAction />
         <ResumeLearningCard
           resume={resume}
           compact
           hasHistory={summary.totalActivities > 0}
+          suppressSamePageAction
         />
       </>
     );
@@ -128,9 +129,9 @@ export function StudentDashboard({
 
       <CurriculumProgressCard progress={curriculumProgress} />
 
-      <JourneyCard journey={journey} />
+      <JourneyCard journey={journey} suppressSamePageAction />
 
-      <RecommendationCard recommendation={recommendation} />
+      <RecommendationCard recommendation={recommendation} suppressSamePageAction />
 
       <section className="statGrid" aria-label="สถิติกิจกรรม">
         {activityStats.map((stat) => (
@@ -188,6 +189,7 @@ export function StudentDashboard({
         resume={resume}
         compact
         hasHistory={summary.totalActivities > 0}
+        suppressSamePageAction
       />
     </div>
   );

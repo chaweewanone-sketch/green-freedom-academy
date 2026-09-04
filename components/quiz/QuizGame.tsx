@@ -349,10 +349,6 @@ function QuizAttempt({
               <small>ผิด</small>
               <strong>{incorrectCount}</strong>
             </span>
-            <span className="gfaQuizCoin" aria-label="เหรียญ 0">
-              <span className="gfaQuizCoinGlyph" aria-hidden="true" />
-              <strong>0</strong>
-            </span>
           </div>
         </header>
         <span className="gfaQuizEyebrow">

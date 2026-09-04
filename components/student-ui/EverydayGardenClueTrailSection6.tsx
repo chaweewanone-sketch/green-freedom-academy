@@ -1,6 +1,8 @@
 import { GfaArtSlot } from "./GfaArtSlot";
 import { GfaMission } from "./GfaMission";
+import { GfaWorldLeadTitles } from "./GfaWorldLeadTitles";
 import { GFA_SECTION6_ART } from "@/lib/student-ui/gfaArtAssets";
+import { PRESENT_SIMPLE_WORLD_TITLES } from "@/lib/student-ui/presentSimpleWorldTitles";
 import type { LessonStep } from "@/types/lesson";
 
 const CLUE_MEANINGS = [
@@ -78,9 +80,11 @@ export function EverydayGardenClueTrailSection6({
     <div className="gfaTrail">
       <header className="gfaLearnLead gfaTrailLead">
         <div className="gfaTrailLeadCopy">
-          <p className="gfaGardenKicker">LEARN / เรียนรู้ · ทางล่าคำใบ้</p>
-          <h1 className="gfaGardenTitle">{lessonTitle}</h1>
-          <h2 className="gfaGardenSection">{step.title}</h2>
+          <GfaWorldLeadTitles
+            worldTitle={PRESENT_SIMPLE_WORLD_TITLES[5]}
+            lessonTitle={lessonTitle}
+            teachingTitle={step.title}
+          />
           <GfaMission>
             อยากรู้อะไร?
             <br />
