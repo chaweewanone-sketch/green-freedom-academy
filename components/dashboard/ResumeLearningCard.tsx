@@ -1,5 +1,13 @@
 import Link from "next/link";
-import { shouldHideSamePageDashboardAction } from "@/lib/analytics/pilotLearnerPresentation";
+import {
+  PILOT_COMPLETE_EYEBROW,
+  PILOT_COMPLETE_MESSAGE,
+  PILOT_COMPLETE_TITLE,
+  PILOT_UNAVAILABLE_AVAILABILITY_LABEL,
+  PILOT_UNAVAILABLE_STATUS_LABEL,
+  isPilotPresentCompleteResume,
+  shouldHideSamePageDashboardAction,
+} from "@/lib/analytics/pilotLearnerPresentation";
 import type { ResumeLearning } from "@/types/analytics";
 
 type ResumeLearningCardProps = {
@@ -16,11 +24,22 @@ export function ResumeLearningCard({
   suppressSamePageAction = false,
 }: ResumeLearningCardProps) {
   const { action } = resume;
-  const eyebrow = hasHistory ? "RESUME LEARNING" : "START LEARNING";
+  const isPilotComplete = isPilotPresentCompleteResume(resume);
+  const eyebrow = isPilotComplete
+    ? PILOT_COMPLETE_EYEBROW
+    : hasHistory
+      ? "RESUME LEARNING"
+      : "START LEARNING";
   const hideAction = shouldHideSamePageDashboardAction(
     suppressSamePageAction,
     action.href,
   );
+  const heading = isPilotComplete ? PILOT_COMPLETE_TITLE : resume.title;
+  const ariaLabel = isPilotComplete
+    ? "เรียนจบแล้ว"
+    : hasHistory
+      ? "เรียนต่อ"
+      : "เริ่มการเรียนรู้";
 
   return (
     <section
@@ -29,14 +48,26 @@ export function ResumeLearningCard({
           ? "panel studentDashboardSection resumeLearningCard resumeLearningCardCompact"
           : "panel studentDashboardSection resumeLearningCard"
       }
-      aria-label={hasHistory ? "เรียนต่อ" : "เริ่มการเรียนรู้"}
+      aria-label={ariaLabel}
     >
       <span className="eyebrow">{eyebrow}</span>
-      {compact ? <h3>{resume.title}</h3> : <h2>{resume.title}</h2>}
-      <p>
-        <strong>{action.lessonTitle}</strong>
-      </p>
-      <p>{resume.description}</p>
+      {compact ? <h3>{heading}</h3> : <h2>{heading}</h2>}
+      {isPilotComplete ? (
+        <>
+          <p>{PILOT_COMPLETE_MESSAGE}</p>
+          <p>
+            {PILOT_UNAVAILABLE_STATUS_LABEL}: <strong>{action.lessonTitle}</strong>
+          </p>
+          <p>{PILOT_UNAVAILABLE_AVAILABILITY_LABEL}</p>
+        </>
+      ) : (
+        <>
+          <p>
+            <strong>{action.lessonTitle}</strong>
+          </p>
+          <p>{resume.description}</p>
+        </>
+      )}
       {hideAction ? null : (
         <div className="actions">
           <Link

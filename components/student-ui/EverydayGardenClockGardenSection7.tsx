@@ -146,7 +146,8 @@ export function EverydayGardenClockGardenSection7({
             <span className="gfaClockHowMeaning"> = บ่อยแค่ไหน</span>
           </p>
           <p className="gfaClockHowBridge">
-            ทางล่าคำใบ้มี Wh แล้ว ตอนนี้ใช้ How often ถามว่าบ่อยแค่ไหน
+            {PRESENT_SIMPLE_WORLD_TITLES[5]} มี Wh แล้ว ตอนนี้ใช้ How often
+            ถามว่าบ่อยแค่ไหน
           </p>
           <p className="gfaLearnBeat">
             How often + do/does + Subject + Verb 1?

@@ -16,8 +16,12 @@ import {
 import { evaluateLessonJourney, JOURNEY_PROGRESS } from "@/lib/analytics/lessonProgress";
 import { buildLearningSummaryForLesson } from "@/lib/analytics/summary";
 import {
+  PILOT_COMPLETE_EYEBROW,
+  PILOT_COMPLETE_MESSAGE,
+  PILOT_COMPLETE_TITLE,
   PILOT_UNAVAILABLE_AVAILABILITY_LABEL,
   PILOT_UNAVAILABLE_STATUS_LABEL,
+  isPilotPresentCompleteResume,
   presentActiveLessonCopy,
   presentCurriculumLesson,
   presentCurriculumProgress,
@@ -133,6 +137,14 @@ export function verifyFirstVisitAndResumeFreeze(): void {
     returning.resumeLearning.action.href.includes("present-simple"),
     "B: returning stays on Present Simple",
   );
+  assert(
+    !isPilotPresentCompleteResume(returning.resumeLearning),
+    "B: in-progress is not LEARNING COMPLETE",
+  );
+  assert(
+    !isPilotPresentCompleteResume(empty.resumeLearning),
+    "A: empty is not LEARNING COMPLETE",
+  );
 }
 
 export function verifyPresentCompleteAndNoPastCta(): void {
@@ -167,6 +179,10 @@ export function verifyPresentCompleteAndNoPastCta(): void {
     resume.action.href !== getLessonPath("past-simple"),
     "D: resume not Past CTA",
   );
+  assert(isPilotPresentCompleteResume(resume), "C: complete presentation flag");
+  assert(isPilotPresentCompleteResume(home.resumeLearning), "C: home complete");
+  assert(resume.action.label === "ดูผลการเรียน", "I: complete CTA label");
+  assert(resume.action.href === getDashboardPath(), "I: complete CTA href");
 }
 
 export function verifyPastSimplePilotPresentation(): void {
@@ -324,6 +340,53 @@ export function verifyDashboardSamePageCtas(): void {
   assert(brand.includes("getDashboardPath()"), "I: BrandHeader dashboard href");
 }
 
+export function verifyPresentCompleteResumeCopy(): void {
+  const resumeCard = read("components/dashboard/ResumeLearningCard.tsx");
+  const presentation = read("lib/analytics/pilotLearnerPresentation.ts");
+  const complete = presentCompleteEvents();
+  const resume = buildResumeLearning(emptySummary(), complete);
+
+  assert(isPilotPresentCompleteResume(resume), "C: PRESENT COMPLETE flag");
+  assert(
+    presentation.includes(`PILOT_COMPLETE_EYEBROW = "${PILOT_COMPLETE_EYEBROW}"`),
+    "C: LEARNING COMPLETE",
+  );
+  assert(resumeCard.includes("PILOT_COMPLETE_EYEBROW"), "C: card uses complete eyebrow");
+  assert(resumeCard.includes("PILOT_COMPLETE_TITLE"), "D: complete title");
+  assert(
+    PILOT_COMPLETE_TITLE.includes("เรียน Present Simple ครบแล้ว"),
+    "D: title keeps Present Simple complete copy",
+  );
+  assert(presentation.includes(PILOT_COMPLETE_MESSAGE), "E: complete message");
+  assert(resumeCard.includes("PILOT_COMPLETE_MESSAGE"), "E: card uses complete message");
+  assert(
+    resumeCard.includes(`${PILOT_UNAVAILABLE_STATUS_LABEL}:`) ||
+      resumeCard.includes("PILOT_UNAVAILABLE_STATUS_LABEL"),
+    "F: next lesson label",
+  );
+  assert(
+    resumeCard.includes("PILOT_UNAVAILABLE_AVAILABILITY_LABEL"),
+    "G: unavailable",
+  );
+  assert(
+    !resumeCard.includes("ดูผลการเรียนได้จากแดชบอร์ด"),
+    "H: redundant dashboard sentence removed from card",
+  );
+  assert(
+    resumeCard.includes("isPilotPresentCompleteResume"),
+    "C: complete copy is gated",
+  );
+  assert(resumeCard.includes("RESUME LEARNING"), "B: in-progress eyebrow kept");
+  assert(resumeCard.includes("START LEARNING"), "A: empty eyebrow kept");
+  assert(resume.action.label === "ดูผลการเรียน", "I: CTA");
+  assert(resume.action.href === getDashboardPath(), "I: /dashboard");
+  assert(
+    resume.action.href !== getLessonPath("past-simple"),
+    "J: no Past Simple CTA",
+  );
+  assert(resume.action.lessonTitle === "Past Simple", "F: next lesson title");
+}
+
 export function verifyWorldTitlesAndCopy(): void {
   const titles = [...PRESENT_SIMPLE_WORLD_TITLES];
   assert(
@@ -335,11 +398,24 @@ export function verifyWorldTitlesAndCopy(): void {
   const workshop = read(
     "components/student-ui/EverydayGardenWorkshopSection3.tsx",
   );
+  const trail = read(
+    "components/student-ui/EverydayGardenClueTrailSection6.tsx",
+  );
   const clock = read(
     "components/student-ui/EverydayGardenClockGardenSection7.tsx",
   );
   const quiz = read("components/quiz/QuizGame.tsx");
   const lesson = read("lib/lessons/present-simple.ts");
+  const sectionFiles = [
+    "components/student-ui/EverydayGardenSection1.tsx",
+    "components/student-ui/EverydayGardenPlaygroundSection2.tsx",
+    "components/student-ui/EverydayGardenWorkshopSection3.tsx",
+    "components/student-ui/EverydayGardenQuietShelterSection4.tsx",
+    "components/student-ui/EverydayGardenQuestionBoothSection5.tsx",
+    "components/student-ui/EverydayGardenClueTrailSection6.tsx",
+    "components/student-ui/EverydayGardenClockGardenSection7.tsx",
+    "components/student-ui/EverydayGardenClubhouseMapSection8.tsx",
+  ].map(read);
 
   assert(workshop.includes("กริยาเติม"), "3: workshop เติม wording");
   assert(!workshop.includes("กริยาเปลี่ยน"), "3: workshop no เปลี่ยน phrase");
@@ -348,6 +424,30 @@ export function verifyWorldTitlesAndCopy(): void {
   assert(!quiz.includes("gfaQuizCoin"), "5: quiz coin markup removed");
   assert(lesson.includes("contentVersion: 2"), "L: contentVersion unchanged");
   assert(presentSimpleLesson.contentVersion === 2, "L: runtime version 2");
+  assert(
+    trail.includes("PRESENT_SIMPLE_WORLD_TITLES[4]"),
+    "L: Question Booth label",
+  );
+  assert(
+    trail.includes("PRESENT_SIMPLE_WORLD_TITLES[5]"),
+    "L: Clue Trail label",
+  );
+  assert(!trail.includes("ที่บูธถาม:"), "M: no Thai booth navigation label");
+  assert(!trail.includes("ทางล่าคำใบ้:"), "M: no Thai trail navigation label");
+  assert(
+    !clock.includes("ทางล่าคำใบ้มี"),
+    "M: clock bridge uses English world name",
+  );
+  sectionFiles.forEach((source, index) => {
+    assert(
+      source.includes("GfaWorldLeadTitles"),
+      `L: section ${index + 1} uses shared world titles`,
+    );
+    assert(
+      source.includes(`PRESENT_SIMPLE_WORLD_TITLES[${index}]`),
+      `L: section ${index + 1} uses canonical world name`,
+    );
+  });
 }
 
 export function verifyAssessmentFreeze(): void {
@@ -372,6 +472,7 @@ export function runPilotUxVerification(): void {
   verifyPastSimplePilotPresentation();
   verifyPastSimpleActiveExposureZero();
   verifyDashboardSamePageCtas();
+  verifyPresentCompleteResumeCopy();
   verifyWorldTitlesAndCopy();
   verifyAssessmentFreeze();
 }

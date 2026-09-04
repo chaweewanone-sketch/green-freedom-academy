@@ -396,6 +396,16 @@ export function runStudentVisualFoundationVerification(): void {
   assert(section6.includes("{step.formula}"), "s6: formula from content");
   assert(section6.includes("{step.examples.map"), "s6: examples from content");
   assert(
+    section6.includes("PRESENT_SIMPLE_WORLD_TITLES[4]"),
+    "s6: Question Booth world label",
+  );
+  assert(
+    section6.includes("PRESENT_SIMPLE_WORLD_TITLES[5]"),
+    "s6: Clue Trail world label",
+  );
+  assert(!section6.includes("ที่บูธถาม:"), "s6: no Thai booth world label");
+  assert(!section6.includes("ทางล่าคำใบ้:"), "s6: no Thai trail world label");
+  assert(
     section6.includes("Wh- มาเพิ่มข้างหน้า — กฎ Verb 1 ยังเหมือนเดิม"),
     "s6: verb 1 heading",
   );
@@ -449,6 +459,14 @@ export function runStudentVisualFoundationVerification(): void {
     "s7: usually contrast bad",
   );
   assert(section7.includes("How often + do/does + Subject + Verb 1?"), "s7: how often");
+  assert(
+    section7.includes("PRESENT_SIMPLE_WORLD_TITLES[5]"),
+    "s7: Clue Trail world name in How often bridge",
+  );
+  assert(
+    !section7.includes("ทางล่าคำใบ้มี"),
+    "s7: no Thai trail nickname as world label",
+  );
   assert(section7.includes("every day"), "s7: every day");
   assert(section7.includes("once a week"), "s7: once a week");
   assert(section7.includes("twice a day"), "s7: twice a day");

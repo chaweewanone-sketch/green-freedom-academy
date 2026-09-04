@@ -6,11 +6,23 @@ import type {
   CurriculumLessonProgress,
   CurriculumProgress,
   LearningJourney,
+  ResumeLearning,
   StudentLearningHomeActiveLesson,
 } from "@/types/analytics";
 
 export const PILOT_UNAVAILABLE_STATUS_LABEL = "บทเรียนถัดไป";
 export const PILOT_UNAVAILABLE_AVAILABILITY_LABEL = "ยังไม่เปิดให้เรียน";
+export const PILOT_COMPLETE_EYEBROW = "LEARNING COMPLETE";
+export const PILOT_COMPLETE_TITLE = "เรียน Present Simple ครบแล้ว 🎉";
+export const PILOT_COMPLETE_MESSAGE =
+  "คุณเรียนครบทั้งบทเรียน แบบฝึกหัด และเกมแล้ว";
+
+export function isPilotPresentCompleteResume(resume: ResumeLearning): boolean {
+  return (
+    resume.action.actionType === "SUMMARY" &&
+    resume.title === "เรียน Present Simple ครบแล้ว"
+  );
+}
 
 export function toPilotProgressPercent(
   lessonSlug: string,

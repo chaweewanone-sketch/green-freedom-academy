@@ -139,9 +139,11 @@ export function EverydayGardenClueTrailSection6({
 
         <div className="gfaTrailBuild" aria-label="โครงคำถาม Wh">
           <p className="gfaTrailBuildFrom">
-            ที่บูธถาม: Do / Does + ... + Verb 1?
+            {PRESENT_SIMPLE_WORLD_TITLES[4]}: Do / Does + ... + Verb 1?
           </p>
-          <p className="gfaLearnBeat">ทางล่าคำใบ้: {step.formula}</p>
+          <p className="gfaLearnBeat">
+            {PRESENT_SIMPLE_WORLD_TITLES[5]}: {step.formula}
+          </p>
         </div>
 
         <ul className="gfaExampleList" aria-label="ตัวอย่างคำถาม Wh">
