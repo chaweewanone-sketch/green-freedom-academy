@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ResumeLearningCard } from "@/components/dashboard/ResumeLearningCard";
+import { FlashCardsReviewEntry } from "@/components/flash-cards/FlashCardsReviewEntry";
 import { MILLIONAIRE_ACTIVITY_DISPLAY_NAME } from "@/lib/activities";
 import {
   presentActiveLessonCopy,
@@ -70,6 +71,8 @@ export function StudentLearningHome({ model }: StudentLearningHomeProps) {
       </section>
 
       <ResumeLearningCard resume={resumeLearning} hasHistory={hasHistory} />
+
+      <FlashCardsReviewEntry />
 
       <div className="studentHomeCompactGrid">
         {activeLesson && activeCopy ? (

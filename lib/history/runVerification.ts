@@ -27,6 +27,7 @@ import { runLearnerLessonLaunchVerification } from "@/lib/analytics/learnerLesso
 import { runPilotUxVerification } from "@/lib/analytics/pilotUxVerification";
 import { runFlashOptionalityVerification } from "@/lib/analytics/flashOptionalityVerification";
 import { runFlashCardsMvpVerification } from "@/lib/flash-cards/flashCardsMvpVerification";
+import { runFlashCardsDiscoveryVerification } from "@/lib/flash-cards/flashCardsDiscoveryVerification";
 import { runHistoryVerification } from "./verification";
 
 runHistoryVerification();
@@ -121,3 +122,6 @@ console.log("flash optionality verification passed");
 
 runFlashCardsMvpVerification();
 console.log("flash cards mvp verification passed");
+
+runFlashCardsDiscoveryVerification();
+console.log("flash cards discovery verification passed");

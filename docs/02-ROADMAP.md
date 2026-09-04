@@ -54,7 +54,7 @@ FUTURE           AI generators, Teacher Studio, Classroom Companion
 | Guided Student Learn | CURRENT | `/lesson/[slug]` walks Sections 1–8 with one dominant footer action, then persists Learn on Section 8 and continues to Quiz. Teacher `?from=teacher` keeps classroom chrome |
 | Lesson content versioning | CURRENT | Learn completion is per lesson + `contentVersion`. Legacy unversioned Learn events are v1. Stale Present Simple Learn-only history stays LEARN until current v2 is completed |
 | Student visual foundation | CURRENT | Additive `--gfa-*` tokens and `GfaLearningWorld` (ลานเขียวอิสระ / Everyday Garden). Present Simple Section 1 is Visual Master v1 (owner-approved, frozen). Sections 2–7 are frozen Learn compositions (playground / workshop / Quiet Shelter / Question Booth / Clue Trail / Clock Garden). Section 8 is an owner-review Clubhouse Map prototype. Quiz uses a dedicated Practice Garden two-zone stage (card + Bai Tong coach) awaiting owner visual approval. Millionaire stays on its existing surface. Contract: `ASSET-CONTRACT.md` |
-| Present Simple Flash Cards MVP | CURRENT | Optional Memory Garden review: dedicated 12-card Present Simple deck (not the Quiz bank), Thai self-assessment, session-only weak-card review. Does not affect COMPLETE, Quiz, or Millionaire scores. |
+| Present Simple Flash Cards MVP | CURRENT | Optional Memory Garden review: dedicated 12-card Present Simple deck (not the Quiz bank), Thai self-assessment, session-only weak-card review. Does not affect COMPLETE, Quiz, or Millionaire scores. Student Home shows one optional Flash Cards entry (`ทบทวนเพิ่มเติม` / `ไม่บังคับ`) that does not replace Resume, Quiz, Millionaire, or LEARNING COMPLETE. |
 
 **Known gaps in Phase 0:**
 
