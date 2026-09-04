@@ -8,6 +8,7 @@ import { buildLearningJourney } from "@/lib/analytics/journey";
 import { buildLearningRecommendation } from "@/lib/analytics/recommendation";
 import { buildResumeLearning } from "@/lib/analytics/resumeLearning";
 import { MILLIONAIRE_ACTIVITY_DISPLAY_NAME } from "@/lib/activities";
+import { FLASH_CARD_RECALL_LABELS } from "@/lib/flash-cards";
 import { getStudentPath } from "@/lib/routes";
 import { CurriculumProgressCard } from "./CurriculumProgressCard";
 import { JourneyCard } from "./JourneyCard";
@@ -104,9 +105,9 @@ export function StudentDashboard({
   ];
 
   const recallStats = [
-    { label: "Easy · จำได้คล่อง", value: String(summary.flashEasy) },
-    { label: "Medium · ยังต้องทบทวน", value: String(summary.flashMedium) },
-    { label: "Hard · ควรฝึกซ้ำ", value: String(summary.flashHard) },
+    { label: FLASH_CARD_RECALL_LABELS.easy, value: String(summary.flashEasy) },
+    { label: FLASH_CARD_RECALL_LABELS.medium, value: String(summary.flashMedium) },
+    { label: FLASH_CARD_RECALL_LABELS.hard, value: String(summary.flashHard) },
   ];
 
   return (

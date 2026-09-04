@@ -2,12 +2,14 @@ import { resolveQuestionsForLesson } from "@/lib/questions/resolveQuestions";
 import { selectRandomQuestions } from "@/lib/questions/selectQuestions";
 import type { LessonData } from "@/types/lesson";
 import type {
-  AssessmentActivity,
   AssessmentOptions,
   AssessmentSession,
 } from "@/types/assessment";
 import type { Question } from "@/types/question";
-import { resolveAssessmentOptions } from "./activityDefaults";
+import {
+  resolveAssessmentOptions,
+  type AssessmentSessionActivity,
+} from "./activityDefaults";
 
 function generateSessionId(): string {
   const suffix = Math.random().toString(36).slice(2, 6);
@@ -64,7 +66,7 @@ function selectSessionQuestions(
 
 export function createAssessmentSession(
   lesson: LessonData,
-  activity: AssessmentActivity,
+  activity: AssessmentSessionActivity,
   options?: AssessmentOptions,
 ): AssessmentSession {
   const resolvedOptions = resolveAssessmentOptions(activity, options);

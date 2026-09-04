@@ -11,7 +11,7 @@ type ActivityPageProps = {
   params: Promise<{ slug: string; activity: string }>;
 };
 
-const recordedActivities = ["millionaire", "quiz", "flash-cards"] as const;
+const recordedActivities = ["millionaire", "quiz"] as const;
 
 function isRecordedActivity(
   activityId: string,
@@ -38,14 +38,22 @@ export default async function ActivityPage({ params }: ActivityPageProps) {
     notFound();
   }
 
+  if (activityId === "flash-cards") {
+    return (
+      <main className="gfaFlashPage">
+        <StudentActivityPlayer
+          lesson={lesson}
+          lessonTitle={lesson.title}
+          lessonPath={getLessonPath(slug)}
+        />
+      </main>
+    );
+  }
+
   if (isRecordedActivity(activityId)) {
     const session = createAssessmentSession(lesson, activityId);
     const mainClass =
-      activityId === "quiz"
-        ? "gfaQuizPage"
-        : activityId === "millionaire"
-          ? "gfaMillionairePage"
-          : "page";
+      activityId === "quiz" ? "gfaQuizPage" : "gfaMillionairePage";
 
     return (
       <main className={mainClass}>

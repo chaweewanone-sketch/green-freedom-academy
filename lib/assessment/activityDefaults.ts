@@ -5,10 +5,17 @@ type ActivityDefaults = {
   randomize: boolean;
 };
 
-export const ACTIVITY_DEFAULTS: Record<AssessmentActivity, ActivityDefaults> = {
+export type AssessmentSessionActivity = Exclude<
+  AssessmentActivity,
+  "flash-cards"
+>;
+
+export const ACTIVITY_DEFAULTS: Record<
+  AssessmentSessionActivity,
+  ActivityDefaults
+> = {
   millionaire: { questionCount: 10, randomize: true },
   quiz: { questionCount: 10, randomize: true },
-  "flash-cards": { questionCount: 20, randomize: true },
   matching: { questionCount: 8, randomize: true },
   "final-test": { questionCount: 40, randomize: true },
 };
@@ -22,7 +29,7 @@ export type ResolvedAssessmentOptions = {
 };
 
 export function resolveAssessmentOptions(
-  activity: AssessmentActivity,
+  activity: AssessmentSessionActivity,
   options?: AssessmentOptions,
 ): ResolvedAssessmentOptions {
   const defaults = ACTIVITY_DEFAULTS[activity];

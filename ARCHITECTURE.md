@@ -57,7 +57,7 @@ lib/
 components/
   millionaire/           # Consumes AssessmentSession only
   quiz/
-  flash-cards/           # Active recall — consumes AssessmentSession only
+  flash-cards/           # Optional review — dedicated FlashCard deck, not AssessmentSession
   dashboard/             # StudentDashboard — consumes LearningSummary only
 ```
 
@@ -69,7 +69,7 @@ components/
 LessonData
   → createAssessmentSession(lesson, activity, options?)
   → AssessmentSession
-  → MillionaireGame (or Quiz, Flash Cards, etc.)
+  → MillionaireGame (or Quiz)
 ```
 
 ### AssessmentSession
@@ -90,7 +90,6 @@ LessonData
 |----------|---------------|-----------|
 | millionaire | 10 | true |
 | quiz | 20 | true |
-| flash-cards | 20 | true |
 | matching | 8 | true |
 | final-test | 40 | true |
 

@@ -89,6 +89,7 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Sprint 56C owner-preview polish — remaining Thai world/navigation labels use canonical English names; Present COMPLETE Resume card is LEARNING COMPLETE with next-lesson context and no redundant dashboard sentence
 - Sprint 57A Millionaire naming — learner-facing activity name is consistently `Millionaire Challenge`; `พิชิต 10 ด่าน` remains supporting gameplay copy only
 - Sprint 57C Flash Cards optionality — required-path COMPLETE cannot be revoked by weak Flash Card self-ratings; Flash history/analytics remain
+- Sprint 57D Present Simple Flash Cards MVP — dedicated 12-card review deck, Memory Garden, Thai self-assessment, session-only weak review; Quiz bank unused; stale `ACTIVITY_DEFAULTS["flash-cards"]` removed
 
 ---
 

@@ -1,98 +1,110 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState } from "react";
-import { ActivityResultActions } from "@/components/activities/ActivityResultActions";
-import type { AssessmentSession } from "@/lib/assessment";
-import { getLessonPath } from "@/lib/routes";
+import { useEffect, useRef, useState } from "react";
+import { MemoryGarden } from "./MemoryGarden";
+import {
+  FLASH_CARD_DECK_SIZE,
+  FLASH_CARD_FAMILY_LABELS,
+  FLASH_CARD_RECALL_LABELS,
+  buildFlashCardResult,
+  createFlashCardSession,
+  getWeakReviewedCards,
+  nextFlashCardSessionKey,
+} from "@/lib/flash-cards";
+import { getStudentPath } from "@/lib/routes";
 import type {
+  FlashCard,
   FlashCardResult,
   FlashCardReview,
+  FlashCardSession,
   RecallRating,
 } from "@/types/recall";
-import type { Question } from "@/types/question";
 
 type FlashCardsGameProps = {
-  session: AssessmentSession;
+  lessonSlug: string;
+  lessonTitle: string;
+  lessonPath: string;
   onComplete?: (result: FlashCardResult) => void;
 };
 
 type FlashCardsPhase = "intro" | "card" | "summary";
+type FlashCardsPass = "full" | "weak";
 
-const recallLabels: Record<
-  RecallRating,
-  { label: string; meaning: string }
-> = {
-  easy: { label: "Easy", meaning: "จำได้คล่อง" },
-  medium: { label: "Medium", meaning: "ยังต้องทบทวน" },
-  hard: { label: "Hard", meaning: "ควรฝึกซ้ำ" },
-};
+const RATING_ORDER: RecallRating[] = ["easy", "medium", "hard"];
 
-function getCorrectAnswerText(question: Question): string {
-  const correctChoice = question.choices.find(
-    (choice) => choice.id === question.correctChoiceId,
-  );
-
-  return correctChoice?.text ?? question.correctChoiceId;
-}
-
-function buildFlashCardResult(
-  session: AssessmentSession,
-  reviews: FlashCardReview[],
-): FlashCardResult {
-  const easy = reviews.filter((review) => review.rating === "easy").length;
-  const medium = reviews.filter((review) => review.rating === "medium").length;
-  const hard = reviews.filter((review) => review.rating === "hard").length;
-
-  return {
-    sessionId: session.sessionId,
-    activity: "flash-cards",
-    totalCards: session.questions.length,
-    reviewedCards: reviews.length,
-    easy,
-    medium,
-    hard,
-    reviews,
-    completedAt: Date.now(),
-  };
-}
-
-function ratingPercent(count: number, total: number): number {
-  return total > 0 ? Math.round((count / total) * 100) : 0;
-}
-
-export function FlashCardsGame({ session, onComplete }: FlashCardsGameProps) {
-  const cards = session.questions;
-  const totalCards = cards.length;
-  const lessonPath = getLessonPath(session.lessonSlug);
+function FlashCardsAttempt({
+  lessonSlug,
+  lessonTitle,
+  lessonPath,
+  onComplete,
+  onRequestFreshSession,
+}: FlashCardsGameProps & { onRequestFreshSession: () => void }) {
+  const sessionRef = useRef<FlashCardSession | null>(null);
+  if (!sessionRef.current) {
+    sessionRef.current = createFlashCardSession(lessonSlug);
+  }
+  const session = sessionRef.current;
+  const totalDeck = session.cards.length;
   const hasRecordedCompletionRef = useRef(false);
+  const firstRatingRef = useRef<HTMLButtonElement>(null);
+  const promptRef = useRef<HTMLHeadingElement>(null);
 
   const [phase, setPhase] = useState<FlashCardsPhase>("intro");
+  const [pass, setPass] = useState<FlashCardsPass>("full");
+  const [passCards, setPassCards] = useState<FlashCard[]>(session.cards);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [reviews, setReviews] = useState<FlashCardReview[]>([]);
   const [result, setResult] = useState<FlashCardResult | null>(null);
 
-  const currentCard = cards[currentIndex];
-  const progressPercent =
-    totalCards > 0 ? Math.round(((currentIndex + 1) / totalCards) * 100) : 0;
+  const currentCard = passCards[currentIndex];
+  const totalCards = passCards.length;
+  const weakCards = result ? getWeakReviewedCards(session.cards, result.reviews) : [];
 
-  function startReview() {
-    if (totalCards === 0) {
+  useEffect(() => {
+    if (phase !== "card") {
       return;
     }
 
+    if (revealed) {
+      firstRatingRef.current?.focus();
+      return;
+    }
+
+    promptRef.current?.focus();
+  }, [phase, currentIndex, revealed]);
+
+  function startFullPass() {
+    if (session.cards.length === 0) {
+      return;
+    }
+
+    setPass("full");
+    setPassCards(session.cards);
     setPhase("card");
     setCurrentIndex(0);
     setRevealed(false);
     setReviews([]);
     setResult(null);
-    hasRecordedCompletionRef.current = false;
   }
 
-  function restartReview() {
-    startReview();
-    setPhase("intro");
+  function startWeakPass() {
+    if (!result) {
+      return;
+    }
+
+    const nextCards = getWeakReviewedCards(session.cards, result.reviews);
+    if (nextCards.length === 0) {
+      return;
+    }
+
+    setPass("weak");
+    setPassCards(nextCards);
+    setPhase("card");
+    setCurrentIndex(0);
+    setRevealed(false);
+    setReviews([]);
   }
 
   function handleReveal() {
@@ -123,43 +135,47 @@ export function FlashCardsGame({ session, onComplete }: FlashCardsGameProps) {
     const nextReviews = [...reviews, nextReview];
 
     if (currentIndex >= totalCards - 1) {
-      if (hasRecordedCompletionRef.current) {
-        return;
-      }
-
-      hasRecordedCompletionRef.current = true;
-      const nextResult = buildFlashCardResult(session, nextReviews);
+      const nextResult = buildFlashCardResult(
+        {
+          ...session,
+          cards: passCards,
+        },
+        nextReviews,
+      );
       setReviews(nextReviews);
       setResult(nextResult);
       setPhase("summary");
-      onComplete?.(nextResult);
+
+      if (pass === "full" && !hasRecordedCompletionRef.current) {
+        hasRecordedCompletionRef.current = true;
+        onComplete?.(nextResult);
+      }
       return;
     }
 
     setReviews(nextReviews);
-    setCurrentIndex((prev) => prev + 1);
+    setCurrentIndex((previous) => previous + 1);
     setRevealed(false);
   }
 
   if (phase === "intro") {
     return (
-      <section className="flashCardsGame panel">
-        <span className="eyebrow">FLASH CARDS</span>
+      <section className="gfaMemoryGardenPanel">
+        <span className="eyebrow">MEMORY GARDEN</span>
         <h1>Flash Cards</h1>
-        {totalCards > 0 ? (
+        <p className="gfaMemoryGardenSubtitle">
+          ทบทวน {lessonTitle} แบบสบาย ๆ
+        </p>
+        {totalDeck > 0 ? (
           <>
-            <p className="millionaireIntro">
-              ลองนึกคำตอบด้วยตนเองก่อนเปิดเฉลย
-              แล้วประเมินว่าจำได้ง่าย ปานกลาง หรือยาก
+            <p className="gfaMemoryGardenSupport">
+              {FLASH_CARD_DECK_SIZE} การ์ด · ไม่มีคะแนน · ทบทวนตามจังหวะของตัวเอง
             </p>
-            <p className="millionaireIntro">
-              ทบทวน {session.selectedCount} การ์ด
-            </p>
-            <div className="flashCardActions">
+            <div className="gfaMemoryGardenActions">
               <button
                 type="button"
                 className="button primary"
-                onClick={startReview}
+                onClick={startFullPass}
               >
                 เริ่มทบทวน
               </button>
@@ -170,8 +186,8 @@ export function FlashCardsGame({ session, onComplete }: FlashCardsGameProps) {
           </>
         ) : (
           <>
-            <p className="millionaireIntro">
-              ไม่มีการ์ดที่ตรงกับเงื่อนไขสำหรับบทเรียนนี้
+            <p className="gfaMemoryGardenSupport">
+              ยังไม่มีการ์ดทบทวนสำหรับบทเรียนนี้
             </p>
             <Link className="button secondary" href={lessonPath}>
               กลับไปบทเรียน
@@ -183,51 +199,64 @@ export function FlashCardsGame({ session, onComplete }: FlashCardsGameProps) {
   }
 
   if (phase === "summary" && result) {
+    const showWeakReview = weakCards.length > 0;
+
     return (
-      <section className="flashCardsGame panel flashCardsSummary">
-        <span className="eyebrow">SESSION SUMMARY</span>
-        <h1>สรุปการทบทวน</h1>
-        <p className="millionaireResultScore">
-          ทบทวนครบ <strong>{result.reviewedCards}</strong> / {result.totalCards}{" "}
-          การ์ด
+      <section className="gfaMemoryGardenPanel gfaMemoryGardenSummary">
+        <span className="eyebrow">FLASH CARDS</span>
+        <h1>Flash Cards</h1>
+        <p className="gfaMemoryGardenCompleteLine">
+          ทบทวนครบ {pass === "full" ? session.cards.length : result.reviewedCards} การ์ดแล้ว
         </p>
-        <dl className="activityPlaceholderMeta quizResultMeta">
+        {showWeakReview ? null : (
+          <p className="gfaMemoryGardenDone">ทบทวนครบแล้ว 🎉</p>
+        )}
+        <dl className="gfaMemoryGardenCounts">
           <div>
-            <dt>Easy ({ratingPercent(result.easy, result.reviewedCards)}%)</dt>
-            <dd>
-              {result.easy} · {recallLabels.easy.meaning}
-            </dd>
+            <dt>{FLASH_CARD_RECALL_LABELS.easy}</dt>
+            <dd>{result.easy}</dd>
           </div>
           <div>
-            <dt>
-              Medium ({ratingPercent(result.medium, result.reviewedCards)}%)
-            </dt>
-            <dd>
-              {result.medium} · {recallLabels.medium.meaning}
-            </dd>
+            <dt>{FLASH_CARD_RECALL_LABELS.medium}</dt>
+            <dd>{result.medium}</dd>
           </div>
           <div>
-            <dt>Hard ({ratingPercent(result.hard, result.reviewedCards)}%)</dt>
-            <dd>
-              {result.hard} · {recallLabels.hard.meaning}
-            </dd>
+            <dt>{FLASH_CARD_RECALL_LABELS.hard}</dt>
+            <dd>{result.hard}</dd>
           </div>
         </dl>
-        <ActivityResultActions
-          lessonPath={lessonPath}
-          onRestart={restartReview}
-        />
+        <div className="gfaMemoryGardenActions">
+          {showWeakReview ? (
+            <button
+              type="button"
+              className="button primary"
+              onClick={startWeakPass}
+            >
+              ทบทวนอีกครั้ง
+            </button>
+          ) : null}
+          <button
+            type="button"
+            className={showWeakReview ? "button secondary" : "button primary"}
+            onClick={onRequestFreshSession}
+          >
+            เล่นใหม่ทั้งสำรับ
+          </button>
+          <Link className="button secondary" href={getStudentPath()}>
+            กลับหน้าหลัก
+          </Link>
+        </div>
       </section>
     );
   }
 
   if (!currentCard) {
     return (
-      <section className="flashCardsGame panel">
+      <section className="gfaMemoryGardenPanel">
         <span className="eyebrow">FLASH CARDS</span>
         <h1>Flash Cards</h1>
-        <p className="millionaireIntro">
-          ไม่มีการ์ดที่ตรงกับเงื่อนไขสำหรับบทเรียนนี้
+        <p className="gfaMemoryGardenSupport">
+          ยังไม่มีการ์ดทบทวนสำหรับบทเรียนนี้
         </p>
         <Link className="button secondary" href={lessonPath}>
           กลับไปบทเรียน
@@ -236,77 +265,64 @@ export function FlashCardsGame({ session, onComplete }: FlashCardsGameProps) {
     );
   }
 
-  const correctAnswerText = getCorrectAnswerText(currentCard);
-
   return (
-    <section className="flashCardsGame">
-      <div className="millionaireProgress">
-        <div className="millionaireProgressMeta">
-          <span>
-            {currentIndex + 1} / {totalCards}
-          </span>
-          <span>
-            ทบทวนแล้ว <strong>{reviews.length}</strong>
-          </span>
-        </div>
-        <div
-          className="progress millionaireProgressBar"
-          role="progressbar"
-          aria-valuenow={progressPercent}
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-label="ความคืบหน้าการทบทวน"
-        >
-          <div style={{ width: `${progressPercent}%` }} />
-        </div>
-      </div>
-
+    <section className="gfaMemoryGardenPlay">
+      <p className="gfaMemoryGardenProgress" aria-live="polite">
+        {currentIndex + 1} / {totalCards}
+      </p>
       <article
-        className={`flashCard card ${revealed ? "flashCardRevealed" : "flashCardHidden"}`}
+        className={`gfaMemoryCard ${revealed ? "gfaMemoryCard-revealed" : "gfaMemoryCard-prompt"}`}
+        aria-label={
+          revealed
+            ? `การ์ด ${currentIndex + 1} จาก ${totalCards} คำตอบ`
+            : `การ์ด ${currentIndex + 1} จาก ${totalCards} คำถาม`
+        }
       >
-        <span className="eyebrow">FLASH CARDS · ACTIVE RECALL</span>
-        <h2 className="flashCardPrompt">{currentCard.prompt}</h2>
-        {currentCard.grammarPoint && (
-          <p className="flashCardSupport">{currentCard.grammarPoint}</p>
-        )}
-
+        <p className="gfaMemoryCardMeta">
+          {FLASH_CARD_FAMILY_LABELS[currentCard.family]}
+        </p>
+        <h2
+          ref={promptRef}
+          className="gfaMemoryCardFront"
+          tabIndex={-1}
+        >
+          {currentCard.front}
+        </h2>
         {!revealed ? (
           <>
-            <p className="flashCardRecallHint">
-              ลองนึกคำตอบในใจก่อน แล้วกดเปิดเฉลยเมื่อพร้อม
-            </p>
+            <p className="gfaMemoryCardHint">ลองนึกคำตอบในใจก่อน แล้วค่อยเปิดดู</p>
             <button
               type="button"
               className="button primary"
               onClick={handleReveal}
             >
-              เปิดเฉลย
+              เปิดคำตอบ
             </button>
           </>
         ) : (
           <>
-            <div className="flashCardAnswer" aria-live="polite">
-              <span className="flashCardAnswerLabel">คำตอบ</span>
-              <p>{correctAnswerText}</p>
+            <div className="gfaMemoryCardBack" aria-live="polite">
+              <span className="gfaMemoryCardBackLabel">คำตอบ</span>
+              <p>{currentCard.back}</p>
+              {currentCard.cue ? (
+                <p className="gfaMemoryCardCue">{currentCard.cue}</p>
+              ) : null}
             </div>
-            {currentCard.explanation.trim().length > 0 && (
-              <div className="millionaireExplanation planningTip">
-                {currentCard.explanation}
-              </div>
-            )}
-            <p className="flashCardRecallHint">
-              ประเมินว่าจำคำตอบนี้ได้แค่ไหน
-            </p>
-            <div className="recallRatingActions" role="group" aria-label="ประเมินการจำ">
-              {(["easy", "medium", "hard"] as const).map((rating) => (
+            <p className="gfaMemoryCardHint">ประเมินว่าจำได้แค่ไหน</p>
+            <div
+              className="gfaMemoryRatings"
+              role="group"
+              aria-label="ประเมินการจำ"
+            >
+              {RATING_ORDER.map((rating, ratingIndex) => (
                 <button
                   key={rating}
+                  ref={ratingIndex === 0 ? firstRatingRef : undefined}
                   type="button"
-                  className={`recallRatingButton recallRating${rating.charAt(0).toUpperCase()}${rating.slice(1)}`}
+                  className={`gfaMemoryRating gfaMemoryRating-${rating}`}
                   onClick={() => handleRating(rating)}
                 >
-                  {recallLabels[rating].label}
-                  <small>{recallLabels[rating].meaning}</small>
+                  {FLASH_CARD_RECALL_LABELS[rating]}
                 </button>
               ))}
             </div>
@@ -314,5 +330,29 @@ export function FlashCardsGame({ session, onComplete }: FlashCardsGameProps) {
         )}
       </article>
     </section>
+  );
+}
+
+export function FlashCardsGame({
+  lessonSlug,
+  lessonTitle,
+  lessonPath,
+  onComplete,
+}: FlashCardsGameProps) {
+  const [attemptKey, setAttemptKey] = useState(0);
+
+  return (
+    <MemoryGarden>
+      <FlashCardsAttempt
+        key={attemptKey}
+        lessonSlug={lessonSlug}
+        lessonTitle={lessonTitle}
+        lessonPath={lessonPath}
+        onComplete={onComplete}
+        onRequestFreshSession={() => {
+          setAttemptKey((current) => nextFlashCardSessionKey(current));
+        }}
+      />
+    </MemoryGarden>
   );
 }

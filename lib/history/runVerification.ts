@@ -26,6 +26,7 @@ import { runStudentVisualFoundationVerification } from "@/lib/student-ui/student
 import { runLearnerLessonLaunchVerification } from "@/lib/analytics/learnerLessonLaunchVerification";
 import { runPilotUxVerification } from "@/lib/analytics/pilotUxVerification";
 import { runFlashOptionalityVerification } from "@/lib/analytics/flashOptionalityVerification";
+import { runFlashCardsMvpVerification } from "@/lib/flash-cards/flashCardsMvpVerification";
 import { runHistoryVerification } from "./verification";
 
 runHistoryVerification();
@@ -117,3 +118,6 @@ console.log("pilot ux verification passed");
 
 runFlashOptionalityVerification();
 console.log("flash optionality verification passed");
+
+runFlashCardsMvpVerification();
+console.log("flash cards mvp verification passed");

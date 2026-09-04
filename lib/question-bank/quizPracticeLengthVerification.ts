@@ -67,7 +67,6 @@ function makeEvent(
 export function verifyDefaultQuizLengthIsTen(): void {
   assert(ACTIVITY_DEFAULTS.quiz.questionCount === 10, "A: default 10");
   assert(ACTIVITY_DEFAULTS.millionaire.questionCount === 10, "A: millionaire unchanged");
-  assert(ACTIVITY_DEFAULTS["flash-cards"].questionCount === 20, "A: flash unchanged");
 
   const lesson = requirePresentSimpleLesson();
   const session = createAssessmentSession(lesson, "quiz");
@@ -264,8 +263,9 @@ export function verifyMillionaireDefaultUnchanged(): void {
   assert(session.questions.length === 10, "H: millionaire session 10");
 }
 
-export function verifyFlashCardsDefaultUnchanged(): void {
-  assert(ACTIVITY_DEFAULTS["flash-cards"].questionCount === 20, "I: flash 20");
+export function verifyFlashCardsUsesDedicatedDeck(): void {
+  assert(ACTIVITY_DEFAULTS.quiz.questionCount === 10, "I: quiz still 10");
+  assert(ACTIVITY_DEFAULTS.millionaire.questionCount === 10, "I: millionaire still 10");
 }
 
 export function verifyCompletePolicyUnchanged(): void {
@@ -324,7 +324,7 @@ export function runQuizPracticeLengthVerification(): void {
   verifyOldTwentyQuestionHistoryReadable();
   verifySprint33LearnToPractice();
   verifyMillionaireDefaultUnchanged();
-  verifyFlashCardsDefaultUnchanged();
+  verifyFlashCardsUsesDedicatedDeck();
   verifyCompletePolicyUnchanged();
   verifyOutOfOrderUnchanged();
 }

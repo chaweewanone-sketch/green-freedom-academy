@@ -18,10 +18,10 @@ import type { LessonData } from "@/types/lesson";
 import type { FlashCardResult } from "@/types/recall";
 
 type StudentActivityPlayerProps = {
-  session: AssessmentSession;
   lesson: LessonData;
   lessonTitle: string;
   lessonPath: string;
+  session?: AssessmentSession;
 };
 
 export function StudentActivityPlayer({
@@ -33,15 +33,16 @@ export function StudentActivityPlayer({
   const [liveSession, setLiveSession] = useState(session);
   const [resultNextAction, setResultNextAction] =
     useState<ResultNextAction | null>(null);
+  const activity = liveSession?.activity ?? "flash-cards";
 
   const handleComplete = useCallback(
     (result: AssessmentResult | FlashCardResult) => {
       recordActivityCompletion({
         result,
-        lessonSlug: liveSession.lessonSlug,
+        lessonSlug: lesson.slug,
       });
 
-      if (liveSession.activity === "flash-cards") {
+      if (activity === "flash-cards") {
         setResultNextAction(null);
         return;
       }
@@ -49,8 +50,8 @@ export function StudentActivityPlayer({
       const { summary, events } = loadDashboardLearningState();
       setResultNextAction(
         resolveForwardResultNextAction({
-          currentActivity: liveSession.activity,
-          currentLessonSlug: liveSession.lessonSlug,
+          currentActivity: activity,
+          currentLessonSlug: lesson.slug,
           summary,
           events,
           currentResult:
@@ -63,23 +64,20 @@ export function StudentActivityPlayer({
         }),
       );
     },
-    [liveSession.activity, liveSession.lessonSlug],
+    [activity, lesson.slug],
   );
 
   const handleRestartAttempt = useCallback(() => {
     setResultNextAction(null);
 
-    if (
-      liveSession.activity !== "quiz" &&
-      liveSession.activity !== "millionaire"
-    ) {
+    if (activity !== "quiz" && activity !== "millionaire") {
       return;
     }
 
-    setLiveSession(createAssessmentSession(lesson, liveSession.activity));
-  }, [lesson, liveSession.activity]);
+    setLiveSession(createAssessmentSession(lesson, activity));
+  }, [activity, lesson]);
 
-  if (liveSession.activity === "millionaire") {
+  if (liveSession?.activity === "millionaire") {
     return (
       <MillionaireGame
         key={liveSession.sessionId}
@@ -93,7 +91,7 @@ export function StudentActivityPlayer({
     );
   }
 
-  if (liveSession.activity === "quiz") {
+  if (liveSession?.activity === "quiz") {
     return (
       <QuizGame
         key={liveSession.sessionId}
@@ -105,9 +103,12 @@ export function StudentActivityPlayer({
     );
   }
 
-  if (liveSession.activity === "flash-cards") {
-    return <FlashCardsGame session={liveSession} onComplete={handleComplete} />;
-  }
-
-  return null;
+  return (
+    <FlashCardsGame
+      lessonSlug={lesson.slug}
+      lessonTitle={lessonTitle}
+      lessonPath={lessonPath}
+      onComplete={handleComplete}
+    />
+  );
 }

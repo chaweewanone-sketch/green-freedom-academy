@@ -246,7 +246,6 @@ export function runFlashOptionalityVerification(): void {
   assert(bank?.questions.length === 50, "freeze: quiz bank 50");
   assert(ACTIVITY_DEFAULTS.quiz.questionCount === 10, "freeze: quiz attempt 10");
   assert(ACTIVITY_DEFAULTS.millionaire.questionCount === 10, "freeze: millionaire 10");
-  assert(ACTIVITY_DEFAULTS["flash-cards"].questionCount === 20, "freeze: flash 20");
   assert(GAME_STAGE_COUNT === 10, "freeze: millionaire stages 10");
   assert(
     MILLIONAIRE_ACTIVITY_DISPLAY_NAME === "Millionaire Challenge",
