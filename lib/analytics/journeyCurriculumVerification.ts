@@ -158,12 +158,12 @@ export function verifyPresentSimpleCompleteNavigatesToPastSimple(): void {
   assert(journey.stage === "LEARN", "case 5: Past Simple LEARN");
   assert(!journey.isCurriculumComplete, "case 5: more lessons remain");
   assert(
-    journey.nextAction.label === JOURNEY_ACTION_LABELS.learn,
-    "case 5: เริ่มเรียน",
+    journey.nextAction.label === "ดูผลการเรียน",
+    "case 5: ดูผลการเรียน",
   );
   assert(
-    journey.nextAction.href === getLessonPath("past-simple"),
-    "case 5: /lesson/past-simple",
+    journey.nextAction.href === getDashboardPath(),
+    "case 5: /dashboard not Past Simple launch",
   );
 }
 
@@ -332,9 +332,8 @@ export function verifyFlashOverrideIsPerLesson(): void {
   assert(pastSimpleOverride.lessonSlug === "past-simple", "case 9b: Past Simple");
   assert(pastSimpleOverride.stage === "REVIEW", "case 9b: REVIEW");
   assert(
-    pastSimpleOverride.nextAction.href ===
-      getActivityPath("past-simple", "flash-cards"),
-    "case 9b: past-simple flash route",
+    pastSimpleOverride.nextAction.href === getDashboardPath(),
+    "case 9b: Past Simple flash not launchable",
   );
 }
 
@@ -390,8 +389,8 @@ export function verifyLessonScoresAreNotMixed(): void {
     "case 10b: weak Past Simple quiz is PRACTICE",
   );
   assert(
-    latestPastSimple.nextAction.href === getActivityPath("past-simple", "quiz"),
-    "case 10b: past-simple quiz route",
+    latestPastSimple.nextAction.href === getDashboardPath(),
+    "case 10b: Past Simple quiz not launchable",
   );
 
   const otherLessonFlash = buildLearningJourney(emptySummary(), [

@@ -9,6 +9,7 @@ import {
   resolveKnownLessonSlug,
 } from "@/lib/analytics/lessonProgress";
 import { buildLearningSummaryForLesson } from "@/lib/analytics/summary";
+import { learnerSafeNavigation } from "@/lib/analytics/learnerLessonLaunch";
 import {
   getLessonBySlug,
   getNextCurriculumLesson,
@@ -72,6 +73,28 @@ function withCurriculumNavigation(pathJourney: LearningJourney): LearningJourney
   });
 }
 
+function applyLearnerLaunchPolicyToJourney(
+  pathJourney: LearningJourney,
+): LearningJourney {
+  const safe = learnerSafeNavigation(
+    pathJourney.nextAction.href,
+    pathJourney.nextAction.label,
+  );
+  if (!safe.rewritten) {
+    return pathJourney;
+  }
+
+  return journey({
+    ...pathJourney,
+    message: "ดูผลการเรียนได้จากแดชบอร์ด",
+    nextAction: {
+      actionType: "CONTINUE",
+      label: safe.label,
+      href: safe.href,
+    },
+  });
+}
+
 export function buildLearningJourney(
   summary: unknown,
   events?: AggregatableLearningEvent[],
@@ -90,13 +113,15 @@ export function buildLearningJourney(
     );
 
     if (resolved.isCurriculumComplete) {
-      return withCurriculumNavigation({
-        ...pathJourney,
-        isCurriculumComplete: true,
-      });
+      return applyLearnerLaunchPolicyToJourney(
+        withCurriculumNavigation({
+          ...pathJourney,
+          isCurriculumComplete: true,
+        }),
+      );
     }
 
-    return pathJourney;
+    return applyLearnerLaunchPolicyToJourney(pathJourney);
   }
 
   const parsed = parseLearningSummary(summary);
@@ -113,8 +138,10 @@ export function buildLearningJourney(
   const pathJourney = evaluateLessonJourney(parsed, lessonSlug);
 
   if (parsed.totalActivities <= 0) {
-    return pathJourney;
+    return applyLearnerLaunchPolicyToJourney(pathJourney);
   }
 
-  return withCurriculumNavigation(pathJourney);
+  return applyLearnerLaunchPolicyToJourney(
+    withCurriculumNavigation(pathJourney),
+  );
 }

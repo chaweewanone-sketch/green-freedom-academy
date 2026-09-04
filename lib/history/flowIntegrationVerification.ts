@@ -3,6 +3,7 @@ import { resolve } from "node:path";
 import { resolveActiveLesson } from "@/lib/analytics/activeLesson";
 import { buildCurriculumProgress } from "@/lib/analytics/curriculumProgress";
 import { buildLearningJourney } from "@/lib/analytics/journey";
+import { learnerSafeNavigation } from "@/lib/analytics/learnerLessonLaunch";
 import { buildLearningRecommendation } from "@/lib/analytics/recommendation";
 import { buildResumeLearning } from "@/lib/analytics/resumeLearning";
 import { buildStudentLearningHome } from "@/lib/analytics/studentHome";
@@ -130,7 +131,11 @@ function assertActiveLessonAligned(
     `${message}: recommendation lesson`,
   );
   assert(resume.action.lessonSlug === active.lessonSlug, `${message}: resume lesson`);
-  assert(resume.action.href === recommendation.href, `${message}: resume href`);
+  const safe = learnerSafeNavigation(
+    recommendation.href,
+    recommendation.ctaLabel,
+  );
+  assert(resume.action.href === safe.href, `${message}: resume href`);
 }
 
 export function verifyEmptyStudentHome(): void {
@@ -250,8 +255,8 @@ export function verifyPresentCompletionAdvancesToPast(): void {
   assert(home.resumeLearning.action.lessonSlug === "past-simple", "8: Past");
   assert(home.activeLesson?.lessonSlug === "past-simple", "8: active Past");
   assert(
-    home.resumeLearning.action.href === getLessonPath("past-simple"),
-    "8: Past lesson",
+    home.resumeLearning.action.href === getDashboardPath(),
+    "8: dashboard not Past lesson launch",
   );
 }
 
@@ -268,9 +273,8 @@ export function verifyPreexistingPastProgressReused(): void {
   const home = buildStudentLearningHome(emptySummary(), events);
   assert(home.resumeLearning.action.lessonSlug === "past-simple", "9: Past");
   assert(
-    home.resumeLearning.action.href ===
-      getActivityPath("past-simple", "millionaire"),
-    "9: reuses Past Quiz",
+    home.resumeLearning.action.href === getDashboardPath(),
+    "9: dashboard not Past Millionaire launch",
   );
 }
 

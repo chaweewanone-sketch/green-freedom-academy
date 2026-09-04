@@ -158,10 +158,10 @@ export function verifyPresentCompleteResumesPastLesson(): void {
   const events = presentCompleteEvents();
   const model = homeFromEvents(events);
   assert(model.resumeLearning.action.lessonSlug === "past-simple", "4: Past");
-  assert(model.resumeLearning.action.actionType === "NEXT_LESSON", "4: NEXT_LESSON");
+  assert(model.resumeLearning.action.actionType === "SUMMARY", "4: SUMMARY");
   assert(
-    model.resumeLearning.action.href === getLessonPath("past-simple"),
-    "4: /lesson/past-simple",
+    model.resumeLearning.action.href === getDashboardPath(),
+    "4: /dashboard",
   );
   assert(model.activeLesson?.lessonSlug === "past-simple", "4: active Past");
   assert(model.activeLesson?.stage === "LEARN", "4: Past LEARN");
@@ -180,11 +180,10 @@ export function verifyPreexistingPastProgressReused(): void {
   ];
   const model = homeFromEvents(events);
   assert(model.resumeLearning.action.lessonSlug === "past-simple", "5: Past");
-  assert(model.resumeLearning.action.actionType === "PLAY", "5: PLAY");
+  assert(model.resumeLearning.action.actionType === "SUMMARY", "5: SUMMARY");
   assert(
-    model.resumeLearning.action.href ===
-      getActivityPath("past-simple", "millionaire"),
-    "5: Past Millionaire not restart",
+    model.resumeLearning.action.href === getDashboardPath(),
+    "5: dashboard not Past Millionaire",
   );
   assert(model.activeLesson?.lessonSlug === "past-simple", "5: active Past");
 }

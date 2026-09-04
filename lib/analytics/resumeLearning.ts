@@ -1,4 +1,8 @@
 import { resolveActiveLesson } from "@/lib/analytics/activeLesson";
+import {
+  LEARNER_SAFE_COMPLETION_CTA_LABEL,
+  isLearnerLaunchableHref,
+} from "@/lib/analytics/learnerLessonLaunch";
 import { JOURNEY_ACTION_LABELS, isLearningEvent } from "@/lib/analytics/lessonProgress";
 import { buildLearningRecommendation } from "@/lib/analytics/recommendation";
 import { getLessonBySlug, hasLesson } from "@/lib/lessons";
@@ -125,6 +129,21 @@ export function buildResumeLearning(
       : recommendation.lessonSlug;
 
   const title = lessonTitle(lessonSlug);
+
+  if (!isLearnerLaunchableHref(recommendation.href)) {
+    return {
+      title: "เรียน Present Simple ครบแล้ว",
+      description: "ดูผลการเรียนได้จากแดชบอร์ด",
+      action: {
+        lessonSlug,
+        lessonTitle: title,
+        label: LEARNER_SAFE_COMPLETION_CTA_LABEL,
+        href: getDashboardPath(),
+        actionType: "SUMMARY",
+      },
+    };
+  }
+
   const copy = resumeCopy(recommendation, actionType, title);
 
   return {

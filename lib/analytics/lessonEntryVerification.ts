@@ -161,8 +161,8 @@ export function verifyPresentCompleteNextPast(): void {
   assert(entry.isComplete, "6: complete");
   assert(!entry.isActiveLesson, "6: no longer active");
   assert(entry.notice === "เรียนจบบทนี้แล้ว", "6: complete copy");
-  assert(entry.nextAction.actionType === "NEXT_LESSON", "6: NEXT_LESSON");
-  assert(entry.nextAction.href === getLessonPath("past-simple"), "6: Past");
+  assert(entry.nextAction.actionType === "SUMMARY", "6: SUMMARY");
+  assert(entry.nextAction.href === getDashboardPath(), "6: dashboard");
   assert(entry.nextAction.href === resume.action.href, "6: resume reused");
 }
 

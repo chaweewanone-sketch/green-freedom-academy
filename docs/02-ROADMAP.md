@@ -62,6 +62,7 @@ FUTURE           AI generators, Teacher Studio, Classroom Companion
 - Teacher "สร้างห้องเรียน" button has no handler.
 - Coming-soon activities (matching, monopoly, spin-wheel, sentence-builder) have no completion recording yet.
 - Curriculum currently has two registry lessons (Present Simple, then Past Simple). Completing the final lesson returns to `/dashboard`; there is no invented third lesson.
+- Present Simple is the only learner-launchable lesson in the current pilot. After Present Simple COMPLETE, `/student` and dashboard CTAs go to `/dashboard` rather than `/lesson/past-simple`. Curriculum engines still identify Past Simple as next; the lesson remains directly reachable by URL.
 
 ---
 

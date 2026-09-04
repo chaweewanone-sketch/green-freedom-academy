@@ -1,3 +1,4 @@
+import { learnerSafeNavigation } from "@/lib/analytics/learnerLessonLaunch";
 import { buildResumeLearning, isKnownResumeHref } from "@/lib/analytics/resumeLearning";
 import { getActivityPath, getDashboardPath, getLessonPath } from "@/lib/routes";
 import type { AggregatableLearningEvent, LearningSummary } from "@/types/analytics";
@@ -82,7 +83,11 @@ function assertResumeMatchesRecommendation(
   const summary = emptySummary();
   const recommendation = buildLearningRecommendation(summary, events);
   const resume = buildResumeLearning(summary, events);
-  assert(resume.action.href === recommendation.href, `${message}: href from recommendation`);
+  const safe = learnerSafeNavigation(
+    recommendation.href,
+    recommendation.ctaLabel,
+  );
+  assert(resume.action.href === safe.href, `${message}: href from launchable recommendation`);
   assert(
     isKnownResumeHref(resume.action.href, resume.action.lessonSlug),
     `${message}: known route`,
@@ -216,9 +221,9 @@ export function verifyActiveWeakFlashResume(): void {
 export function verifyPresentCompleteResumesPastLesson(): void {
   const resume = assertResumeMatchesRecommendation(presentCompleteEvents(), "8");
   assert(resume.action.lessonSlug === "past-simple", "8: Past Simple");
-  assert(resume.action.actionType === "NEXT_LESSON", "8: NEXT_LESSON");
-  assert(resume.action.href === getLessonPath("past-simple"), "8: /lesson/past-simple");
-  assert(resume.action.label === "เรียนบทถัดไป", "8: เรียนบทถัดไป");
+  assert(resume.action.actionType === "SUMMARY", "8: SUMMARY");
+  assert(resume.action.href === getDashboardPath(), "8: /dashboard");
+  assert(resume.action.label === "ดูผลการเรียน", "8: ดูผลการเรียน");
 }
 
 export function verifyPreexistingPastQuizProgressReused(): void {
@@ -235,11 +240,8 @@ export function verifyPreexistingPastQuizProgressReused(): void {
     "9",
   );
   assert(resume.action.lessonSlug === "past-simple", "9: Past Simple");
-  assert(resume.action.actionType === "PLAY", "9: PLAY");
-  assert(
-    resume.action.href === getActivityPath("past-simple", "millionaire"),
-    "9: Past Millionaire not restart",
-  );
+  assert(resume.action.actionType === "SUMMARY", "9: SUMMARY");
+  assert(resume.action.href === getDashboardPath(), "9: dashboard not Past Millionaire");
 }
 
 export function verifyOutOfOrderPastDoesNotHijack(): void {

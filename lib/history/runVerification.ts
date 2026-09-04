@@ -22,6 +22,7 @@ import { runQuizAttemptResetVerification } from "@/lib/quiz/quizAttemptResetVeri
 import { runMillionaireAttemptResetVerification } from "@/lib/millionaire/millionaireAttemptResetVerification";
 import { runStageLadderVerification } from "@/lib/millionaire/stageLadderVerification";
 import { runStudentVisualFoundationVerification } from "@/lib/student-ui/studentVisualFoundationVerification";
+import { runLearnerLessonLaunchVerification } from "@/lib/analytics/learnerLessonLaunchVerification";
 import { runHistoryVerification } from "./verification";
 
 runHistoryVerification();
@@ -101,3 +102,6 @@ console.log("stage ladder verification passed");
 
 runStudentVisualFoundationVerification();
 console.log("student visual foundation verification passed");
+
+runLearnerLessonLaunchVerification();
+console.log("learner lesson launch verification passed");

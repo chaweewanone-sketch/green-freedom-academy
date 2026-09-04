@@ -433,12 +433,12 @@ export function verifyLessonCompletionAdvancesCurriculum(): void {
   assert(surfaces.home.activeLesson?.lessonSlug === "past-simple", "E: home Past");
   assert(surfaces.curriculum.completedLessons === 1, "E: one lesson complete");
   assert(
-    surfaces.presentEntry.nextAction.href === getLessonPath("past-simple"),
-    "E: Present entry points to Past",
+    surfaces.presentEntry.nextAction.href === getDashboardPath(),
+    "E: Present entry completion CTA",
   );
   assert(
-    surfaces.home.resumeLearning.action.href === getLessonPath("past-simple"),
-    "E: next action Past Simple",
+    surfaces.home.resumeLearning.action.href === getDashboardPath(),
+    "E: home resume dashboard",
   );
   assert(
     surfaces.presentEntry.noticeKind === "complete",

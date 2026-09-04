@@ -1,6 +1,6 @@
 import { isLessonComplete, resolveActiveLesson } from "@/lib/analytics/activeLesson";
 import { buildLearningSummaryForLesson } from "@/lib/analytics/summary";
-import { getLessonPath } from "@/lib/routes";
+import { getDashboardPath, getLessonPath } from "@/lib/routes";
 import type { AggregatableLearningEvent, LearningSummary } from "@/types/analytics";
 import {
   JOURNEY_ACTION_LABELS,
@@ -135,12 +135,12 @@ export function verifyPresentCompletePastUntouchedIsLearn(): void {
   assert(resolved.lessonSlug === "past-simple", "4: active Past Simple");
   assert(journey.stage === "LEARN", "4: Past Simple LEARN");
   assert(
-    journey.nextAction.label === JOURNEY_ACTION_LABELS.learn,
-    "4: เริ่มเรียน",
+    journey.nextAction.label === "ดูผลการเรียน",
+    "4: ดูผลการเรียน",
   );
   assert(
-    journey.nextAction.href === getLessonPath("past-simple"),
-    "4: /lesson/past-simple",
+    journey.nextAction.href === getDashboardPath(),
+    "4: /dashboard not Past Simple launch",
   );
   assert(!journey.isCurriculumComplete, "4: curriculum not complete");
 }

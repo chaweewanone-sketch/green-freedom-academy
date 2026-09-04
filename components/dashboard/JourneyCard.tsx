@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { getLessonBySlug } from "@/lib/lessons";
 import {
+  isLearnerLaunchableLesson,
+  learnerSafeNavigation,
+} from "@/lib/analytics/learnerLessonLaunch";
+import {
   JOURNEY_STAGE_LABELS,
   JOURNEY_TRACK,
 } from "@/lib/analytics/journey";
@@ -31,11 +35,15 @@ function stageClassName(
 export function JourneyCard({ journey }: JourneyCardProps) {
   const lessonTitle =
     getLessonBySlug(journey.lessonSlug)?.title ?? journey.lessonSlug;
-  const nextLessonTitle = journey.nextLessonSlug
-    ? getLessonBySlug(journey.nextLessonSlug)?.title
-    : undefined;
+  const nextLessonTitle =
+    journey.nextLessonSlug && isLearnerLaunchableLesson(journey.nextLessonSlug)
+      ? getLessonBySlug(journey.nextLessonSlug)?.title
+      : undefined;
   const stageLabel = JOURNEY_STAGE_LABELS[journey.stage];
-  const action = journey.nextAction;
+  const action = learnerSafeNavigation(
+    journey.nextAction.href,
+    journey.nextAction.label,
+  );
 
   return (
     <section className="panel studentDashboardSection" aria-label="เส้นทางการเรียน">

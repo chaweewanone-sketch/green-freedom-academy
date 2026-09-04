@@ -204,8 +204,8 @@ export function verifyLessonAwareHref(): void {
   });
   assert(journey.lessonSlug === "past-simple", "lesson-aware slug");
   assert(
-    journey.nextAction.href === getActivityPath("past-simple", "millionaire"),
-    "lesson-aware href",
+    journey.nextAction.href === getDashboardPath(),
+    "lesson-aware href is guarded for Past Simple",
   );
 }
 
