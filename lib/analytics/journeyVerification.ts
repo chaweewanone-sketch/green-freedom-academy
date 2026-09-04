@@ -69,6 +69,21 @@ function completeWithFlash(
   };
 }
 
+function playWithWeakFlash(): LearningSummary {
+  return {
+    ...emptySummary(),
+    totalActivities: 2,
+    quizAttempts: 1,
+    flashCardAttempts: 1,
+    averageQuizScore: 90,
+    flashEasy: 1,
+    flashMedium: 2,
+    flashHard: 3,
+    latestActivity: "flash-cards",
+    latestLesson: "present-simple",
+  };
+}
+
 export function verifyEmptyHistoryIsLearn(): void {
   const journey = buildLearningJourney(emptySummary());
   assert(journey.stage === "LEARN", "empty: LEARN");
@@ -148,13 +163,20 @@ export function verifyMillionaireStrongIsComplete(): void {
   );
 }
 
-export function verifyWeakFlashOverridesComplete(): void {
+export function verifyWeakFlashDoesNotOverrideComplete(): void {
   const journey = buildLearningJourney(completeWithFlash(1, 2, 3));
-  assert(journey.stage === "REVIEW", "flash override: REVIEW");
-  assert(journey.reasonCode === "FLASH_WEAK_OVERRIDE", "flash override: reason");
+  assert(journey.stage === "COMPLETE", "flash optionality: COMPLETE");
   assert(
-    journey.nextAction.href === getActivityPath("present-simple", "flash-cards"),
-    "flash override: flash href",
+    journey.reasonCode === "MILLIONAIRE_STRONG",
+    "flash optionality: required-path reason",
+  );
+  assert(
+    journey.progressPercent === JOURNEY_PROGRESS.complete,
+    "flash optionality: 100%",
+  );
+  assert(
+    journey.nextAction.href !== getActivityPath("present-simple", "flash-cards"),
+    "flash optionality: not demoted to flash-cards",
   );
 }
 
@@ -254,7 +276,7 @@ export function verifyPlayRoutesToMillionaire(): void {
 
 export function verifyReviewFlashRoutesToFlashCards(): void {
   assertAction(
-    buildLearningJourney(completeWithFlash(1, 2, 3)),
+    buildLearningJourney(playWithWeakFlash()),
     "REVIEW",
     JOURNEY_ACTION_LABELS.reviewFlash,
     getActivityPath("present-simple", "flash-cards"),
@@ -315,7 +337,7 @@ export function runJourneyVerification(): void {
   verifyMillionaireWeakIsReview();
   verifyMillionaireDevelopingIsPlay();
   verifyMillionaireStrongIsComplete();
-  verifyWeakFlashOverridesComplete();
+  verifyWeakFlashDoesNotOverrideComplete();
   verifyStrongHistoryIsStable();
   verifySameInputSameOutput();
   verifyJourneyDoesNotMutateSummary();

@@ -297,10 +297,21 @@ function millionaireJourney(score: number, lessonSlug: string): LearningJourney 
   });
 }
 
+export function isRequiredPathComplete(summary: LearningSummary): boolean {
+  return (
+    summary.millionaireAttempts > 0 &&
+    summary.averageMillionaireScore >= JOURNEY_THRESHOLDS.millionaireStrong
+  );
+}
+
 function applyFlashOverride(
   pathJourney: LearningJourney,
   summary: LearningSummary,
 ): LearningJourney {
+  if (pathJourney.stage === "COMPLETE") {
+    return pathJourney;
+  }
+
   if (!isWeakFlashRetention(summary)) {
     return pathJourney;
   }
@@ -310,10 +321,7 @@ function applyFlashOverride(
     stage: "REVIEW",
     title: "ทบทวนด้วย Flash Cards",
     message: "การ์ดระดับ Medium และ Hard ยังเยอะ อยู่ในขั้นทบทวน",
-    progressPercent:
-      pathJourney.stage === "COMPLETE"
-        ? JOURNEY_PROGRESS.flashOverrideComplete
-        : pathJourney.progressPercent,
+    progressPercent: pathJourney.progressPercent,
     nextAction: journeyAction(
       "REVIEW",
       JOURNEY_ACTION_LABELS.reviewFlash,

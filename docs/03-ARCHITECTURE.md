@@ -139,7 +139,7 @@ ClassroomCompanion (Section 8 + เข้าใจแล้ว ✓ ไปฝึ�
 
 Idempotency: **one Learn event per lessonSlug + contentVersion**. A newer curriculum version writes a new Learn row and does not erase older ones. New writes use `sessionId` `learn:${slug}:v${version}`. Historical `learn:${slug}` rows stay readable. Quiz / Millionaire retries remain separate attempt events and are not versioned.
 
-After a **current-version** Learn event (and no Quiz / Millionaire yet), Journey and Recommendation advance that lesson to Short Practice: stage PRACTICE, CTA `ทำ Quiz`. A stale Learn-only event (legacy Present Simple v1 against current v2) stays LEARN (`เริ่มเรียน`). Flash-only history still uses LEARN (`FALLBACK_LEARN`) / flash override. Quiz / Millionaire history still drives later stages.
+After a **current-version** Learn event (and no Quiz / Millionaire yet), Journey and Recommendation advance that lesson to Short Practice: stage PRACTICE, CTA `ทำ Quiz`. A stale Learn-only event (legacy Present Simple v1 against current v2) stays LEARN (`เริ่มเรียน`). Flash-only history still uses LEARN (`FALLBACK_LEARN`) / flash override. Flash Card weakness cannot revoke required-path COMPLETE. Quiz / Millionaire history still drives later stages.
 
 ```
 Activity UI

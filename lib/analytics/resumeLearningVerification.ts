@@ -210,12 +210,11 @@ export function verifyActiveWeakFlashResume(): void {
     ],
     "7",
   );
-  assert(resume.action.lessonSlug === "present-simple", "7: Present Simple");
-  assert(resume.action.actionType === "REVIEW", "7: REVIEW");
-  assert(
-    resume.action.href === getActivityPath("present-simple", "flash-cards"),
-    "7: Present Flash Cards",
-  );
+  assert(resume.action.lessonSlug === "past-simple", "7: Past Simple");
+  assert(resume.action.actionType === "SUMMARY", "7: SUMMARY");
+  assert(resume.action.href === getDashboardPath(), "7: /dashboard");
+  assert(resume.action.label === "ดูผลการเรียน", "7: ดูผลการเรียน");
+  assert(resume.title === "เรียน Present Simple ครบแล้ว", "7: complete title");
 }
 
 export function verifyPresentCompleteResumesPastLesson(): void {

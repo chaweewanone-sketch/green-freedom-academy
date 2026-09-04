@@ -2,6 +2,7 @@ import { resolveActiveLesson } from "@/lib/analytics/activeLesson";
 import {
   JOURNEY_ACTION_LABELS,
   isLearningEvent,
+  isRequiredPathComplete,
 } from "@/lib/analytics/lessonProgress";
 import { hasCurrentLearnCompletion } from "@/lib/history/learnVersion";
 import { buildLearningSummaryForLesson } from "@/lib/analytics/summary";
@@ -344,6 +345,13 @@ function recommendByLatestActivity(
   }
 
   if (focus === "flash-cards" && summary.flashCardAttempts > 0) {
+    if (isRequiredPathComplete(summary)) {
+      return millionaireRecommendation(
+        summary.averageMillionaireScore,
+        lessonSlug,
+      );
+    }
+
     return flashRecommendation(summary, lessonSlug);
   }
 
@@ -360,6 +368,13 @@ function recommendByLatestActivity(
   }
 
   if (summary.flashCardAttempts > 0) {
+    if (isRequiredPathComplete(summary)) {
+      return millionaireRecommendation(
+        summary.averageMillionaireScore,
+        lessonSlug,
+      );
+    }
+
     return flashRecommendation(summary, lessonSlug);
   }
 
@@ -383,7 +398,7 @@ function recommendForActiveLesson(
     return startRecommendation(lessonSlug, "EMPTY_HISTORY");
   }
 
-  if (isWeakFlashRetention(summary)) {
+  if (isWeakFlashRetention(summary) && !isRequiredPathComplete(summary)) {
     return flashRecommendation(summary, lessonSlug);
   }
 

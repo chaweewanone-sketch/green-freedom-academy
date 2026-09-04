@@ -282,7 +282,7 @@ export function verifyInactiveFlashDoesNotOverride(): void {
   assert(recommendation.activity === "quiz", "12: quiz not flash-cards");
 }
 
-export function verifyActiveFlashOverride(): void {
+export function verifyActiveFlashDoesNotOverrideComplete(): void {
   const events = [
     ...presentCompleteEvents(1),
     makeEvent({
@@ -295,12 +295,16 @@ export function verifyActiveFlashOverride(): void {
     }),
   ];
   const recommendation = buildLearningRecommendation(emptySummary(), events);
-  assert(recommendation.lessonSlug === "present-simple", "13: still Present Simple");
-  assert(recommendation.kind === "REVIEW", "13: REVIEW");
-  assert(recommendation.reasonCode === "FLASH_WEAK", "13: FLASH_WEAK");
+  assert(recommendation.lessonSlug === "past-simple", "13: still advances");
+  assert(recommendation.kind === "CONTINUE", "13: CONTINUE");
+  assert(recommendation.reasonCode !== "FLASH_WEAK", "13: FLASH_WEAK does not win");
   assert(
-    recommendation.href === getActivityPath("present-simple", "flash-cards"),
-    "13: present-simple flash-cards",
+    recommendation.href === getLessonPath("past-simple"),
+    "13: engine next lesson, not flash-cards",
+  );
+  assert(
+    recommendation.href !== getActivityPath("present-simple", "flash-cards"),
+    "13: not present-simple flash-cards",
   );
 }
 
@@ -409,7 +413,7 @@ export function runRecommendationCurriculumVerification(): void {
   verifyPresentCompletePastStrongQuizPlay();
   verifyBothLessonsCompleteDashboard();
   verifyInactiveFlashDoesNotOverride();
-  verifyActiveFlashOverride();
+  verifyActiveFlashDoesNotOverrideComplete();
   verifyCrossLessonScoresIsolated();
   verifyHistoryOrderDoesNotChangeRecommendation();
   verifySameInputSameRecommendation();

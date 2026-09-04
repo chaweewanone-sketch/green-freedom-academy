@@ -25,6 +25,7 @@ import { runMillionaireNamingVerification } from "@/lib/millionaire/millionaireN
 import { runStudentVisualFoundationVerification } from "@/lib/student-ui/studentVisualFoundationVerification";
 import { runLearnerLessonLaunchVerification } from "@/lib/analytics/learnerLessonLaunchVerification";
 import { runPilotUxVerification } from "@/lib/analytics/pilotUxVerification";
+import { runFlashOptionalityVerification } from "@/lib/analytics/flashOptionalityVerification";
 import { runHistoryVerification } from "./verification";
 
 runHistoryVerification();
@@ -113,3 +114,6 @@ console.log("learner lesson launch verification passed");
 
 runPilotUxVerification();
 console.log("pilot ux verification passed");
+
+runFlashOptionalityVerification();
+console.log("flash optionality verification passed");

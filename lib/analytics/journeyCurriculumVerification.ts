@@ -286,19 +286,23 @@ export function verifyFlashOverrideIsPerLesson(): void {
       flashHard: 3,
     }),
   ]);
-  assert(presentSimpleOverride.stage === "REVIEW", "case 9: REVIEW");
+  assert(presentSimpleOverride.stage === "LEARN", "case 9: Past Simple LEARN");
   assert(
-    presentSimpleOverride.reasonCode === "FLASH_WEAK_OVERRIDE",
-    "case 9: flash override",
+    presentSimpleOverride.reasonCode === "EMPTY_HISTORY",
+    "case 9: Present complete is not revoked by weak Flash",
   );
   assert(
-    presentSimpleOverride.nextAction.href ===
+    presentSimpleOverride.lessonSlug === "past-simple",
+    "case 9: active advances after Present COMPLETE",
+  );
+  assert(
+    presentSimpleOverride.nextAction.href === getDashboardPath(),
+    "case 9: 54D dashboard not flash-cards",
+  );
+  assert(
+    presentSimpleOverride.nextAction.href !==
       getActivityPath("present-simple", "flash-cards"),
-    "case 9: present-simple flash route",
-  );
-  assert(
-    !presentSimpleOverride.nextLessonSlug,
-    "case 9: flash override blocks next-lesson CTA",
+    "case 9: weak Flash does not become the CTA",
   );
 
   const pastSimpleOverride = buildLearningJourney(emptySummary(), [
@@ -330,10 +334,15 @@ export function verifyFlashOverrideIsPerLesson(): void {
     }),
   ]);
   assert(pastSimpleOverride.lessonSlug === "past-simple", "case 9b: Past Simple");
-  assert(pastSimpleOverride.stage === "REVIEW", "case 9b: REVIEW");
+  assert(pastSimpleOverride.stage === "COMPLETE", "case 9b: COMPLETE");
+  assert(pastSimpleOverride.isCurriculumComplete, "case 9b: curriculum complete");
   assert(
     pastSimpleOverride.nextAction.href === getDashboardPath(),
-    "case 9b: Past Simple flash not launchable",
+    "case 9b: dashboard, not Flash Cards",
+  );
+  assert(
+    pastSimpleOverride.reasonCode !== "FLASH_WEAK_OVERRIDE",
+    "case 9b: Past COMPLETE is not revoked by weak Flash",
   );
 }
 
