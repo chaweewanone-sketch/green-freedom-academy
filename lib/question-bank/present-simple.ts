@@ -336,7 +336,7 @@ const presentSimpleDefinitions = [
     tags: ["question", "wh-question"],
   },
   {
-    prompt: "Choose the sentence with hard rarely correctly.",
+    prompt: "Which sentence uses rarely correctly?",
     correct: "He rarely forgets his homework.",
     distractors: ["He forgets rarely his homework.", "He rarely forget his homework.", "Rarely he forgets his homework."],
     explanation: "Rarely is an adverb of frequency placed before the main verb.",

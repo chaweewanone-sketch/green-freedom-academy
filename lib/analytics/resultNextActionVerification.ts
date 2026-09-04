@@ -17,7 +17,12 @@ import {
   loadDashboardLearningState,
   recordActivityCompletion,
 } from "@/lib/history";
-import { getActivityPath, getDashboardPath, getLessonPath } from "@/lib/routes";
+import {
+  getActivityPath,
+  getDashboardPath,
+  getLessonPath,
+  getStudentPath,
+} from "@/lib/routes";
 import type {
   AggregatableLearningEvent,
   LearningSummary,
@@ -684,7 +689,7 @@ function nextActionFromCurrentMillionaire(
 export function verifyMillionaireCurrentResultBands(): void {
   const quizHref = getActivityPath("present-simple", "quiz");
   const millionaireHref = getActivityPath("present-simple", "millionaire");
-  const pastLesson = getLessonPath("past-simple");
+  const studentHome = getStudentPath();
 
   for (const percentage of [0, 59, 69]) {
     const action = nextActionFromCurrentMillionaire(percentage);
@@ -702,8 +707,8 @@ export function verifyMillionaireCurrentResultBands(): void {
 
   for (const percentage of [85, 90, 100]) {
     const action = nextActionFromCurrentMillionaire(percentage);
-    assert(action?.label === JOURNEY_ACTION_LABELS.nextLesson, `${percentage}: next lesson`);
-    assert(action?.href === pastLesson, `${percentage}: Past Simple`);
+    assert(action?.label === "กลับหน้าหลัก", `${percentage}: student home`);
+    assert(action?.href === studentHome, `${percentage}: /student`);
     assert(action?.sameActivity !== true, `${percentage}: strong is a route`);
   }
 
@@ -718,7 +723,7 @@ export function verifyMillionaireCurrentResultIgnoresHistory(): void {
   const history90Current80 = nextActionFromCurrentMillionaire(80, [90]);
 
   assert(history90Current60?.label === "ฝึก Quiz อีกครั้ง", "A: current 60 beats avg 90");
-  assert(history50Current90?.label === JOURNEY_ACTION_LABELS.nextLesson, "B: current 90 beats avg 50");
+  assert(history50Current90?.label === "กลับหน้าหลัก", "B: current 90 beats avg 50");
   assert(history90Current80?.label === "เล่น Millionaire อีกครั้ง", "C: current 80 beats avg 90");
 }
 

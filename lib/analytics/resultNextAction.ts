@@ -3,7 +3,12 @@ import {
   buildMillionaireResultRecommendation,
   buildQuizScoreRecommendation,
 } from "@/lib/analytics/recommendation";
-import { getActivityPath, getDashboardPath, getLessonPath } from "@/lib/routes";
+import {
+  getActivityPath,
+  getDashboardPath,
+  getLessonPath,
+  getStudentPath,
+} from "@/lib/routes";
 import type {
   AggregatableLearningEvent,
   LearningRecommendation,
@@ -45,6 +50,15 @@ function isCurrentMillionaireResult(
   );
 }
 
+const PRESENT_SIMPLE_PILOT_LESSON_SLUG = "present-simple";
+
+function presentSimplePilotHomeAction(): ResultNextAction {
+  return {
+    label: "กลับหน้าหลัก",
+    href: getStudentPath(),
+  };
+}
+
 function toMillionaireCurrentResultNextAction(
   currentLessonSlug: string,
   recommendation: LearningRecommendation,
@@ -68,6 +82,10 @@ function toMillionaireCurrentResultNextAction(
     recommendation.href === getLessonPath(recommendation.lessonSlug) &&
     recommendation.lessonSlug !== currentLessonSlug
   ) {
+    if (currentLessonSlug === PRESENT_SIMPLE_PILOT_LESSON_SLUG) {
+      return presentSimplePilotHomeAction();
+    }
+
     return asForwardAction(recommendation);
   }
 
