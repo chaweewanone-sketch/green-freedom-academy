@@ -633,8 +633,8 @@ export function runStudentVisualFoundationVerification(): void {
     "assets: millionaire companion path",
   );
   assert(
-    artAssets.includes("/gfa/scenes/memory-garden-background.png"),
-    "assets: memory garden path",
+    artAssets.includes("/gfa/scenes/memory-garden-background-v2.png"),
+    "assets: memory garden v2 path",
   );
 
   assert(existsSync(resolve(process.cwd(), "public/gfa/characters")), "assets: characters dir");
@@ -693,8 +693,8 @@ export function runStudentVisualFoundationVerification(): void {
     "assets: millionaire clearing file",
   );
   assert(
-    existsSync(resolve(process.cwd(), "public/gfa/scenes/memory-garden-background.png")),
-    "assets: memory garden file",
+    existsSync(resolve(process.cwd(), "public/gfa/scenes/memory-garden-background-v2.png")),
+    "assets: memory garden v2 file",
   );
   assert(
     existsSync(resolve(process.cwd(), "public/gfa/characters/bai-tong-millionaire-companion.webp")),
@@ -727,7 +727,11 @@ export function runStudentVisualFoundationVerification(): void {
   assert(artContract.includes("NAME=bai-tong-quiz-coach"), "contract: quiz coach");
   assert(artContract.includes("NAME=millionaire-adventure-clearing"), "contract: millionaire clearing");
   assert(artContract.includes("NAME=bai-tong-millionaire-companion"), "contract: millionaire companion");
-  assert(artContract.includes("NAME=memory-garden-background"), "contract: memory garden");
+  assert(artContract.includes("NAME=memory-garden-background-v2"), "contract: memory garden v2");
+  assert(
+    artContract.includes("SEPARATE_CHARACTER_OVERLAY=NO"),
+    "contract: no Memory Garden Bai Tong overlay",
+  );
   assert(artContract.includes("TEXT_INSIDE_ASSET=NO"), "contract: no baked text");
   assert(
     artContract.includes("ART = VISUAL MEANING + WORLD STORYTELLING"),

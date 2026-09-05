@@ -31,7 +31,8 @@ export type GfaArtSlotId =
   | "bai-tong-quiz-coach-pointing"
   | "millionaire-adventure-clearing"
   | "bai-tong-millionaire-companion"
-  | "memory-garden-background";
+  | "memory-garden-background"
+  | "memory-garden-background-v2";
 
 export type GfaArtSlotSpec = {
   id: GfaArtSlotId;
@@ -220,18 +221,12 @@ export const GFA_MILLIONAIRE_ART = {
   },
 } as const satisfies Record<string, GfaArtSlotSpec>;
 
-/** Flash Cards / Memory Garden — calm review world (Sprint 58D). */
+/** Flash Cards / Memory Garden — calm review world (Sprint 58E v2). */
 export const GFA_FLASH_ART = {
   memoryGardenBackground: {
-    id: "memory-garden-background",
-    src: "/gfa/scenes/memory-garden-background.png",
+    id: "memory-garden-background-v2",
+    src: "/gfa/scenes/memory-garden-background-v2.png",
     aspect: "16 / 9",
     transparent: false,
-  },
-  baiTongPauseGuide: {
-    id: "bai-tong-pause-guide",
-    src: "/gfa/characters/bai-tong-pause-guide.webp",
-    aspect: "5 / 6",
-    transparent: true,
   },
 } as const satisfies Record<string, GfaArtSlotSpec>;

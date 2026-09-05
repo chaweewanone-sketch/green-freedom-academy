@@ -261,25 +261,25 @@ export function runFlashCardsMvpVerification(): void {
   const garden = read("components/flash-cards/MemoryGarden.tsx");
   const artAssets = read("lib/student-ui/gfaArtAssets.ts");
   const css = read("app/globals.css");
-  assert(garden.includes("GFA_FLASH_ART"), "58D: Memory Garden uses Flash art registry");
+  assert(garden.includes("GFA_FLASH_ART"), "58E: Memory Garden uses Flash art registry");
   assert(
     garden.includes("memoryGardenBackground"),
-    "58D: Memory Garden mounts approved background",
+    "58E: Memory Garden mounts approved background",
   );
   assert(
-    artAssets.includes("/gfa/scenes/memory-garden-background.png"),
-    "58D: memory garden asset path",
+    artAssets.includes("/gfa/scenes/memory-garden-background-v2.png"),
+    "58E: memory garden v2 asset path",
   );
-  assert(
-    garden.includes("baiTongPauseGuide") || garden.includes("bai-tong-pause-guide"),
-    "58D: Bai Tong remains separate character layer",
-  );
-  assert(css.includes(".gfaMemoryGardenArt"), "58D: full-bleed art layer");
+  assert(!garden.includes("baiTongPauseGuide"), "58E: no separate pause-guide overlay");
+  assert(!garden.includes("bai-tong-pause-guide"), "58E: no pause-guide src in Memory Garden");
+  assert(!garden.includes("gfaMemoryGardenCompanion"), "58E: companion overlay markup removed");
+  assert(css.includes(".gfaMemoryGardenArt"), "58E: full-bleed art layer");
+  assert(css.includes(".gfaMemoryGardenSceneSpacer"), "58E: right gutter for in-scene Bai Tong");
   const memoryCss = css.slice(
     css.indexOf(".gfaMemoryGarden {"),
     css.indexOf(".gfaMemoryGardenArt {"),
   );
-  assert(memoryCss.includes("user-select: none"), "58D: accidental-selection protection preserved");
-  assert(!garden.includes("quiz-practice-garden"), "58D: Quiz background not reused");
-  assert(!garden.includes("millionaire-adventure-clearing"), "58D: Millionaire bg not reused");
+  assert(memoryCss.includes("user-select: none"), "58E: accidental-selection protection preserved");
+  assert(!garden.includes("quiz-practice-garden"), "58E: Quiz background not reused");
+  assert(!garden.includes("millionaire-adventure-clearing"), "58E: Millionaire bg not reused");
 }

@@ -3317,39 +3317,29 @@
 }
 .gfaMemoryGardenArt img {
   object-fit: cover;
-  /* Prefer quiet lawn for the cream card; keep garden features in view. */
-  object-position: 42% 58%;
+  /* Quiet lawn for cream card; keep seated Bai Tong on the right in view. */
+  object-position: 46% 58%;
 }
 .gfaMemoryGardenInner {
   position: relative;
   z-index: 1;
-  width: min(960px, 100%);
+  width: min(1100px, 100%);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 180px;
-  gap: 20px;
-  align-items: end;
+  grid-template-columns: minmax(0, 1fr) minmax(160px, 26%);
+  gap: 16px;
+  align-items: center;
   min-height: calc(100vh - 52px);
   min-height: calc(100dvh - 52px);
 }
 .gfaMemoryGardenBoard {
   min-width: 0;
   align-self: center;
+  max-width: 42rem;
 }
-.gfaMemoryGardenCompanion {
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
+.gfaMemoryGardenSceneSpacer {
+  min-width: 0;
   pointer-events: none;
-  line-height: 0;
-}
-.gfaMemoryGardenCompanionImg {
-  width: min(180px, 100%);
-  height: auto;
-  object-fit: contain;
-  object-position: center bottom;
-  filter: drop-shadow(0 2px 4px rgba(23, 53, 42, 0.2));
-  user-select: none;
 }
 .gfaMemoryGardenPanel,
 .gfaMemoryGardenPlay {
@@ -3499,12 +3489,11 @@
     align-items: stretch;
     gap: 12px;
   }
-  .gfaMemoryGardenCompanion {
-    order: 2;
-    justify-content: center;
+  .gfaMemoryGardenBoard {
+    max-width: none;
   }
-  .gfaMemoryGardenCompanionImg {
-    width: min(132px, 42vw);
+  .gfaMemoryGardenSceneSpacer {
+    display: none;
   }
   .gfaMemoryRatings,
   .gfaMemoryGardenCounts {

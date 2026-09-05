@@ -307,28 +307,26 @@ SHA256=57c87fa2d62f8a628b4b8f655654e6253a46e6ce8d4b7f7bf1e2436881350f6e
 
 ## MEMORY_GARDEN_BACKGROUND
 
-NAME=memory-garden-background
-PATH=`/gfa/scenes/memory-garden-background.png`
-PURPOSE=Memory Garden visual environment for Present Simple Flash Cards review
-ROLE=full-bleed Flash Cards / Memory Garden world atmosphere
-ART=WORLD / ENVIRONMENT
-RENDER=cover / object-position toward quiet lawn (card readability)
+NAME=memory-garden-background-v2
+PATH=`/gfa/scenes/memory-garden-background-v2.png`
+PURPOSE=Memory Garden visual environment for Present Simple Flash Cards review (Sprint 58E)
+ROLE=full-bleed Flash Cards / Memory Garden world atmosphere with seated Bai Tong in-scene
+ART=WORLD / ENVIRONMENT + CHARACTER STORYTELLING
+RENDER=cover / object-position toward quiet lawn while keeping right-side Bai Tong visible
 RECOMMENDED_ASPECT=16:9-ish (1672×941 source)
 TRANSPARENT_BACKGROUND=NO
 TEXT_INSIDE_ASSET=environmental title only (MEMORY GARDEN / GFA wayfinding) — no grammar authority
-BAI_TONG_INSIDE_ASSET=NO
-FORBIDDEN=flash card UI; prompts; answers; scores; buttons; instructional grammar; Quiz Practice Garden reuse; Millionaire Adventure Clearing reuse
+BAI_TONG_INSIDE_ASSET=YES — seated/resting on right bench; calm review companion
+SEPARATE_CHARACTER_OVERLAY=NO — do not mount bai-tong-pause-guide (or any second Bai Tong) on Memory Garden
+FORBIDDEN=flash card UI; prompts; answers; scores; buttons; instructional grammar; Quiz Practice Garden reuse; Millionaire Adventure Clearing reuse; duplicate Bai Tong HTML overlay
 AUTHORITY=ART = VISUAL MEANING + WORLD STORYTELLING; HTML = REVIEW / GRAMMAR AUTHORITY
-QUALITY=owner-approved Sprint 58D production art; do not regenerate, recompress, crop, or replace
-SHA256=f61312a2b4f0e8fc860fddfb04adaf7646efdeaf05a11b7e3f6c90d3ed94c528
+QUALITY=owner-approved Sprint 58E production art; do not regenerate, recompress, crop, or replace
+SHA256=6814ce0d370ee96b95fbd36dac67c7534d4ae070f7a1c55513ad17540334e364
 
-## MEMORY_GARDEN_CHARACTER
+## MEMORY_GARDEN_BACKGROUND_ARCHIVED_58D
 
-NAME=bai-tong-pause-guide
-PATH=`/gfa/characters/bai-tong-pause-guide.webp`
-PURPOSE=Bai Tong Memory Garden guide (separate HTML layer; shared identity with Quiet Shelter pause guide)
-DESKTOP_ROLE=right-side companion beside cream Flash Card panel
-MOBILE_ROLE=compact companion under/near board
-TEXT_INSIDE_ASSET=NO
-QUALITY=existing approved character asset; do not regenerate or modify for Sprint 58D
+NAME=memory-garden-background
+PATH=`/gfa/scenes/memory-garden-background.png`
+PURPOSE=archived Sprint 58D Memory Garden scene without seated Bai Tong; retained in repo; not used for Flash Cards presentation after 58E
+STATUS=archived
 

@@ -9,12 +9,12 @@ type MemoryGardenProps = {
 };
 
 /**
- * Memory Garden: full-bleed calm review world + cream Flash Card board + Bai Tong guide.
- * ART = atmosphere. HTML = review / grammar authority.
+ * Memory Garden v2: full-bleed world with seated Bai Tong baked into the scene.
+ * HTML Flash Card panel stays left/center; no separate character overlay.
+ * ART = atmosphere + companion storytelling. HTML = review / grammar authority.
  */
 export function MemoryGarden({ children }: MemoryGardenProps) {
   const background = GFA_FLASH_ART.memoryGardenBackground;
-  const companion = GFA_FLASH_ART.baiTongPauseGuide;
 
   return (
     <div className="gfaMemoryGarden">
@@ -27,21 +27,14 @@ export function MemoryGarden({ children }: MemoryGardenProps) {
           fallback={null}
           sizes="100vw"
           fit="cover"
-          objectPosition="42% 58%"
+          objectPosition="46% 58%"
           priority
         />
       </div>
       <div className="gfaMemoryGardenInner">
         <div className="gfaMemoryGardenBoard">{children}</div>
-        <div className="gfaMemoryGardenCompanion" aria-hidden="true">
-          <img
-            className="gfaMemoryGardenCompanionImg"
-            src={companion.src}
-            alt=""
-            width={1024}
-            height={1229}
-          />
-        </div>
+        {/* Empty right gutter keeps seated Bai Tong visible on desktop. */}
+        <div className="gfaMemoryGardenSceneSpacer" aria-hidden="true" />
       </div>
     </div>
   );

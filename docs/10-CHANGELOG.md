@@ -10,6 +10,7 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 ## [Unreleased]
 
 ### Added
+- Sprint 58E Memory Garden v2 — full-bleed `memory-garden-background-v2.png` with seated Bai Tong in-scene; separate pause-guide overlay removed from Flash Cards
 - Sprint 58D Memory Garden visual world — owner-approved `memory-garden-background.png` as full-bleed Flash Cards environment; Bai Tong remains a separate guide layer
 - Green Freedom Playbook v1.0 in `docs/` (10 documents)
 - Cursor project rule `.cursor/rules/gfa.mdc` (corrected frontmatter, docs references)
