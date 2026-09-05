@@ -305,3 +305,30 @@ AUTHORITY=ART = VISUAL MEANING + WORLD STORYTELLING; HTML = GAME / GRAMMAR AUTHO
 QUALITY=frozen Sprint 53B production art; real alpha; no prop text; do not regenerate, recompress, crop, or replace
 SHA256=57c87fa2d62f8a628b4b8f655654e6253a46e6ce8d4b7f7bf1e2436881350f6e
 
+## MEMORY_GARDEN_BACKGROUND
+
+NAME=memory-garden-background
+PATH=`/gfa/scenes/memory-garden-background.png`
+PURPOSE=Memory Garden visual environment for Present Simple Flash Cards review
+ROLE=full-bleed Flash Cards / Memory Garden world atmosphere
+ART=WORLD / ENVIRONMENT
+RENDER=cover / object-position toward quiet lawn (card readability)
+RECOMMENDED_ASPECT=16:9-ish (1672×941 source)
+TRANSPARENT_BACKGROUND=NO
+TEXT_INSIDE_ASSET=environmental title only (MEMORY GARDEN / GFA wayfinding) — no grammar authority
+BAI_TONG_INSIDE_ASSET=NO
+FORBIDDEN=flash card UI; prompts; answers; scores; buttons; instructional grammar; Quiz Practice Garden reuse; Millionaire Adventure Clearing reuse
+AUTHORITY=ART = VISUAL MEANING + WORLD STORYTELLING; HTML = REVIEW / GRAMMAR AUTHORITY
+QUALITY=owner-approved Sprint 58D production art; do not regenerate, recompress, crop, or replace
+SHA256=f61312a2b4f0e8fc860fddfb04adaf7646efdeaf05a11b7e3f6c90d3ed94c528
+
+## MEMORY_GARDEN_CHARACTER
+
+NAME=bai-tong-pause-guide
+PATH=`/gfa/characters/bai-tong-pause-guide.webp`
+PURPOSE=Bai Tong Memory Garden guide (separate HTML layer; shared identity with Quiet Shelter pause guide)
+DESKTOP_ROLE=right-side companion beside cream Flash Card panel
+MOBILE_ROLE=compact companion under/near board
+TEXT_INSIDE_ASSET=NO
+QUALITY=existing approved character asset; do not regenerate or modify for Sprint 58D
+

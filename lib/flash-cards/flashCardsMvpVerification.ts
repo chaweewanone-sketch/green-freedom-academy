@@ -257,4 +257,29 @@ export function runFlashCardsMvpVerification(): void {
   );
   assert(!quizBank.includes("present-simple-flash-1"), "A: quiz bank has no Flash ids");
   assert(getFlashCardDeck("past-simple").length === 0, "W: no Past Simple deck");
+
+  const garden = read("components/flash-cards/MemoryGarden.tsx");
+  const artAssets = read("lib/student-ui/gfaArtAssets.ts");
+  const css = read("app/globals.css");
+  assert(garden.includes("GFA_FLASH_ART"), "58D: Memory Garden uses Flash art registry");
+  assert(
+    garden.includes("memoryGardenBackground"),
+    "58D: Memory Garden mounts approved background",
+  );
+  assert(
+    artAssets.includes("/gfa/scenes/memory-garden-background.png"),
+    "58D: memory garden asset path",
+  );
+  assert(
+    garden.includes("baiTongPauseGuide") || garden.includes("bai-tong-pause-guide"),
+    "58D: Bai Tong remains separate character layer",
+  );
+  assert(css.includes(".gfaMemoryGardenArt"), "58D: full-bleed art layer");
+  const memoryCss = css.slice(
+    css.indexOf(".gfaMemoryGarden {"),
+    css.indexOf(".gfaMemoryGardenArt {"),
+  );
+  assert(memoryCss.includes("user-select: none"), "58D: accidental-selection protection preserved");
+  assert(!garden.includes("quiz-practice-garden"), "58D: Quiz background not reused");
+  assert(!garden.includes("millionaire-adventure-clearing"), "58D: Millionaire bg not reused");
 }

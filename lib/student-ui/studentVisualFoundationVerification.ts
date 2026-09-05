@@ -632,6 +632,10 @@ export function runStudentVisualFoundationVerification(): void {
     artAssets.includes("/gfa/characters/bai-tong-millionaire-companion.webp"),
     "assets: millionaire companion path",
   );
+  assert(
+    artAssets.includes("/gfa/scenes/memory-garden-background.png"),
+    "assets: memory garden path",
+  );
 
   assert(existsSync(resolve(process.cwd(), "public/gfa/characters")), "assets: characters dir");
   assert(existsSync(resolve(process.cwd(), "public/gfa/scenes")), "assets: scenes dir");
@@ -689,6 +693,10 @@ export function runStudentVisualFoundationVerification(): void {
     "assets: millionaire clearing file",
   );
   assert(
+    existsSync(resolve(process.cwd(), "public/gfa/scenes/memory-garden-background.png")),
+    "assets: memory garden file",
+  );
+  assert(
     existsSync(resolve(process.cwd(), "public/gfa/characters/bai-tong-millionaire-companion.webp")),
     "assets: millionaire companion file",
   );
@@ -719,6 +727,7 @@ export function runStudentVisualFoundationVerification(): void {
   assert(artContract.includes("NAME=bai-tong-quiz-coach"), "contract: quiz coach");
   assert(artContract.includes("NAME=millionaire-adventure-clearing"), "contract: millionaire clearing");
   assert(artContract.includes("NAME=bai-tong-millionaire-companion"), "contract: millionaire companion");
+  assert(artContract.includes("NAME=memory-garden-background"), "contract: memory garden");
   assert(artContract.includes("TEXT_INSIDE_ASSET=NO"), "contract: no baked text");
   assert(
     artContract.includes("ART = VISUAL MEANING + WORLD STORYTELLING"),

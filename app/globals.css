@@ -3287,47 +3287,79 @@
   min-height: 100dvh;
 }
 .gfaMemoryGarden {
+  position: relative;
+  isolation: isolate;
   box-sizing: border-box;
   min-height: 100vh;
   min-height: 100dvh;
   padding: 20px 16px 32px;
   overflow-x: hidden;
   color: var(--gfa-ink);
-  background:
-    radial-gradient(circle at 12% 8%, #fff8e8 0%, transparent 42%),
-    radial-gradient(circle at 88% 18%, #e7f5ed 0%, transparent 46%),
-    linear-gradient(180deg, #f4fbf6 0%, #eef6f0 100%);
+  /* Soft lawn fallback while art loads; art provides the world. */
+  background: #9fc07a;
   -webkit-user-select: none;
   user-select: none;
 }
+.gfaMemoryGardenArt {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.gfaMemoryGardenArt .gfaArtSlot {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto !important;
+  border: 0;
+  background: transparent;
+}
+.gfaMemoryGardenArt img {
+  object-fit: cover;
+  /* Prefer quiet lawn for the cream card; keep garden features in view. */
+  object-position: 42% 58%;
+}
 .gfaMemoryGardenInner {
-  width: min(920px, 100%);
+  position: relative;
+  z-index: 1;
+  width: min(960px, 100%);
   margin: 0 auto;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 180px;
   gap: 20px;
-  align-items: center;
+  align-items: end;
+  min-height: calc(100vh - 52px);
+  min-height: calc(100dvh - 52px);
 }
 .gfaMemoryGardenBoard {
   min-width: 0;
+  align-self: center;
 }
 .gfaMemoryGardenCompanion {
   display: flex;
   align-items: flex-end;
   justify-content: center;
+  pointer-events: none;
+  line-height: 0;
 }
 .gfaMemoryGardenCompanionImg {
   width: min(180px, 100%);
   height: auto;
   object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 2px 4px rgba(23, 53, 42, 0.2));
+  user-select: none;
 }
 .gfaMemoryGardenPanel,
 .gfaMemoryGardenPlay {
-  background: rgba(255, 252, 246, 0.94);
-  border: 1px solid var(--line);
+  background: rgba(255, 252, 246, 0.95);
+  border: 1px solid rgba(23, 107, 77, 0.14);
   border-radius: 24px;
   padding: 24px 22px 28px;
-  box-shadow: 0 16px 40px rgba(23, 53, 42, 0.06);
+  box-shadow:
+    0 16px 40px rgba(23, 53, 42, 0.12),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.7);
 }
 .gfaMemoryGardenPanel h1,
 .gfaMemoryGardenSummary h1 {
@@ -3458,8 +3490,18 @@
   color: var(--g) !important;
 }
 @media (max-width: 820px) {
+  .gfaMemoryGarden {
+    padding: 14px 12px 24px;
+  }
   .gfaMemoryGardenInner {
     grid-template-columns: 1fr;
+    min-height: 0;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .gfaMemoryGardenCompanion {
+    order: 2;
+    justify-content: center;
   }
   .gfaMemoryGardenCompanionImg {
     width: min(132px, 42vw);
