@@ -1,11 +1,28 @@
 export const GAME_STAGE_COUNT = 10;
 
+/** Display-only fictional game prize ladder (does not affect scoring). */
+export const MILLIONAIRE_PRIZE_LADDER = [
+  1_000, 5_000, 10_000, 25_000, 50_000, 100_000, 250_000, 500_000, 750_000,
+  1_000_000,
+] as const;
+
+export const MILLIONAIRE_FINAL_DISPLAY_PRIZE =
+  MILLIONAIRE_PRIZE_LADDER[MILLIONAIRE_PRIZE_LADDER.length - 1];
+
 export type StageOutcome = "correct" | "missed";
 export type StageVisualStatus = "upcoming" | "current" | "correct" | "missed";
 
 export type ContinueAfterFeedback =
   | { kind: "next"; index: number }
   | { kind: "result" };
+
+export function formatGamePrize(amount: number): string {
+  return `฿${amount.toLocaleString("en-US")}`;
+}
+
+export function getStagePrize(stageIndex: number): number {
+  return MILLIONAIRE_PRIZE_LADDER[stageIndex] ?? 0;
+}
 
 export function createEmptyStageOutcomes(): StageOutcome[] {
   return [];

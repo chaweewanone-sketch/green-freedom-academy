@@ -1,4 +1,8 @@
-import type { StageVisualStatus } from "@/lib/millionaire/stageLadder";
+import {
+  formatGamePrize,
+  getStagePrize,
+  type StageVisualStatus,
+} from "@/lib/millionaire/stageLadder";
 
 type StageLadderProps = {
   statuses: StageVisualStatus[];
@@ -15,12 +19,12 @@ const statusLabels: Record<StageVisualStatus, string> = {
 function stageMark(
   status: StageVisualStatus,
   isDestination: boolean,
-  stageNumber: number,
 ): string {
-  if (status === "correct") return "⭐";
+  if (status === "correct") return "✓";
   if (status === "missed") return "○";
   if (isDestination) return "🏆";
-  return String(stageNumber);
+  if (status === "current") return "▶";
+  return "";
 }
 
 export function StageLadder({
@@ -30,13 +34,14 @@ export function StageLadder({
   return (
     <ol
       className={`gfaStageLadder gfaStageLadder-${variant}`}
-      aria-label="เส้นทาง 10 ด่าน"
+      aria-label="บันไดเงินรางวัลในเกม 10 ด่าน"
     >
       {statuses.map((status, index) => {
         const stageNumber = index + 1;
         const isCurrent = status === "current";
         const isDestination = index === statuses.length - 1;
-        const mark = stageMark(status, isDestination, stageNumber);
+        const prize = formatGamePrize(getStagePrize(index));
+        const mark = stageMark(status, isDestination);
 
         return (
           <li
@@ -50,12 +55,15 @@ export function StageLadder({
               .filter(Boolean)
               .join(" ")}
             aria-current={isCurrent ? "step" : undefined}
-            aria-label={`ด่าน ${stageNumber} ${statusLabels[status]}${
-              isDestination ? " จุดหมาย" : ""
+            aria-label={`ด่าน ${stageNumber} ${prize} ${statusLabels[status]}${
+              isDestination ? " จุดหมายหนึ่งล้าน" : ""
             }`}
           >
             <span className="gfaStageMark" aria-hidden="true">
-              {mark}
+              {mark || stageNumber}
+            </span>
+            <span className="gfaStagePrize" aria-hidden="true">
+              {prize}
             </span>
           </li>
         );

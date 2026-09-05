@@ -2147,6 +2147,8 @@
   padding: 0;
   color: var(--gfa-ink);
   background: #8ec6f0;
+  -webkit-user-select: none;
+  user-select: none;
 }
 .gfaQuizArtboard {
   position: relative;
@@ -2159,6 +2161,7 @@
   max-height: 100dvh;
   overflow: hidden;
   box-sizing: border-box;
+  background: transparent;
 }
 .gfaQuizWorldArt {
   position: absolute;
@@ -2740,6 +2743,8 @@
   overflow: hidden;
   color: var(--gfa-ink);
   background: #3d6b3a;
+  -webkit-user-select: none;
+  user-select: none;
 }
 .gfaMillionaireArtboard {
   position: relative;
@@ -2792,11 +2797,11 @@
 }
 .gfaMillionaireComposition-play {
   grid-template-columns:
-    minmax(0, 1.18fr)
-    minmax(12rem, 0.52fr)
-    minmax(4.5rem, 0.14fr);
+    minmax(0, 1.1fr)
+    minmax(10rem, 0.48fr)
+    minmax(7.25rem, 0.22fr);
   grid-template-areas: "board companion ladder";
-  column-gap: 1.4%;
+  column-gap: 1.2%;
 }
 .gfaMillionaireBoardArea {
   grid-area: board;
@@ -3104,26 +3109,46 @@
 .gfaMillionaireWorld .gfaStageLadder-journey {
   display: grid;
   gap: 0;
+  justify-items: stretch;
 }
 .gfaMillionaireWorld .gfaStage {
-  min-height: 38px;
-  padding: 0 0 8px;
+  min-height: 34px;
+  padding: 0 0 6px;
   color: var(--gfa-muted);
-  font-size: 0.78rem;
+  font-size: 0.72rem;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 6px;
+  justify-items: start;
+}
+.gfaMillionaireWorld .gfaStagePrize {
+  font-weight: 800;
+  font-size: 0.68rem;
+  line-height: 1.15;
+  color: var(--gfa-ink);
+  white-space: nowrap;
+}
+.gfaMillionaireWorld .gfaStageCurrent .gfaStagePrize,
+.gfaMillionaireWorld .gfaStageDestination .gfaStagePrize {
+  color: var(--gfa-primary);
+  font-weight: 900;
 }
 .gfaMillionaireWorld .gfaStageLadder-journey .gfaStage:not(:last-child)::after {
-  top: 34px;
+  top: 30px;
+  left: 14px;
   width: 3px;
+  transform: none;
   background: rgba(23, 107, 77, 0.2);
 }
 .gfaMillionaireWorld .gfaStageCorrect:not(:last-child)::after {
   background: var(--gfa-honey);
 }
 .gfaMillionaireWorld .gfaStageMark {
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   border-width: 2px;
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   background: #fff;
   border-color: rgba(23, 107, 77, 0.28);
   color: var(--gfa-ink);
@@ -3135,9 +3160,9 @@
   box-shadow: 0 0 0 3px rgba(244, 196, 74, 0.35);
 }
 .gfaMillionaireWorld .gfaStageDestination .gfaStageMark {
-  width: 36px;
-  height: 36px;
-  font-size: 0.95rem;
+  width: 32px;
+  height: 32px;
+  font-size: 0.85rem;
 }
 .gfaMillionaireWorld .gfaGameResult {
   text-align: left;
@@ -3238,10 +3263,19 @@
     order: 3;
   }
   .gfaMillionaireWorld .gfaStageLadder-journey {
-    grid-template-columns: repeat(10, minmax(0, 1fr));
+    grid-template-columns: 1fr;
+    gap: 4px;
   }
   .gfaMillionaireWorld .gfaStageLadder-journey .gfaStage:not(:last-child)::after {
     display: none;
+  }
+  .gfaMillionaireWorld .gfaStage {
+    grid-template-columns: 28px minmax(0, 1fr) auto;
+    min-height: 32px;
+    padding: 4px 0;
+  }
+  .gfaMillionaireWorld .gfaGameLadderColumn {
+    max-height: none;
   }
 }
 
@@ -3263,6 +3297,8 @@
     radial-gradient(circle at 12% 8%, #fff8e8 0%, transparent 42%),
     radial-gradient(circle at 88% 18%, #e7f5ed 0%, transparent 46%),
     linear-gradient(180deg, #f4fbf6 0%, #eef6f0 100%);
+  -webkit-user-select: none;
+  user-select: none;
 }
 .gfaMemoryGardenInner {
   width: min(920px, 100%);

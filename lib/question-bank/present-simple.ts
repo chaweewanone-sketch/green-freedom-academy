@@ -392,7 +392,7 @@ const presentSimpleDefinitions = [
   {
     prompt: "Choose the sentence with twice a day.",
     correct: "I brush my teeth twice a day.",
-    distractors: ["I brushes my teeth twice a day.", "I brush my teeth two times a day.", "I brushing my teeth twice a day."],
+    distractors: ["I brushes my teeth twice a day.", "I brush my teeth two time a day.", "I brushing my teeth twice a day."],
     explanation: "Twice a day shows frequency in Present Simple routines.",
     difficulty: "medium" as const,
     grammarPoint: "Frequency — twice a day",

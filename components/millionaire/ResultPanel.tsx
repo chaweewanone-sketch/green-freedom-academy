@@ -25,7 +25,7 @@ export function ResultPanel({
     <section className={`gfaGameResult gfaGameResult-${presentation.band}`}>
       <p className="gfaGameResultKicker">{presentation.kicker}</p>
       <h1>{presentation.title}</h1>
-      <p className="gfaGameResultStars">⭐ {presentation.starsLabel}</p>
+      <p className="gfaGameResultStars">{presentation.starsLabel}</p>
       <p className="gfaGameResultMessage">{presentation.message}</p>
       <ActivityResultActions
         lessonPath={lessonPath}

@@ -19,7 +19,10 @@ import {
 import {
   applyStageAnswer,
   continueAfterFeedback,
+  formatGamePrize,
+  getStagePrize,
   isFinalStage,
+  MILLIONAIRE_FINAL_DISPLAY_PRIZE,
   resolveStageStatuses,
   type StageVisualStatus,
 } from "@/lib/millionaire/stageLadder";
@@ -149,10 +152,12 @@ function MillionaireAttempt({
             </p>
             {totalQuestions > 0 ? (
               <aside className="gfaMissionCard">
-                <p className="gfaMissionKicker">ภารกิจของวันนี้ ⭐</p>
+                <p className="gfaMissionKicker">ภารกิจของวันนี้</p>
                 <p className="gfaMissionLine">พิชิต 10 ด่าน</p>
-                <p className="gfaMissionLine">ตอบให้ถูกเพื่อเก็บดาว</p>
-                <p className="gfaMissionLine">แล้วไปให้ถึงถ้วยรางวัล!</p>
+                <p className="gfaMissionLine">ขึ้นบันไดเงินรางวัลในเกม</p>
+                <p className="gfaMissionLine">
+                  ไปให้ถึง {formatGamePrize(MILLIONAIRE_FINAL_DISPLAY_PRIZE)}!
+                </p>
               </aside>
             ) : (
               <p className="gfaGameIntroLesson">
@@ -212,8 +217,10 @@ function MillionaireAttempt({
         phase="playing"
         ladder={
           <aside className="gfaGameLadderColumn">
-            <p className="gfaGameLadderTitle">เส้นทางผจญภัย</p>
-            <p className="gfaGameLadderGoal">ไปให้ถึงถ้วย 🏆</p>
+            <p className="gfaGameLadderTitle">เงินรางวัลในเกม</p>
+            <p className="gfaGameLadderGoal">
+              พิชิต {formatGamePrize(MILLIONAIRE_FINAL_DISPLAY_PRIZE)}
+            </p>
             <StageLadder statuses={stageStatuses} />
           </aside>
         }
@@ -231,7 +238,9 @@ function MillionaireAttempt({
               ? "🏆 ด่านสุดท้าย"
               : `ด่าน ${currentIndex + 1} จาก ${totalQuestions}`}
           </p>
-          <p className="gfaGameScoreNow">⭐ {score}/{totalQuestions}</p>
+          <p className="gfaGameScoreNow">
+            {formatGamePrize(getStagePrize(currentIndex))}
+          </p>
         </header>
         <div className="gfaGameBoard">
           <div className="gfaGamePlay">

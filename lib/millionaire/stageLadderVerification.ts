@@ -6,8 +6,12 @@ import { buildGameResultPresentation } from "@/lib/millionaire/gameResultPresent
 import {
   applyStageAnswer,
   continueAfterFeedback,
+  formatGamePrize,
   GAME_STAGE_COUNT,
+  getStagePrize,
   isFinalStage,
+  MILLIONAIRE_FINAL_DISPLAY_PRIZE,
+  MILLIONAIRE_PRIZE_LADDER,
   resolveStageStatuses,
 } from "@/lib/millionaire/stageLadder";
 
@@ -30,6 +34,19 @@ export function verifyLadderStageCount(): void {
   assert(GAME_STAGE_COUNT === 10, "ladder: 10 stages");
   const statuses = resolveStageStatuses(GAME_STAGE_COUNT, 0, [], false);
   assert(statuses.length === 10, "ladder: status length 10");
+}
+
+export function verifyPrizeLadderPresentation(): void {
+  assert(MILLIONAIRE_PRIZE_LADDER.length === 10, "prize: 10 display stages");
+  assert(MILLIONAIRE_FINAL_DISPLAY_PRIZE === 1_000_000, "prize: final 1,000,000");
+  assert(getStagePrize(0) === 1_000, "prize: stage 1 = 1,000");
+  assert(getStagePrize(9) === 1_000_000, "prize: stage 10 = 1,000,000");
+  assert(formatGamePrize(1_000_000) === "฿1,000,000", "prize: formatted final");
+  assert(
+    MILLIONAIRE_PRIZE_LADDER.join(",") ===
+      "1000,5000,10000,25000,50000,100000,250000,500000,750000,1000000",
+    "prize: fixed ladder values",
+  );
 }
 
 export function verifyInitialStageState(): void {
@@ -142,13 +159,18 @@ export function verifyResultScoreUnchanged(): void {
   assert(result.score === 8, "result: score is correct count");
   assert(result.percentage === 80, "result: percentage frozen");
   const presentation = buildGameResultPresentation(8, 10);
-  assert(presentation.starsLabel === "ดาว 8/10", "result: stars mirror correct count");
+  assert(
+    presentation.starsLabel === "ผ่าน 8/10 ด่าน",
+    "result: stage progress mirrors correct count",
+  );
   assert(presentation.percentage === 80, "result: presentation uses same %");
   assert(presentation.band === "developing", "result: 80 is developing");
   assert(
     presentation.kicker === "Millionaire Challenge",
     "result: canonical activity name",
   );
+  assert(presentation.message.includes("฿1,000,000"), "result: prize journey copy");
+  assert(!presentation.message.includes("เงินจริง"), "result: no real-money claim");
   assert(buildGameResultPresentation(6, 10).band === "weak", "result: 60 weak");
   assert(buildGameResultPresentation(9, 10).band === "strong", "result: 90 strong");
 }
@@ -176,10 +198,16 @@ export function verifyMillionaireGameSourceBoundary(): void {
     "utf8",
   );
   const css = readFileSync(resolve(process.cwd(), "app/globals.css"), "utf8");
+  const ladder = readFileSync(
+    resolve(process.cwd(), "components/millionaire/StageLadder.tsx"),
+    "utf8",
+  );
 
   assert(game.includes("MILLIONAIRE_ACTIVITY_DISPLAY_NAME"), "ui: canonical activity name");
   assert(!game.includes("เกมพิชิต 10 ด่าน"), "ui: competing title removed");
   assert(game.includes("เริ่มพิชิตด่าน"), "ui: explicit start remains");
+  assert(game.includes("เงินรางวัลในเกม"), "ui: prize ladder label");
+  assert(game.includes("MILLIONAIRE_FINAL_DISPLAY_PRIZE"), "ui: final prize display");
   assert(!game.includes("setTimeout"), "ui: auto-advance timer removed");
   assert(!game.includes(", 700)"), "ui: 700ms delay removed");
   assert(questionCard.includes("ไปด่านต่อไป"), "ui: explicit continue");
@@ -202,10 +230,56 @@ export function verifyMillionaireGameSourceBoundary(): void {
   assert(css.includes(".gfaGameShell"), "css: game shell scoped");
   assert(css.includes(".gfaStageLadder"), "css: journey ladder scoped");
   assert(css.includes(".gfaAdventureMap"), "css: intro adventure map scoped");
+  assert(css.includes(".gfaStagePrize"), "css: prize ladder labels");
+  assert(ladder.includes("formatGamePrize"), "ladder: prize labels rendered");
+  assert(ladder.includes("getStagePrize"), "ladder: stage prize lookup");
+}
+
+export function verifyActivitySelectionUxScoped(): void {
+  const css = readFileSync(resolve(process.cwd(), "app/globals.css"), "utf8");
+  const quizBlock = css.slice(
+    css.indexOf(".gfaQuizWorld {"),
+    css.indexOf(".gfaQuizArtboard {"),
+  );
+  const millionaireBlock = css.slice(
+    css.indexOf(".gfaMillionaireWorld {"),
+    css.indexOf(".gfaMillionaireArtboard {"),
+  );
+  const flashBlock = css.slice(
+    css.indexOf(".gfaMemoryGarden {"),
+    css.indexOf(".gfaMemoryGardenInner {"),
+  );
+  assert(quizBlock.includes("user-select: none"), "select: quiz world blocks accidental selection");
+  assert(
+    millionaireBlock.includes("user-select: none"),
+    "select: millionaire world blocks accidental selection",
+  );
+  assert(flashBlock.includes("user-select: none"), "select: flash garden blocks accidental selection");
+  assert(!css.includes("* {\n  user-select: none"), "select: no global * user-select none");
+  assert(!css.includes("body {\n  user-select: none"), "select: learn/body selection preserved");
+}
+
+export function verifyQuizWorldViewportFill(): void {
+  const world = readFileSync(
+    resolve(process.cwd(), "components/student-ui/GfaQuizWorld.tsx"),
+    "utf8",
+  );
+  const css = readFileSync(resolve(process.cwd(), "app/globals.css"), "utf8");
+  assert(
+    world.indexOf("gfaQuizWorldArt") < world.indexOf("gfaQuizArtboard"),
+    "quiz: world art sits outside artboard",
+  );
+  const artBlock = css.slice(
+    css.indexOf(".gfaQuizWorldArt {"),
+    css.indexOf(".gfaQuizWorldArt .gfaArtSlot {"),
+  );
+  assert(artBlock.includes("inset: 0"), "quiz: world art covers full viewport container");
+  assert(css.includes(".gfaQuizCardArea"), "quiz: panel area preserved");
 }
 
 export function runStageLadderVerification(): void {
   verifyLadderStageCount();
+  verifyPrizeLadderPresentation();
   verifyInitialStageState();
   verifyCorrectFirstStage();
   verifyIncorrectFirstStage();
@@ -215,4 +289,6 @@ export function runStageLadderVerification(): void {
   verifyResultScoreUnchanged();
   verifyReplayResetsStages();
   verifyMillionaireGameSourceBoundary();
+  verifyActivitySelectionUxScoped();
+  verifyQuizWorldViewportFill();
 }
