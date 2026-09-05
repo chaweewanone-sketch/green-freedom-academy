@@ -3341,6 +3341,16 @@
   min-width: 0;
   pointer-events: none;
 }
+/* Sprint 58F — desktop: nudge panel right toward fence/post balance; keep Bai Tong breathing room. */
+@media (min-width: 821px) {
+  .gfaMemoryGardenInner {
+    grid-template-columns: minmax(0, 1fr) minmax(180px, 28%);
+    gap: 20px;
+  }
+  .gfaMemoryGardenBoard {
+    margin-left: clamp(1.5rem, 4.5vw, 3.75rem);
+  }
+}
 .gfaMemoryGardenPanel,
 .gfaMemoryGardenPlay {
   background: rgba(255, 252, 246, 0.95);
