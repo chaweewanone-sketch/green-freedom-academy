@@ -27,6 +27,8 @@ import {
   presentCurriculumProgress,
   presentHomeOverallProgressPercent,
   presentJourneyProgressPercent,
+  presentStudentHomeHeroTitle,
+  PILOT_PRESENT_COMPLETE_HERO,
   shouldHideSamePageDashboardAction,
 } from "@/lib/analytics/pilotLearnerPresentation";
 import { presentSimpleLesson } from "@/lib/lessons/present-simple";
@@ -117,7 +119,15 @@ export function verifyFirstVisitAndResumeFreeze(): void {
     returningHistory,
   );
 
-  assert(home.includes("เริ่มต้นการเรียนรู้ของคุณ"), "A: empty hero");
+  assert(home.includes("presentStudentHomeHeroTitle"), "A: home uses hero helper");
+  assert(
+    presentStudentHomeHeroTitle({
+      resume: empty.resumeLearning,
+      hasHistory: empty.hasHistory,
+      isCurriculumComplete: empty.curriculumProgress.isCurriculumComplete,
+    }) === "เริ่มต้นการเรียนรู้ของคุณ",
+    "A: empty hero",
+  );
   assert(resumeCard.includes("START LEARNING"), "A: start eyebrow");
   assert(empty.resumeLearning.title === "เริ่มการเรียนรู้", "A: start title");
   assert(
@@ -130,7 +140,14 @@ export function verifyFirstVisitAndResumeFreeze(): void {
     "A: start href",
   );
 
-  assert(home.includes("เรียนต่อจากจุดที่ค้างไว้"), "B: returning hero");
+  assert(
+    presentStudentHomeHeroTitle({
+      resume: returning.resumeLearning,
+      hasHistory: returning.hasHistory,
+      isCurriculumComplete: returning.curriculumProgress.isCurriculumComplete,
+    }) === "เรียนต่อจากจุดที่ค้างไว้",
+    "B: returning hero",
+  );
   assert(resumeCard.includes("RESUME LEARNING"), "B: resume eyebrow");
   assert(returning.hasHistory, "B: returning hasHistory");
   assert(
@@ -466,6 +483,124 @@ export function verifyAssessmentFreeze(): void {
   assert(!quiz.includes("gfaQuizCoin"), "K: coin removal only");
 }
 
+export function verifyPresentCompleteHeroCopy(): void {
+  const home = read("components/student/StudentLearningHome.tsx");
+  const resumeCard = read("components/dashboard/ResumeLearningCard.tsx");
+  const presentation = read("lib/analytics/pilotLearnerPresentation.ts");
+
+  function heroFor(events: AggregatableLearningEvent[]): string {
+    const summary = buildLearningSummary(events);
+    const model = buildStudentLearningHome(summary, events);
+    return presentStudentHomeHeroTitle({
+      resume: model.resumeLearning,
+      hasHistory: model.hasHistory,
+      isCurriculumComplete: model.curriculumProgress.isCurriculumComplete,
+    });
+  }
+
+  assert(home.includes("presentStudentHomeHeroTitle"), "A: home uses helper");
+  assert(
+    PILOT_PRESENT_COMPLETE_HERO === "เรียน Present Simple สำเร็จแล้ว 🎉",
+    "C: frozen complete hero",
+  );
+  assert(
+    heroFor([]) === "เริ่มต้นการเรียนรู้ของคุณ",
+    "A: empty history hero",
+  );
+  assert(
+    heroFor([
+      makeEvent({
+        activity: "quiz",
+        lessonSlug: "present-simple",
+        scorePercentage: 50,
+      }),
+    ]) === "เรียนต่อจากจุดที่ค้างไว้",
+    "B: in-progress hero",
+  );
+
+  const complete = presentCompleteEvents();
+  const completeHome = buildStudentLearningHome(emptySummary(), complete);
+  assert(
+    heroFor(complete) === PILOT_PRESENT_COMPLETE_HERO,
+    "C: Present required-path COMPLETE hero",
+  );
+  assert(
+    !completeHome.curriculumProgress.isCurriculumComplete,
+    "C: curriculum remains incomplete",
+  );
+  assert(
+    isPilotPresentCompleteResume(completeHome.resumeLearning),
+    "C: same COMPLETE gate as Resume",
+  );
+
+  const completeWeakFlash = [
+    ...complete,
+    makeEvent({
+      sessionId: "flash-weak",
+      activity: "flash-cards",
+      lessonSlug: "present-simple",
+      completedAt: 4,
+      flashEasy: 1,
+      flashMedium: 2,
+      flashHard: 9,
+    }),
+  ];
+  assert(
+    heroFor(completeWeakFlash) === PILOT_PRESENT_COMPLETE_HERO,
+    "D: COMPLETE + weak Flash hero stays complete",
+  );
+
+  assert(
+    heroFor([
+      makeEvent({
+        activity: "quiz",
+        lessonSlug: "present-simple",
+        scorePercentage: 90,
+      }),
+    ]) !== PILOT_PRESENT_COMPLETE_HERO,
+    "E: Quiz-only does not show complete hero",
+  );
+  assert(
+    heroFor([
+      makeEvent({
+        activity: "quiz",
+        lessonSlug: "present-simple",
+        scorePercentage: 90,
+        completedAt: 1,
+      }),
+      makeEvent({
+        activity: "millionaire",
+        lessonSlug: "present-simple",
+        scorePercentage: 70,
+        completedAt: 2,
+      }),
+    ]) !== PILOT_PRESENT_COMPLETE_HERO,
+    "F: insufficient Millionaire does not show complete hero",
+  );
+
+  assert(
+    LEARNER_LAUNCHABLE_LESSON_SLUGS.join(",") === "present-simple",
+    "G: 54D guard",
+  );
+  const past = presentCurriculumLesson({
+    lessonSlug: "past-simple",
+    lessonTitle: "Past Simple",
+    status: "ACTIVE",
+    stage: "LEARN",
+    progressPercent: JOURNEY_PROGRESS.learn,
+  });
+  assert(past.displayPercent === 0, "H: no false Past 20%");
+  assert(past.displayStatusLabel === PILOT_UNAVAILABLE_STATUS_LABEL, "G: Past next");
+  assert(
+    resumeCard.includes("PILOT_COMPLETE_TITLE"),
+    "I: Resume COMPLETE card unchanged",
+  );
+  assert(
+    presentation.includes(`PILOT_COMPLETE_TITLE = "${PILOT_COMPLETE_TITLE}"`),
+    "I: Resume title frozen",
+  );
+}
+
 export function runPilotUxVerification(): void {
   verifyFirstVisitAndResumeFreeze();
   verifyPresentCompleteAndNoPastCta();
@@ -473,6 +608,7 @@ export function runPilotUxVerification(): void {
   verifyPastSimpleActiveExposureZero();
   verifyDashboardSamePageCtas();
   verifyPresentCompleteResumeCopy();
+  verifyPresentCompleteHeroCopy();
   verifyWorldTitlesAndCopy();
   verifyAssessmentFreeze();
 }

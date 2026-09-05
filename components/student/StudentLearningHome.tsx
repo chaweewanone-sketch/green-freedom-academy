@@ -5,6 +5,7 @@ import { MILLIONAIRE_ACTIVITY_DISPLAY_NAME } from "@/lib/activities";
 import {
   presentActiveLessonCopy,
   presentHomeOverallProgressPercent,
+  presentStudentHomeHeroTitle,
 } from "@/lib/analytics/pilotLearnerPresentation";
 import { getLessonBySlug } from "@/lib/lessons";
 import type { StudentLearningHomeModel } from "@/types/analytics";
@@ -36,6 +37,11 @@ export function StudentLearningHome({ model }: StudentLearningHomeProps) {
     hasHistory,
   } = model;
   const isComplete = curriculumProgress.isCurriculumComplete;
+  const heroTitle = presentStudentHomeHeroTitle({
+    resume: resumeLearning,
+    hasHistory,
+    isCurriculumComplete: isComplete,
+  });
   const latestLessonTitle = latestActivity
     ? getLessonBySlug(latestActivity.lessonSlug)?.title ??
       latestActivity.lessonSlug
@@ -55,13 +61,7 @@ export function StudentLearningHome({ model }: StudentLearningHomeProps) {
       <section className="dashboardHero">
         <div>
           <span className="eyebrow">GREEN FREEDOM ACADEMY</span>
-          <h1>
-            {isComplete
-              ? "เรียนครบหลักสูตรแล้ว"
-              : hasHistory
-                ? "เรียนต่อจากจุดที่ค้างไว้"
-                : "เริ่มต้นการเรียนรู้ของคุณ"}
-          </h1>
+          <h1>{heroTitle}</h1>
           <p>
             {isComplete
               ? "คุณเรียนครบทุกบทในหลักสูตรปัจจุบันแล้ว"

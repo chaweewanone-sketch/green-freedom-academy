@@ -16,12 +16,33 @@ export const PILOT_COMPLETE_EYEBROW = "LEARNING COMPLETE";
 export const PILOT_COMPLETE_TITLE = "เรียน Present Simple ครบแล้ว 🎉";
 export const PILOT_COMPLETE_MESSAGE =
   "คุณเรียนครบทั้งบทเรียน แบบฝึกหัด และเกมแล้ว";
+export const PILOT_PRESENT_COMPLETE_HERO = "เรียน Present Simple สำเร็จแล้ว 🎉";
 
 export function isPilotPresentCompleteResume(resume: ResumeLearning): boolean {
   return (
     resume.action.actionType === "SUMMARY" &&
     resume.title === "เรียน Present Simple ครบแล้ว"
   );
+}
+
+export function presentStudentHomeHeroTitle(input: {
+  resume: ResumeLearning;
+  hasHistory: boolean;
+  isCurriculumComplete: boolean;
+}): string {
+  if (isPilotPresentCompleteResume(input.resume)) {
+    return PILOT_PRESENT_COMPLETE_HERO;
+  }
+
+  if (input.isCurriculumComplete) {
+    return "เรียนครบหลักสูตรแล้ว";
+  }
+
+  if (input.hasHistory) {
+    return "เรียนต่อจากจุดที่ค้างไว้";
+  }
+
+  return "เริ่มต้นการเรียนรู้ของคุณ";
 }
 
 export function toPilotProgressPercent(

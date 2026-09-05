@@ -6,6 +6,7 @@ import { buildLearningRecommendation } from "@/lib/analytics/recommendation";
 import { buildResumeLearning } from "@/lib/analytics/resumeLearning";
 import { buildStudentLearningHome } from "@/lib/analytics/studentHome";
 import { buildLearningSummary } from "@/lib/analytics/summary";
+import { presentStudentHomeHeroTitle } from "@/lib/analytics/pilotLearnerPresentation";
 import { getActivityPath, getDashboardPath, getLessonPath } from "@/lib/routes";
 import type {
   AggregatableLearningEvent,
@@ -400,8 +401,23 @@ export function verifyFirstVisitCopyPresentation(): void {
   );
 
   assert(!empty.hasHistory, "16: empty hasHistory false");
-  assert(home.includes("เริ่มต้นการเรียนรู้ของคุณ"), "16: empty hero copy");
-  assert(home.includes("เรียนต่อจากจุดที่ค้างไว้"), "16: returning hero copy kept");
+  assert(home.includes("presentStudentHomeHeroTitle"), "16: home uses hero helper");
+  assert(
+    presentStudentHomeHeroTitle({
+      resume: empty.resumeLearning,
+      hasHistory: empty.hasHistory,
+      isCurriculumComplete: empty.curriculumProgress.isCurriculumComplete,
+    }) === "เริ่มต้นการเรียนรู้ของคุณ",
+    "16: empty hero copy",
+  );
+  assert(
+    presentStudentHomeHeroTitle({
+      resume: returning.resumeLearning,
+      hasHistory: returning.hasHistory,
+      isCurriculumComplete: returning.curriculumProgress.isCurriculumComplete,
+    }) === "เรียนต่อจากจุดที่ค้างไว้",
+    "16: returning hero copy kept",
+  );
   assert(resumeCard.includes("START LEARNING"), "16: start eyebrow");
   assert(resumeCard.includes("RESUME LEARNING"), "16: resume eyebrow kept");
   assert(resumeCard.includes("hasHistory"), "16: eyebrow uses hasHistory");

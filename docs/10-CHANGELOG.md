@@ -91,6 +91,7 @@ Versioning follows package.json (`1.0.0` at Playbook creation).
 - Sprint 57C Flash Cards optionality — required-path COMPLETE cannot be revoked by weak Flash Card self-ratings; Flash history/analytics remain
 - Sprint 57D Present Simple Flash Cards MVP — dedicated 12-card review deck, Memory Garden, Thai self-assessment, session-only weak review; Quiz bank unused; stale `ACTIVITY_DEFAULTS["flash-cards"]` removed
 - Sprint 57E Flash Cards discovery — Student Home shows one optional Present Simple Flash Cards entry (`ทบทวนเพิ่มเติม` / `ไม่บังคับ` / `เริ่มทบทวน`) without replacing Resume, Quiz, Millionaire, or LEARNING COMPLETE
+- Sprint 58B Present COMPLETE hero polish — `/student` hero uses `เรียน Present Simple สำเร็จแล้ว` after required-path COMPLETE instead of unfinished Resume copy; empty and in-progress heroes stay unchanged
 
 ---
 
